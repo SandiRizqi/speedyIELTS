@@ -44,7 +44,6 @@ const FullSpeakingPage = () => {
     const getData = httpsCallable(functions, 'get_speaking_questions');
     getData({ type: "speaking" }).then((result) => {
       setQuestion(result.data);
-      console.log(result.data);
     });
   };
 

@@ -73,10 +73,12 @@ export const useRecordVoice = () => {
             try {
                 navigator.mediaDevices
                 .getUserMedia({ audio: true })
-                .then(initialMediaRecorder);
+                .then(initialMediaRecorder)
+                .catch(() => {
+                    alert("Device recorder doesn't exist.")
+                })
             } catch (err) {
                 console.log(err);
-                console.log("Device recorder doesn't exist.")
             }
         }
     }, []);
