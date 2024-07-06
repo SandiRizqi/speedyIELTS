@@ -163,7 +163,7 @@ const WritingTwoPage = () => {
                       <textarea
                         id="OrderNotes"
                         className="w-full resize-none border border-gray-300 p-4 rounded-md align-top focus:ring-0 sm:text-sm"
-                        rows="13"
+                        rows="30"
                         disabled
                         value={feedback?.evaluation}
                       ></textarea>

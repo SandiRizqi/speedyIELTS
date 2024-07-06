@@ -10,7 +10,7 @@ import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 
 
 const SubsButton = ({ type, action }) => {
-    const { Subs } = useSubscrip();
+    const { Subs, loading } = useSubscrip();
 
     async function handleSubs() {
         await Subs(type, action);
@@ -22,8 +22,9 @@ const SubsButton = ({ type, action }) => {
             className="mt-4 block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-center text-sm font-medium text-white hover:bg-opacity-90 focus:outline-none focus:ring active:text-indigo-500 sm:mt-6"
             href="#"
             onClick={handleSubs}
+            
         >
-            Get Started
+            {!loading ? "Get Started": "Loading... ."}
         </a>
     )
 }

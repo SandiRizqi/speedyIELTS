@@ -1,11 +1,13 @@
 'use client'
 import { useUser } from "@/service/user";
 import useSnap from "./useSnap";
+import { useState } from "react";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
 import { useRouter } from 'next/navigation'
 
 const useSubscrip = () => {
+    const [loading, setLoading] = useState(false);
     const user = useUser();
     const { snapEmbed } = useSnap();
     const func = FirebaseFunction();
@@ -13,8 +15,10 @@ const useSubscrip = () => {
 
     const Subs = async (TYPE, action) => {
         if(!user) {
-            window.alert("User doesn't exist")
-        }
+            return window.alert("User doesn't exist")
+        };
+
+        setLoading(true);
       
         const data = {
             uid: user.uid,
@@ -27,8 +31,9 @@ const useSubscrip = () => {
         
         try {
             const getOrder = httpsCallable(func, 'makeSubscription');
-            getOrder({ data: data }).then((result) => {
+            await getOrder({ data: data }).then((result) => {
                 action(true);
+                setLoading(false);
                 snapEmbed(result.data.token, 'snap-container', {
                     onSuccess: function () {
                         action(false);
@@ -48,7 +53,7 @@ const useSubscrip = () => {
             console.error('Error:', error);
         }
     };
-    return {Subs};
+    return {Subs, loading};
 };
 
 

@@ -23,7 +23,7 @@ const SignIn = () => {
 
   return (
     <div className="flex flex-1 w-screen h-screen items-center justify-center">
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark max-w-screen-xl">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="px-26 py-17.5 text-center">
@@ -45,8 +45,7 @@ const SignIn = () => {
               </Link>
 
               <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
+              Boost confidence with realistic Mock Tests. Trained with data from more than 1 million responses, our AI Scoring Engine is pioneering the world's only content and context evaluation.
               </p>
 
               <span className="mt-15 inline-block">
@@ -178,7 +177,7 @@ const SignIn = () => {
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to TailAdmin
+                Sign In to SpeedyIELTS
               </h2>
 
               <form>
