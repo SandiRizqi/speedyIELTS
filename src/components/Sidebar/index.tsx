@@ -8,6 +8,29 @@ import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
+
+type ColorVariant = 'blue' | 'green' | 'red' | 'yellow';
+
+interface BadgeProps {
+  children: React.ReactNode;
+  color?: ColorVariant;
+}
+
+const colorClasses: Record<ColorVariant, string> = {
+  blue: 'bg-blue-100 text-blue-800',
+  green: 'bg-green-100 text-green-800',
+  red: 'bg-red text-white',
+  yellow: 'bg-yellow-100 text-yellow-800',
+};
+
+const Badge: React.FC<BadgeProps> = ({ children, color = 'blue' }) => {
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClasses[color]}`}>
+      {children}
+    </span>
+  );
+};
+
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -89,8 +112,8 @@ const menuGroups = [
         label: "Listening",
         route: "#",
         children: [
-          { label: "Academic Listening", route: "/dashboard/listening/academic-listening" },
-          { label: "General Listening", route: "/dashboard/listening/general-listening" },],
+          { label: "Academic Listening", route: "#" },
+          { label: "General Listening", route: "#" },],
       },
       {
         icon: (
@@ -123,8 +146,8 @@ const menuGroups = [
         label: "Reading",
         route: "#",
         children: [
-          { label: "Academic Reading", route: "/dashboard/reading/academic-reading" },
-          { label: "General Reading", route: "/dashboard/reading/general-reading" },],
+          { label: "Academic Reading", route: "#" },
+          { label: "General Reading", route: "#" },],
       },
       {
         icon: (
@@ -192,7 +215,7 @@ const menuGroups = [
         label: "Speaking",
         route: "#",
         children: [
-          { label: "Mini Speaking", route: "/dashboard/speaking/mini-speaking" },
+          { label: "Mini Speaking", route: "#" },
           { label: "Full Speaking", route: "/dashboard/speaking/full-speaking" },],
       },
       {
@@ -224,7 +247,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Full test",
-        route: "/dashboard/full-test",
+        route: "#",
       },
     ]
   },
