@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 import { useState, useEffect } from "react";
 import { FirebaseFunction } from "@/service/firebase";
-import ChartOne from "../Charts/ChartOne";
+import AllSkillChart from "../Charts/AllSkillChart";
 import OneSkillChart from "../Charts/OneSkillChart";
 import ChatCard from "../Chat/ChatCard";
 import TableOne from "../Tables/TableOne";
@@ -134,13 +134,7 @@ const MyDashboard: React.FC = () => {
         <OneSkillChart seriesdata={chartData['writing']} title="Reading Scores"/>
         <OneSkillChart seriesdata={chartData['writing']} title="Writing Scores"/>
         <OneSkillChart seriesdata={chartData['writing']} title="Speaking Scores"/>
-        <ChartOne />
-        <ChartThree />
-        <MapOne />
-        <div className="col-span-12 xl:col-span-8">
-          <TableOne />
-        </div>
-        <ChatCard />
+        <AllSkillChart />
       </div>
       )}
     </>
