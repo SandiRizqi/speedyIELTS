@@ -5,9 +5,7 @@ import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import axios from 'axios';
 
-const WritingTwo = () => {
-  const [start, setStart] = useState(false);
-  const [finish, setFinish] = useState(false);
+const WritingTwo = ({finish}) => {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState({
     questionId: '',
@@ -33,7 +31,6 @@ const WritingTwo = () => {
           setFeedback(res.data)
           console.log(res.data)
           setLoading(false);
-          setFinish(true);
         })
         .catch(() => {
           setLoading(false);

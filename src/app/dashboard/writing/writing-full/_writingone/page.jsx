@@ -5,9 +5,7 @@ import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import axios from 'axios';
 
-const WritingOne = () => {
-  const [start, setStart] = useState(false);
-  const [finish, setFinish] = useState(false);
+const WritingOne = ({finish}) => {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState({
     questionId: '',
@@ -33,7 +31,6 @@ const WritingOne = () => {
           setFeedback(res.data)
           console.log(res.data)
           setLoading(false);
-          setFinish(true);
         })
         .catch(() => {
           setLoading(false);
@@ -45,30 +42,6 @@ const WritingOne = () => {
     }
   };
 
-
-  const Timer = ({ minutes, seconds }) => {
-    const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-        if (timeLeft.seconds > 0) {
-          setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
-        } else if (timeLeft.minutes > 0) {
-          setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }, [timeLeft]);
-
-    return (
-      <div className='block text-center'>
-        <p className='text-2xl font-medium text-gray-900'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
-      </div>
-    );
-  };
 
 
   const Overall = ({ score }) => {

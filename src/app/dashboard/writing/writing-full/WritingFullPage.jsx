@@ -7,6 +7,7 @@ import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 
 export default function WritingFullPage() {
   const [start, setStart] = useState(false);
+  const [finish, setFinish] = useState(false);
 
   const Timer = ({ minutes, seconds }) => {
     const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -24,6 +25,12 @@ export default function WritingFullPage() {
 
       return () => clearInterval(interval);
     }, [timeLeft]);
+
+    useEffect(() => {
+      if (timeLeft.minutes === 0 && timeLeft.seconds === 0 ) {
+        setFinish(true);
+      }
+    },[timeLeft]);
 
     return (
       <div className='block text-center bg-slate-800 rounded-md p-1'>
@@ -50,8 +57,8 @@ export default function WritingFullPage() {
 
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800'>
-          <WritingOne />
-          <WritingTwo />
+          <WritingOne finish={finish}/>
+          <WritingTwo finish={finish}/>
         </div>
       </div>
     </>
