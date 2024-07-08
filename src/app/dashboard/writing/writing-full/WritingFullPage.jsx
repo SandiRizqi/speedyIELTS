@@ -57,8 +57,8 @@ export default function WritingFullPage() {
 
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800'>
-          <WritingOne finish={finish}/>
-          <WritingTwo finish={finish}/>
+          <WritingOne start={start} finish={finish}/>
+          <WritingTwo start={start} finish={finish}/>
         </div>
       </div>
     </>

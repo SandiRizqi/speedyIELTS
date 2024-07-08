@@ -5,7 +5,7 @@ import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import axios from 'axios';
 
-const WritingTwo = ({finish}) => {
+const WritingTwo = ({start, finish}) => {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState({
     questionId: '',
