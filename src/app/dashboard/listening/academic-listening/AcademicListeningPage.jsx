@@ -1,38 +1,45 @@
 'use client'
 import withUser from "@/hooks/withUser";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { listening_questions as questions } from "./sample";
-import { motion } from 'framer-motion';
 
 
+const ControlledInput = ({ value, onChange, ...props }) => {
+    const [localValue, setLocalValue] = useState(value);
 
+    const handleChange = (e) => {
+        setLocalValue(e.target.value);
+       // onChange(e.target.value);
+    };
+
+    const handleBlur = () => {
+        onChange(localValue);
+    }
+
+
+    return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur}/>;
+};
 
 const AcademicListeningPage = () => {
     const [selectedAnswers, setSelectedAnswers] = useState({});
-    const inputRef = useRef();
-
 
     const handleAnswerChange = useCallback((questionId, answer) => {
         setSelectedAnswers(prev => ({ ...prev, [questionId]: answer }));
-    },[])
+    }, []);
 
-
-    const RenderQuestion = ({question, index}) => {
-
-        const QuestionWrapper = ({ children }) => {
-            return (
-                <motion.div
-                    key={index}
-                    className="bg-white shadow-md rounded-lg p-6 mb-6"
-                >
-                    {question?.number && (<h3 className="text-md font-semibold mb-2">Question {question.number}</h3>)}
-                    <p className="text-sm text-gray-600 mb-4">{question.instruction}</p>
-                    <p className="font-medium mb-4">{question.question}</p>
-                    {children}
-                </motion.div>
-            );
-        }
+    const RenderQuestion = ({ question, index }) => {
+        const QuestionWrapper = ({ children }) => (
+            <div
+                key={index}
+                className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400"
+            >
+                {question?.number && (<h3 className="text-md font-semibold mb-2">Question {question.number}</h3>)}
+                <p className="text-sm text-gray-600 mb-4">{question.instruction}</p>
+                <p className="font-medium mb-4">{question.question}</p>
+                {children}
+            </div>
+        );
 
         switch (question.type) {
             case 'multiple-choice':
@@ -43,13 +50,9 @@ const AcademicListeningPage = () => {
                                 <label key={index} className="flex items-center space-x-2 cursor-pointer">
                                     <input
                                         type="radio"
-                                        key={`question-${question.id}`}
                                         name={`question-${question.id}`}
                                         value={option}
-                                        onChange={(e) => {
-                                            e.preventDefault();
-                                            handleAnswerChange(question.id, option)
-                                        }}
+                                        onChange={() => handleAnswerChange(question.id, option)}
                                         checked={selectedAnswers[question.id] === option}
                                         className="form-radio text-blue-600"
                                     />
@@ -63,17 +66,11 @@ const AcademicListeningPage = () => {
             case 'sentence-completion':
                 return (
                     <QuestionWrapper>
-                        <input
+                        <ControlledInput
                             type="text"
-                            key={`question-${question.id}`}
-                            ref={inputRef}
                             name={`question-${question.id}`}
-                            onChange={(e) => {
-                                e.preventDefault();
-                                handleAnswerChange(question.id, e.target.value)
-                            }}
-                            value={selectedAnswers[question.id] || ''}
-                           
+                            value={selectedAnswers[question?.id]}
+                            onChange={(value) => handleAnswerChange(question.id, value)}
                             className="w-full p-2 border border-gray-300 rounded"
                             placeholder="Type your answer here"
                         />
@@ -89,20 +86,15 @@ const AcademicListeningPage = () => {
                                         {row.map((cell, cellIndex) => (
                                             <td key={cellIndex} className="border border-gray-300 p-2">
                                                 {cell.includes('_') ? (
-                                                    <input
+                                                    <ControlledInput
                                                         type="text"
                                                         className="w-full p-1 border border-gray-300 rounded"
-                                                        ref={inputRef}
-                                                        key={`question-${question.id}-${rowIndex}-${cellIndex}`}
                                                         name={`question-${question.id}-${rowIndex}-${cellIndex}`}
-                                                        onChange={(e) => {
-                                                            e.preventDefault();
-                                                            handleAnswerChange(question.id, {
-                                                                ...selectedAnswers[question.id],
-                                                                [cell]: e.target.value
-                                                            })
-                                                        }}
                                                         value={selectedAnswers[question.id]?.[cell] || ''}
+                                                        onChange={(value) => handleAnswerChange(question.id, {
+                                                            ...selectedAnswers[question.id],
+                                                            [cell]: value
+                                                        })}
                                                         placeholder={cell}
                                                     />
                                                 ) : cell}
@@ -120,20 +112,15 @@ const AcademicListeningPage = () => {
                         <div className="relative">
                             <img src={question.image} alt="Diagram" className="w-full" />
                             {question.labels.map((label) => (
-                                <div
-                                    key={label.id}
-                                    className="mt-4"
-                                >
+                                <div key={label.id} className="mt-4 flex items-center space-x-2">
+                                    <label htmlFor={`question-${question.id}`}>{label.id}.</label>
                                     <select
                                         className="p-1 border border-gray-300 rounded"
                                         name={`question-${question.id}`}
-                                        onChange={(e) => {
-                                            e.preventDefault();
-                                            handleAnswerChange(question.id, {
-                                                ...selectedAnswers[question.id],
-                                                [label.id]: e.target.value
-                                            })
-                                        }}
+                                        onChange={(e) => handleAnswerChange(question.id, {
+                                            ...selectedAnswers[question.id],
+                                            [label.id]: e.target.value
+                                        })}
                                         value={selectedAnswers[question.id]?.[label.id] || ''}
                                     >
                                         <option value="">Select</option>
@@ -153,7 +140,7 @@ const AcademicListeningPage = () => {
             case 'classification':
                 return (
                     <QuestionWrapper>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2  xl:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                             {question.categories.map((category) => (
                                 <div key={category} className="border border-gray-300 p-2 rounded">
                                     <h4 className="font-semibold mb-2">{category}</h4>
@@ -163,7 +150,6 @@ const AcademicListeningPage = () => {
                                                 type="checkbox"
                                                 name={`question-${question.id}`}
                                                 onChange={(e) => {
-                                                    e.preventDefault();
                                                     const newAnswer = { ...selectedAnswers[question.id] };
                                                     if (e.target.checked) {
                                                         newAnswer[category] = [...(newAnswer[category] || []), item];
@@ -211,13 +197,10 @@ const AcademicListeningPage = () => {
                                     <select
                                         className="flex-grow p-2 border border-gray-300 rounded"
                                         name={`question-${question.id}`}
-                                        onChange={(e) => {
-                                            e.preventDefault();
-                                            handleAnswerChange(question.id, {
-                                                ...selectedAnswers[question.id],
-                                                [item]: e.target.value
-                                            })
-                                        }}
+                                        onChange={(e) => handleAnswerChange(question.id, {
+                                            ...selectedAnswers[question.id],
+                                            [item]: e.target.value
+                                        })}
                                         value={selectedAnswers[question.id]?.[item] || ''}
                                     >
                                         <option value="">Select an inventor</option>
@@ -240,19 +223,15 @@ const AcademicListeningPage = () => {
         console.log(selectedAnswers);
     };
 
-
-
     return (
         <>
             <Breadcrumb pageName="Listening" />
             <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
-                <form onSubmit={handleSubmit} >
+                <form onSubmit={handleSubmit}>
                     <div className="space-y-6">
-                        {questions.map((question, index) => {
-                            return (
-                                <RenderQuestion question={question} index={index} key={index}/>
-                            )
-                        })}
+                        {questions.map((question, index) => (
+                            <RenderQuestion question={question} index={index} key={index} />
+                        ))}
                     </div>
                     <div className="mt-8 flex justify-end">
                         <button
