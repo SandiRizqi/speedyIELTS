@@ -1,8 +1,7 @@
 'use client'
 import withUser from "@/hooks/withUser";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { useState } from "react";
-import { randomUUID } from "crypto";
+import { useState, useCallback, useRef } from "react";
 import { listening_questions as questions } from "./sample";
 import { motion } from 'framer-motion';
 
@@ -11,13 +10,15 @@ import { motion } from 'framer-motion';
 
 const AcademicListeningPage = () => {
     const [selectedAnswers, setSelectedAnswers] = useState({});
+    const inputRef = useRef();
 
-    const handleAnswerChange = (questionId, answer) => {
+
+    const handleAnswerChange = useCallback((questionId, answer) => {
         setSelectedAnswers(prev => ({ ...prev, [questionId]: answer }));
-    };
+    },[])
 
 
-    const renderQuestion = (question, index) => {
+    const RenderQuestion = ({question, index}) => {
 
         const QuestionWrapper = ({ children }) => {
             return (
@@ -42,6 +43,7 @@ const AcademicListeningPage = () => {
                                 <label key={index} className="flex items-center space-x-2 cursor-pointer">
                                     <input
                                         type="radio"
+                                        key={`question-${question.id}`}
                                         name={`question-${question.id}`}
                                         value={option}
                                         onChange={(e) => {
@@ -63,6 +65,8 @@ const AcademicListeningPage = () => {
                     <QuestionWrapper>
                         <input
                             type="text"
+                            key={`question-${question.id}`}
+                            ref={inputRef}
                             name={`question-${question.id}`}
                             onChange={(e) => {
                                 e.preventDefault();
@@ -88,6 +92,8 @@ const AcademicListeningPage = () => {
                                                     <input
                                                         type="text"
                                                         className="w-full p-1 border border-gray-300 rounded"
+                                                        ref={inputRef}
+                                                        key={`question-${question.id}-${rowIndex}-${cellIndex}`}
                                                         name={`question-${question.id}-${rowIndex}-${cellIndex}`}
                                                         onChange={(e) => {
                                                             e.preventDefault();
@@ -242,7 +248,11 @@ const AcademicListeningPage = () => {
             <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
                 <form onSubmit={handleSubmit} >
                     <div className="space-y-6">
-                        {questions.map(renderQuestion)}
+                        {questions.map((question, index) => {
+                            return (
+                                <RenderQuestion question={question} index={index} key={index}/>
+                            )
+                        })}
                     </div>
                     <div className="mt-8 flex justify-end">
                         <button
