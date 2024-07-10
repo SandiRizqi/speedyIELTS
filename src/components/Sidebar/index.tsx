@@ -112,7 +112,7 @@ const menuGroups = [
         label: "Listening",
         route: "#",
         children: [
-          { label: "Academic Listening", route: "#" },
+          { label: "Academic Listening", route: "/dashboard/listening/academic-listening" },
           { label: "General Listening", route: "#" },],
       },
       {
