@@ -79,5 +79,35 @@ export const listening_questions = [
         'Theory of Relativity': 'C. Albert Einstein',
         'Penicillin': 'D. Alexander Fleming'
       }
-    }
+    },
+    {
+        id: 8,
+        type: 'multiple-choice',
+        instruction: 'Choose the correct letter, A, B, or D.',
+        number: 11,
+        question:'Why does the speaker apologise about the seats?',
+        options: ['A. They are too small.', 'B. There are not enough of them.', 'C. Some of them are very close together.'],
+        correctAnswer: 'B. There are not enough of them.'
+    },
+    {
+        id: 9,
+        type: 'table-completion',
+        instruction: 'Complete the table below. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+        question: 'Information about Transport survey:',
+        table: [
+          ['Name:', 'Sades Jones'],
+          ['Year if Birth:', '1991'],
+          ['Postcode:', '1) _______'],
+          ['Travelling Bus:'],
+          ['Date of bus journey:', '2) _____'],
+          ['Reason for trip:', 'shopping and visit to the 3) _____'],
+          ['Travelled by bus because cost of: ', '4) _____ too high'],
+          ['Got on bus at:', '5) _____ Street'],
+          ['Complaints about bus service:', ['- bus today was 6) _____', '- frequency of buses in the 7) _____', '- Late']],
+          ['Travelling by car'],
+          ['Dislikes travelling by bike in the city centre because of the:','9) _____'],
+          ['Doesn’t own a bike because of a lack of:', '10) ______']
+        ],
+        answers: ['']
+      },
   ];

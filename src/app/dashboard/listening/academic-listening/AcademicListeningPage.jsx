@@ -14,6 +14,7 @@ const ControlledInput = ({ value, onChange, ...props }) => {
     };
 
     const handleBlur = () => {
+        console.log(localValue)
         onChange(localValue);
     }
 
@@ -85,7 +86,30 @@ const AcademicListeningPage = () => {
                                     <tr key={rowIndex}>
                                         {row.map((cell, cellIndex) => (
                                             <td key={cellIndex} className="border border-gray-300 p-2">
-                                                {cell.includes('_') ? (
+                                                {Array.isArray(cell) ? (
+                                                    <div className="flex flex-col">
+                                                        {cell.map((item, index) => (
+                                                            <div key={index} className="py-1">
+                                                                {item.includes('_') ? (
+                                                                    <ControlledInput
+                                                                        type="text"
+                                                                        className="w-full p-1 border border-gray-300 rounded"
+                                                                        name={`question-${question.id}-${rowIndex}-${cellIndex}`}
+                                                                        value={selectedAnswers[question.id]?.[item] || ''}
+                                                                        onChange={(value) => handleAnswerChange(question.id, {
+                                                                            ...selectedAnswers[question.id],
+                                                                            [item]: value
+                                                                        })}
+                                                                        placeholder={item}
+                                                                    />
+                                                                ) : item}
+                                                            </div>
+                                                    ))}
+                                                  </div>
+                                                ) : null }
+                                                {!Array.isArray(cell) && (
+                                                    <>
+                                                    {cell.includes('_') ? (
                                                     <ControlledInput
                                                         type="text"
                                                         className="w-full p-1 border border-gray-300 rounded"
@@ -98,6 +122,9 @@ const AcademicListeningPage = () => {
                                                         placeholder={cell}
                                                     />
                                                 ) : cell}
+                                                    </>
+                                                )}
+                                
                                             </td>
                                         ))}
                                     </tr>
