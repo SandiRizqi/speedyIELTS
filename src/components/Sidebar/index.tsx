@@ -146,7 +146,7 @@ const menuGroups = [
         label: "Reading",
         route: "#",
         children: [
-          { label: "Academic Reading", route: "#" },
+          { label: "Academic Reading", route: "/dashboard/reading/academic-reading" },
           { label: "General Reading", route: "#" },],
       },
       {
