@@ -40,6 +40,7 @@ const AcademicReadingPage = () => {
         );
 
         switch (part.type) {
+            
             case "gap_filling":
                 return (
                     <QuestionWrapper>
@@ -59,11 +60,12 @@ const AcademicReadingPage = () => {
                     </QuestionWrapper>
                 )
             case "matching":
+            case "matching_headings":
                 return (
                     <QuestionWrapper>
                         {part.questions.map((obj, idx) => (
                             <div key={idx} className="space-x-4">
-                                <span className="font-medium">{obj.question}</span>
+                                <span className="font-medium">{obj.number}.{obj.question}</span>
                                 <select
                                     className="flex-grow p-2 border border-gray-300 rounded"
                                     name={`question-${obj.number}`}
@@ -75,6 +77,51 @@ const AcademicReadingPage = () => {
                                         <option key={index} value={key}>{key}. {part.options[key]}</option>
                                     ))}
                                 </select>
+                            </div>
+                        ))}
+                    </QuestionWrapper>
+                )
+            case "multiple_choice":
+                return (
+                    <QuestionWrapper>
+                        {part.questions.map((question, idx) => (
+                            <div className="space-y-2" key={idx}>
+                                <p className="font-medium">{question.number}.{question.question}</p>
+                                {question.options.map((option, index) => (
+                                    
+                                        <label key={index} className="flex items-center space-x-2 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                name={`question-${question.number}`}
+                                                value={option.split(".")[0]}
+                                                onChange={(e) => handleAnswer(question.number, e.target.value)}
+                                                checked={answer[question.number] === option.split(".")[0]}
+                                                className="form-radio text-blue-600"
+                                            />
+                                            <span>{option}</span>
+                                        </label>
+                                
+                                ))}
+                            </div>
+
+                        ))}
+                    </QuestionWrapper>
+                )
+            case "diagram_labelling":
+            case "yes_no_not_given":
+                return (
+                    <QuestionWrapper>
+                        {part.questions.map((obj, idx) => (
+                            <div key={idx} >
+                                <p className="font-medium">{obj.number}. {obj.question}</p>
+                                <ControlledInput
+                                    type="text"
+                                    name={`question-${obj.number}`}
+                                    value={answer[obj.number]}
+                                    onChange={(value) => handleAnswer(obj.number, value)}
+                                    className="w-full p-2 border border-gray-300 rounded"
+                                    placeholder="Type your answer here"
+                                />
                             </div>
                         ))}
                     </QuestionWrapper>
