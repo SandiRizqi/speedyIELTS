@@ -2,7 +2,7 @@
 import withUser from "@/hooks/withUser";
 import { useState, useCallback } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { structured_questions as questions } from "./sample";
+import { sample1 as questions } from "./sample1";
 
 const ControlledInput = ({ value, onChange, ...props }) => {
     const [localValue, setLocalValue] = useState(value);
@@ -73,7 +73,8 @@ const AcademicReadingPage = () => {
             <div
                 className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
             >
-                <h3 className="text-lg text-gray-700 mb-4">{part.instruction}</h3>
+                <h3 className="text-lg text-gray-700 mb-4">{part?.instruction}</h3>
+                {part?.image && (<img src={part.image} alt="image" className="" />)}
                 {children}
             </div>
         );
@@ -85,13 +86,13 @@ const AcademicReadingPage = () => {
                     <QuestionWrapper>
                         {part.questions.map((obj, idx) => (
                             <div key={idx} >
-                                <p className="font-medium">{obj.question}</p>
+                                <p className="font-medium">{obj?.number}. {obj?.question}</p>
                                 <ControlledInput
                                     type="text"
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number]}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-full p-2 border border-gray-300 rounded"
+                                    className="w-md p-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
                                 />
                             </div>
@@ -147,6 +148,7 @@ const AcademicReadingPage = () => {
                     </QuestionWrapper>
                 )
             case "diagram_labelling":
+            case "true_false_not_given":
             case "yes_no_not_given":
                 return (
                     <QuestionWrapper>
@@ -158,7 +160,7 @@ const AcademicReadingPage = () => {
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number]}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-full p-2 border border-gray-300 rounded"
+                                    className="w-md p-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
                                 />
                             </div>
@@ -185,7 +187,7 @@ const AcademicReadingPage = () => {
                             if (question.section === activeTab) {
                                 return (
                                     <div className="flex flex-col md:flex-row min-h-screen" key={index}>
-                                        <div className="flex flex-col w-full md:w-1/2 relative">
+                                        <div className="flex flex-col w-full md:w-1/2 relative overflow-y-auto max-h-screen">
                                             {question.image.map((url, idx) => (
                                                 <img src={url} alt="image" className="" key={idx} />
                                             ))}
