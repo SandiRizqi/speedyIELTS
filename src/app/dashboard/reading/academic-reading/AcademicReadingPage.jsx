@@ -1,6 +1,6 @@
 'use client'
 import withUser from "@/hooks/withUser";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { structured_questions as questions } from "./sample";
 
@@ -21,8 +21,47 @@ const ControlledInput = ({ value, onChange, ...props }) => {
 
 
 
+
+
+
 const AcademicReadingPage = () => {
     const [answer, setAnswer] = useState({});
+    const [activeTab, setActiveTab] = useState(1);
+
+    function TabNavigation() {
+        const tabs = [1, 2, 3];
+      
+        const handleKeyDown = useCallback((e) => {
+          if (e.key === 'ArrowRight') {
+            setActiveTab((prev) => (prev + 1) % tabs.length);
+          } else if (e.key === 'ArrowLeft') {
+            setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
+          }
+        }, [tabs.length]);
+      
+        return (
+          <div className="flex w-full justify-end">
+            <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  tabIndex={activeTab === tab ? 0 : -1}
+                  className={`py-2 px-4 font-medium text-sm focus:outline-none ${
+                    activeTab === tab
+                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  SECTION-{tab}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      }
 
     const handleAnswer = (number, value) => {
         setAnswer(prev => ({ ...prev, [number]: value }))
@@ -142,27 +181,36 @@ const AcademicReadingPage = () => {
             <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
                 <form onSubmit={handleSubmit} className="min-h-screen">
                     <div className="min-h-screen space-y-6">
-                        {questions.map((question, index) => (
-                            <div className="flex flex-col md:flex-row max-h-screen" key={index}>
-                                <div className="w-full md:w-1/2 relative">
-                                    <img src={question.image} alt="image" className="absolute inset-0 w-full h-full object-fit" />
-                                </div>
-                                <div className="w-full md:w-1/2 p-4 flex flex-col overflow-y-auto">
-                                    {question.parts.map((obj, idx) => (
-                                        <div key={idx}>
-                                            <RenderQuestion part={obj} />
+                        {questions.map((question, index) => {
+                            if (question.section === activeTab) {
+                                return (
+                                    <div className="flex flex-col md:flex-row min-h-screen" key={index}>
+                                        <div className="flex flex-col w-full md:w-1/2 relative">
+                                            {question.image.map((url, idx) => (
+                                                <img src={url} alt="image" className="" key={idx} />
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
+                                        <div className="w-full md:w-1/2 p-4 flex flex-col overflow-y-auto max-h-screen">
+                                            {question.parts.map((obj, idx) => (
+                                                <div key={idx}>
+                                                    <RenderQuestion part={obj} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )
+                            } else {
+                                return <></>
+                            }
+                        })}
                     </div>
-                    <div className="mt-8 flex justify-end">
+                    <div className="mt-8 flex justify-end gap-4">
+                        <TabNavigation />
                         <button
                             className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
                             type="submit"
                         >
-                            Submit Answers
+                            Submit
                         </button>
                     </div>
                 </form>

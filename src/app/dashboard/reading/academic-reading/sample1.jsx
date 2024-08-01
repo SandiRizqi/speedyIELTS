@@ -1,12 +1,9 @@
-
-
-
-export const structured_questions = [
+export const sample1 = [
     {
         section: 1,
         image: [
             "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2Fsample1%2FScreenshot%202024-08-01%20at%2010.12.51.png?alt=media&token=c820d89d-3b18-42c7-b216-238c18cf1ffb",
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2Fsample1%2FScreenshot%202024-08-01%20at%2010.14.56.png?alt=media&token=950de739-8a57-4bda-b11c-d83f30bf0253"
+            "/images/cards/cards-01.png"
         ],
         parts: [
             {
@@ -169,10 +166,7 @@ export const structured_questions = [
     },
     {
         section: 2,
-        image: [
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2Fsample1%2FScreenshot%202024-08-01%20at%2010.18.18.png?alt=media&token=a3829c0d-253c-4119-a118-5d33d6d27b74",
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2Fsample1%2FScreenshot%202024-08-01%20at%2010.19.08.png?alt=media&token=543acb38-e2e8-483c-8776-295d15120af3"
-        ],
+        image: "/images/cards/cards-01.png",
         parts: [
             {
                 id: 4,
@@ -323,10 +317,7 @@ export const structured_questions = [
     },
     {
         section: 3,
-        image: [
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2Fsample1%2FScreenshot%202024-08-01%20at%2010.21.20.png?alt=media&token=d7b2534d-1eb3-44c8-843e-f6b6b675ad04",
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2Fsample1%2FScreenshot%202024-08-01%20at%2010.22.17.png?alt=media&token=d60aab80-0055-4346-a968-ecb38870e4b9"
-        ],
+        image: "/images/cards/cards-01.png",
         parts: [
             {
                 id: 7,
