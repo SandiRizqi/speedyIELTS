@@ -1,8 +1,12 @@
 'use client'
 import withUser from "@/hooks/withUser";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { sample1 as questions } from "./sample1";
+import { FirestoreDB } from "@/service/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { useUser } from "@/service/user";
+
+
 
 const ControlledInput = ({ value, onChange, ...props }) => {
     const [localValue, setLocalValue] = useState(value);
@@ -25,8 +29,12 @@ const ControlledInput = ({ value, onChange, ...props }) => {
 
 
 const AcademicReadingPage = () => {
+    const user = useUser();
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
+    const [questions, setQuestion] = useState(null);
+    const db = FirestoreDB();
+    const questionsRef = collection(db, "reading-questions");
 
     function TabNavigation() {
         const tabs = [1, 2, 3];
@@ -175,13 +183,32 @@ const AcademicReadingPage = () => {
 
     async function handleSubmit() {
         console.log("submit")
-    }
+    };
+
+    const getQuestions = async () => {
+        try {
+            const querySnapshot = await getDocs(questionsRef);
+            const questions = querySnapshot.docs.map(doc => {return { ...doc.data(),questionId: doc.id, userId: user.uid}});
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            const selectedQuestion = questions[randomIndex]
+            setQuestion(selectedQuestion["question"])
+                 
+        } catch (error) {
+            console.error("Error fetching questions:", error);
+        } 
+    };
+
+
+    useEffect(() => {
+        getQuestions();
+    },[])
 
     return (
         <>
             <Breadcrumb pageName="Academic Reading" />
             <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
-                <form onSubmit={handleSubmit} className="min-h-screen">
+                {questions && (
+                    <form onSubmit={handleSubmit} className="min-h-screen">
                     <div className="min-h-screen space-y-6">
                         {questions.map((question, index) => {
                             if (question.section === activeTab) {
@@ -202,7 +229,7 @@ const AcademicReadingPage = () => {
                                     </div>
                                 )
                             } else {
-                                return <></>
+                                return null;
                             }
                         })}
                     </div>
@@ -216,6 +243,7 @@ const AcademicReadingPage = () => {
                         </button>
                     </div>
                 </form>
+                )}
             </main>
         </>
     )
