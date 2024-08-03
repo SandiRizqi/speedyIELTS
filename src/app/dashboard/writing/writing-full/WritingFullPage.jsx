@@ -2,12 +2,13 @@
 import React from 'react';
 import WritingOne from './_writingone/page';
 import WritingTwo from './_writingtwo/page';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 
 export default function WritingFullPage() {
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
+  const [activeTab, setActiveTab] = useState(1);
 
   const Timer = ({ minutes, seconds }) => {
     const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -27,10 +28,10 @@ export default function WritingFullPage() {
     }, [timeLeft]);
 
     useEffect(() => {
-      if (timeLeft.minutes === 0 && timeLeft.seconds === 0 ) {
+      if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
         setFinish(true);
       }
-    },[timeLeft]);
+    }, [timeLeft]);
 
     return (
       <div className='block text-center bg-slate-800 rounded-md p-1'>
@@ -40,10 +41,45 @@ export default function WritingFullPage() {
   };
 
 
+  function TabNavigation() {
+    const tabs = [1, 2];
+
+    const handleKeyDown = useCallback((e) => {
+      if (e.key === 'ArrowRight') {
+        setActiveTab((prev) => (prev + 1) % tabs.length);
+      } else if (e.key === 'ArrowLeft') {
+        setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
+      }
+    }, [tabs.length]);
+
+    return (
+      <div className="flex w-full justify-end">
+        <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              role="tab"
+              aria-selected={activeTab === tab}
+              tabIndex={activeTab === tab ? 0 : -1}
+              className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
+                  ? 'border-b-2 border-blue-500 text-blue-500'
+                  : 'text-gray-500 hover:text-gray-700'
+                }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              SECTION-{tab}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+
 
   return (
     <>
-      <Breadcrumb pageName='Writing'/>
+      <Breadcrumb pageName='Writing' />
       <div className='flex flex-1 justify-center'>
         <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
           {start && (<Timer minutes={60} seconds={0} />)}
@@ -57,8 +93,17 @@ export default function WritingFullPage() {
 
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800'>
-          <WritingOne start={start} finish={finish}/>
-          <WritingTwo start={start} finish={finish}/>
+          {activeTab === 1 ? <WritingOne start={start} finish={finish} /> : <WritingTwo start={start} finish={finish} />}
+
+          <div className="m-8 flex justify-end gap-4">
+            <TabNavigation />
+            <button
+              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </>

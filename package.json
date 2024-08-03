@@ -21,6 +21,7 @@
     "flatpickr": "^4.6.13",
     "flowbite": "^2.3.0",
     "framer-motion": "^11.2.12",
+    "html-react-parser": "^5.1.12",
     "jsvectormap": "^1.6.0",
     "next": "^14.2.4",
     "react": "^18",

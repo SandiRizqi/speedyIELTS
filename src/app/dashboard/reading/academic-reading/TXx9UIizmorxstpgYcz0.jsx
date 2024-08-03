@@ -1,49 +1,4 @@
-const { initializeApp } = require('firebase/app');
-const { getFirestore, collection, addDoc,setDoc, doc } = require('firebase/firestore');
-
-// Your Firebase configuration object
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyBpEG3UKag8YVwKjvrql1RsKXytEQ_jqo4",
-    authDomain: "ielts-ai-b1478.firebaseapp.com",
-    databaseURL: "https://ielts-ai-b1478-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "ielts-ai-b1478",
-    storageBucket: "ielts-ai-b1478.appspot.com",
-    messagingSenderId: "585188926994",
-    appId: "1:585188926994:web:22fce2fb5f7e46ee99dacb",
-    measurementId: "G-LH95ET351W"
-  };
-
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// Function to upload a document
-async function uploadDocument(collectionName, documentData) {
-  try {
-    const docRef = await addDoc(collection(db, collectionName), documentData);
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-}
-
-async function uploadDocumentWithID(collectionName, documentID, documentData) {
-    try {
-      await setDoc(doc(db, collectionName, documentID), documentData);
-      console.log("Document written with ID: ", documentID);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  }
-
-// Example usage
-
-
-
-
-const question = [
+export const sample2 = [
     {
         section: 1,
         image: [
@@ -359,7 +314,3 @@ const question = [
 
 
 ]
-
-
-    //uploadDocument("reading-questions", {question: question});
-    uploadDocumentWithID("reading-questions", "TXx9UIizmorxstpgYcz0", {question: question} )

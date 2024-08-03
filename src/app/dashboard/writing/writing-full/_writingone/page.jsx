@@ -65,7 +65,7 @@ const WritingOne = ({start, finish}) => {
 
   return (
 
-    <section className="bg-white rounded-sm  pt-14 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800">
+    <section className="bg-white rounded-sm  py-14 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800">
       <div className="mx-auto min-h-screen  w-full h-full px-4 sm:px-6 lg:px-8">
         <header className="bg-gray-50">
           <div className="mx-auto max-w-screen-xl py-14 px-4 sm:px-6 sm:py-12 lg:px-8">
