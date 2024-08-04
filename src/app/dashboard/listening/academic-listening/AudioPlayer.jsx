@@ -17,12 +17,12 @@ const AudioPlayer = ({ audioUrls }) => {
             return audioRef.current.src = await getDownloadURL(storageRef);
         }
         getURL();
-        
+
         if (isPlaying) {
             audioRef.current.play();
         }
 
-    }, [currentTrack, audioUrls]);
+    }, [currentTrack, audioUrls, isPlaying]);
 
     useEffect(() => {
         if (isPlaying) {
