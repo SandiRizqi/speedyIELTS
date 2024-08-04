@@ -46,85 +46,57 @@ async function uploadDocumentWithID(collectionName, documentID, documentData) {
 const question = [
     {
         section: 1,
-        image: [
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.25.04.png?alt=media&token=1b4d2e04-3af2-46ec-a7ed-cdc36c3d87a3",
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.25.14.png?alt=media&token=85da0590-ff77-4b47-abd5-5df3defa7cc5"
+        audio : [
+            "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio1.mp3"
         ],
         parts: [
             {
                 id: 1,
                 type: 'gap_filling',
-                instruction: "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.",
-                image : "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.27.28.png?alt=media&token=94b46ee0-0590-4787-a6f4-53c6bf4f047d",
-                questions: [{
-                    number: 1,
-                   
-                },
-                {
-                    number: 2,
-                 
-                },
-                {
-                    number: 3,
-              
-                },
-                {
-                    number: 4,
-                    
-                },
-                {
-                    number: 5,
-                    
-                },
-                ]
-            },
-            {
-                id: 2,
-                type: 'true_false_not_given',
-                instruction: "Do the following statements agree with the information given in Reading Passage 1?",
-                image: "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.29.02.png?alt=media&token=0356c5b6-1bd8-40aa-b935-5df7544ae255",
-                questions: [
-                    {
-                        number: 6,
-                        question: "The Bedouin teenagers who found the scrolls were disappointed by how little money they received for them.",
-     
-                    },
-                    {
-                        number: 7,
-                        question: "There is agreement among academics about the origin of the Dead Sea Scrolls.",
-     
-                    },
-                    {
-                        number: 8,
-                        question: "Most of the books of the Bible written on the scrolls are incomplete.",
-                 
-                    },
-                    {
-                        number: 9,
-                        question: "The information on the Copper Scroll is written in an unusual way.",
-                    
-                    },
-                    {
-                        number: 10,
-                        question: "Mar Samuel was given some of the scrolls a s a gift.",
-                  
-                    },
-                    {
-                        number: 11,
-                        question: "In the early 1950s, a number of educational establishments in the US were keen to buy scrolls from Mar Samuel.",
-       
-                    },
-                    {
-                        number: 12,
-                        question: "The scroll that was pieced together in 2017 contains information about annual occasions in the Qumran area 2,000 years ago.",
-                  
-                    },
-                    {
-                        number: 13,
-                        question: "Academics at the University of Haifa are currently researching how to decipher the final scroll.",
-                 
-                    },
-                ],
+                instruction: "Complete the notes below.",
+                html : `
+                    <div className="font-sans leading-relaxed p-6">
+                        <h1 className="text-lg font-bold text-center mb-6">Buckworth Conservation Group</h1>
+                        
+                        <div className="mb-8">
+                            <h3 className="text-lg font-bold mb-4">Regular activities</h3>
+                            <h4 className="text-lg font-bold mb-2">Beach</h4>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>making sure the beach does not have  <input type="text" className="border rounded px-2 py-1 ml-2" name="1"  /> on it</li>
+                            <li>no <input type="text" className="border rounded px-2 py-1 ml-2" name="2" /></li>
+                            </ul>
+                            
+                            <h4 className="text-lg font-bold mb-2">Nature reserve</h4>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>maintaining paths</li>
+                            <li>nesting boxes for birds installed</li>
+                            <li>next task is taking action to attract <input type="text" className="border rounded px-2 py-1 ml-2" name="3"  /> to the place</li>
+                            <li>identifying types of <input type="text" className="border rounded px-2 py-1 ml-2" name="4" /></li>
+                            <li>building a new <input type="text" className="border rounded px-2 py-1 ml-2" name="5"  /></li>
+                            </ul>
+                        </div>
+                        
+                        <div className="mb-8">
+                            <h3 className="text-lg font-bold mb-4">Forthcoming events</h3>
+                            <h4 className="text-lg font-bold mb-2">Saturday</h4>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>meet at Dunsmore Beach car park</li>
+                            <li>walk across the sands and reach the <input type="text" className="border rounded px-2 py-1 ml-2" name="6" /></li>
+                            <li>take a picnic</li>
+                            <li>wear appropriate <input type="text" className="border rounded px-2 py-1 ml-2" name="7" /></li>
+                            </ul>
+                            
+                            <h4 className="text-lg font-bold mb-2">Woodwork session</h4>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>suitable for <input type="text" className="border rounded px-2 py-1 ml-2" name="8" /> to participate in</li>
+                            <li>making <input type="text" className="border rounded px-2 py-1 ml-2" name="9" /> out of wood</li>
+                            <li>17th, from 10 a.m. to 3 p.m.</li>
+                            <li>cost of session (no camping): £ <input type="text" className="border rounded px-2 py-1 ml-2" name="10"/></li>
+                            </ul>
+                        </div>
+                        </div>
+                    `,
+                
             },
             
         ]
@@ -132,35 +104,80 @@ const question = [
     },
     {
         section: 2,
-        image: [
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.34.44.png?alt=media&token=ba891129-8b5b-4326-b789-50cf5591262e",
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.35.45.png?alt=media&token=c392dcd7-8739-4845-bf24-21a7b9921738"
-        ],
+        audio: "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio2.mp3",
         parts: [
             {
-                id: 4,
-                type: 'matching_headings',
-                instruction: "Reading Passage 2 has five sections, A-E. Which section contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. You may use any letter more than once.",
+                id: 2,
+                type: 'multiple_choice',
+                instruction: "Choose the correct letter, A, B or C. ",
+                html: `<h1 className="text-lg font-bold text-center mb-6">Boat trip round Tasmania</h1>`,
+
+                questions: [{
+                    number: 11,
+                    question: "What is the maximum number of people who can stand on each side of the boat?",
+                    options: [
+                        "A. 9",
+                        "B. 15",
+                        "C. 18",
+                    ],
+                    
+                },
+                {
+                    number: 12,
+                    question: "What colour are the tour boats?",
+                    options: [
+                        "A. dark red",
+                        "B. jet black",
+                        "C. light green",
+                    ],
+                    
+                },
+                {
+                    number: 13,
+                    question: "Which lunchbox is suitable for someone who doesn't eat meat or fish ?",
+                    options: [
+                        "A. Lunchbox 1",
+                        "B. Lunchbox 2",
+                        "C. Lunchbox 3",
+                    ],
+                    
+                },
+                {
+                    number: 14,
+                    question: "What should people do with their litter?",
+                    options: [
+                        "A. take it home",
+                        "B. hand it to a member of staff",
+                        "C. put it the bins provided on the boat",
+                    ],
+                    
+                },
+            ]
+
+            },
+            {
+                id: 3,
+                type: 'matching',
+                instruction: "Questions 15 and 16. Choose TWO letters, A-E.",
+                html: `
+                <div className="bg-white p-6 ">
+                    <h4 className="text-lg font-bold mb-4">
+                    Which <span className="font-semibold">TWO</span> features of the lighthouse does Lou mention?
+                    </h3>
+                    <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                    <li><span className="font-semibold">A.</span> why it was built</li>
+                    <li><span className="font-semibold">B.</span> who built it</li>
+                    <li><span className="font-semibold">C.</span> how long it took to build</li>
+                    <li><span className="font-semibold">D.</span> who staffed it</li>
+                    <li><span className="font-semibold">E.</span> what it was built with</li>
+                    </ul>
+                </div> `,
                 questions: [
                     {
-                        number: 14,
-                        question: "a reference to a type of tomato that can resist a dangerous infection",
-                    },
-                    {
                         number: 15,
-                        question: "an explanation of how problems can arise from focusing only on a certain type of tomato plant.",
                     },
                     {
                         number: 16,
-                        question: "a number of examples of plants that are not cultivated at present but could be useful a s food sources",
-                    },
-                    {
-                        number: 17,
-                        question: "a comparison between the early domestication of the tomato and more recent research",
-                    },
-                    {
-                        number: 18,
-                        question: "a personal reaction to the flavour of a tomato that has been genetically edited",
                     },
                 ],
                 options: {
@@ -168,198 +185,268 @@ const question = [
                     B: "B",
                     C: "C",
                     D: "D",
-                    E: "E",
+                    E: "E"
                 }
             },
             {
-                id: 5,
-                type: 'matching_headings',
-                instruction: "Look at the following statements (Questions 19-23) and the list of researchers below. Match each statement with the correct researcher, A-D. Write the correct letter, A-D, in boxes 19-23 on your answer sheet. You may use any letter more than once.",
-                image: "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.43.55.png?alt=media&token=28060635-e66d-4ebf-8fc3-7cc7bbdfea7a",
+                id: 4,
+                type: 'matching',
+                instruction: "Questions 17 and 18. Choose TWO letters, A-E.",
+                html: `
+                <h4 className="text-lg font-bold mb-4">Which TWO types of creature might come close to the boat?</h4>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                    <li><span className="font-semibold">A.</span> sea eagles</li>
+                    <li><span className="font-semibold">B.</span> fur seals</li>
+                    <li><span className="font-semibold">C.</span> dolphins</li>
+                    <li><span className="font-semibold">D.</span> whales</li>
+                    <li><span className="font-semibold">E.</span> penguins</li>
+                    </ul>
+                    </div>`,
                 questions: [
                     {
-                        number: 19,
-                        question: "Domestication of certain plants could allow them to adapt to future environmental challenges.",
+                        number: 17,
                     },
                     {
-                        number: 20,
-                        question: "The idea of growing and eating unusual plants may not be accepted on a large scale.",
-                    },
-                    {
-                        number: 21,
-                        question: "It is not advisable for the future direction of certain research to be made public.",
-                    },
-                    {
-                        number: 22,
-                        question: "Present efforts to domesticate one wild fruit are limited by the costs involved.",
-                    },
-                    {
-                        number: 23,
-                        question: "Humans only make use of a small proportion of the plant food available on Earth.",
+                        number: 18,
                     },
                 ],
                 options: {
-                    A: "Jork Kudla",
-                    B: "Caixia Gao",
-                    C: "Joyce Van Eck",
-                    D: "Jonathan Jones",
+                    A: "A",
+                    B: "B",
+                    C: "C",
+                    D: "D",
+                    E: "E"
                 }
             },
             {
-                id: 6,
-                type: 'gap_filling',
-                instruction: "Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 24-26 on your answer sheet.",
-                questions: [{
-                    number: 24,
-                    question: "An undesirable trait such as loss of ..... in a tomato gene. may be caused by a mutation",
-                   
-                },
-                {
-                    number: 25,
-                    question: "By modifying one gene in a tomato plant, researchers made the tomato three times Its original .....",
-                 
-                },
-                {
-                    number: 26,
-                    question: "A type of tomato which was not badly affected by ....., and was rich in vitamin C, was produced by a team of researchers in China.",                 
-                },
-                ]
+                id: 4,
+                type: 'matching',
+                instruction: "Questions 19 and 20. Choose TWO letters, A-E.",
+                html: `
+                <h4 className="text-lg font-bold mb-4">Which TWO points does Lou make about the caves?</h4>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                        <li><span className="font-semibold">A.</span> Only large tourist boats can visit them</li>
+                        <li><span className="font-semibold">B.</span> The entrances to them are often blocked</li>
+                        <li><span className="font-semibold">C.</span> It is too dangerous for individuals to go near them</li>
+                        <li><span className="font-semibold">D.</span> Someone will explain what is inside them</li>
+                        <li><span className="font-semibold">E.</span> They cannot be reached on foot</li>
+                        </ul>
+                    </div>`,
+                questions: [
+                    {
+                        number: 19,
+                    },
+                    {
+                        number: 20,
+                    },
+                ],
+                options: {
+                    A: "A",
+                    B: "B",
+                    C: "C",
+                    D: "D",
+                    E: "E"
+                }
             },
         ]
     },
     {
         section: 3,
-        image: [
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.57.42.png?alt=media&token=0b138544-2316-42f7-bd49-75a10195f07e",
-            "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2010.58.33.png?alt=media&token=56471228-1eb9-4294-b1e6-37982153ca34"
-        ],
+        audio: "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio3.mp3",
         parts: [
             {
-                id: 7,
+                id: 5,
                 type: 'multiple_choice',
-                instruction: "Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-31 on your answer sheet.",
+                instruction: "Choose the correct letter, A, B, or C",
+                html: `<h1 className="text-lg font-bold text-center mb-6">Work experience for veterinary science students</h1>`,
                 questions: [{
-                    number: 27,
-                    question: "The purpose of the first paragraph is to",
+                    number: 21,
+                    question: "What problem did both Diana and Tim have when arranging their work experience?",
                     options: [
-                        "A. defend particular ideas.",
-                        "B. compare certain beliefs.",
-                        "C. disprove a widely held view.",
-                        "D. outline a common assumption."
+                        "A. making initial contact with suitable farms",
+                        "B. organising transport to and from the farm",
+                        "C. finding a placement for the required length of time",
                     ],
                     
                 },
                 {
-                    number: 28,
-                    question: "What are the writers doing in the second paragraph?",
+                    number: 22,
+                    question: "Tim was pleased to be able to help",
                     options: [
-                        "A. criticising an opinion",
-                        "B. justifying a standpoint",
-                        "C. explaining an approach",
-                        "D. supporting an argument"
+                        "A. a lamb that had a broken leg.",
+                        "B. a sheep that was having difficulty giving birth.",
+                        "C. a newly born lamb that was having trouble feeding.",
                     ],
                    
                 },
                 {
-                    number: 29,
-                    question: "In the third paragraph, what do the writers suggest about Darwin and Einstein?",
+                    number: 23,
+                    question: "Diana says the sheep on her farm",
                     options: [
-                        "A. They represent an exception to a general rule.",
-                        "B. Their way of working has been misunderstood.",
-                        "C. They are an ideal which others should aspire to.",
-                        "D. Their achievements deserve greater recognition."
+                        "A. were of various different varieties.",
+                        "B. were mainly reared for their meat.",
+                        "C. had better quality wool than sheep on the hills.",
                     ],
                     
                 },
                 {
-                    number: 30,
-                    question: "John Nicholson is an example of a person whose idea",
+                    number: 24,
+                    question: "What did the students learn about adding supplements to chicken feed?",
                     options: [
-                        "A. established his reputation as an influential scientist.",
-                        "B. was only fully understood at a later point in history.",
-                        "C. laid the foundations for someone else's breakthrough.",
-                        "D. initially met with scepticism from the scientific community."
+                        "A. These should only be given if specially needed.",
+                        "B. It is worth paying extra for the most effective ones.",
+                        "C. The amount given at one time should be limited.",
+                        
                     ],
                 
                 },
                 {
-                    number: 31,
-                    question: "What is the key point of interest about the 'acey-deucy' stirrup placement?",
+                    number: 25,
+                    question: "What happened when Diana was working with dairy cows?",
                     options: [
-                        "A. the simple reason why it was invented",
-                        "B. the enthusiasm with which it was adopted",
-                        "C. the research that went into its development",
-                        "D. the cleverness of the person who first used it"
+                        "A. She identified some cows incorrectly.",
+                        "B. She accidentally threw some milk away.",
+                        "C. She made a mistake when storing milk.",
+                      
+                    ],
+           
+                },
+                {
+                    number: 26,
+                    question: "What did both farmers mention about vets and farming?",
+                    options: [
+                        "A. Vets are failing to cope with some aspects of animal health.",
+                        "B. There needs to be a fundamental change in the training of vets.",
+                        "C. Some jobs could be done by the farmer rather than by a vet.",
+                      
                     ],
            
                 }
                 ]
             },
             {
-                id: 8,
-                type: 'yes_no_not_given',
-                instruction: "Do the following statements agree with the claims of the writer in Reading Passage 3?",
-                image: "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2011.06.29.png?alt=media&token=90c50a2f-902a-4a71-afbe-9a00ed6e0168",
-                questions: [
-                    {
-                        number: 32,
-                        question: "Acknowledging people such as Plato or da Vinci as geniuses will help us understand the process by which great minds create new ideas.Charles chose Pepys for the task because he considered him to be trustworthy.",
-     
-                    },
-                    {
-                        number: 33,
-                        question: "The Law of Effect was discovered at a time when psychologists were seeking a scientific reason why creativity occurs.",
-                 
-                    },
-                    {
-                        number: 34,
-                        question: "The Law of Effect states that no planning is involved in the behaviour of organisms.",
-                    
-                    },
-                    {
-                        number: 35,
-                        question: "The Law of Effect sets out clear explanations about the sources of new ideas and behaviours.",
-                  
-                    },
-                    {
-                        number: 36,
-                        question: "Many scientists are now turning away from the notion of intelligent design and genius.",
-                  
-                    },
-                ],
-            },
-            {
-                id: 9,
+                id: 6,
                 type: 'gap_filling',
-                instruction: "Complete the summary using the list of words, A-G, below.",
-                image: "https://firebasestorage.googleapis.com/v0/b/ielts-ai-b1478.appspot.com/o/reading%2FTXx9UIizmorxstpgYcz0%2FScreenshot%202024-08-02%20at%2011.09.10.png?alt=media&token=dfde2efa-428c-4407-9c0f-c51b63ecc9ef",
+                instruction: "Questions 27-30",
+                html: `
+                    <h2 className="text-lg font-bold mb-4">What opinion do the students give about each of the following modules on their veterinary science course?</h2>
+                    <p className="mb-4">Choose FOUR answers from the box and write the correct letter, A-F, next to questions 27-30.</p>
+
+                    <ul className="">
+                        <li>A. Tim found this easier than expected.</li>
+                        <li>B. Tim thought this was not very clearly organised.</li>
+                        <li>C. Diana may do some further study on this.</li>
+                        <li>D. They both found the reading required for this was difficult.</li>
+                        <li>E. Tim was shocked at something he learned on this module.</li>
+                        <li>F. They were both surprised how little is known about some aspects of this.</li>
+                    </ul>
+                `,
                 questions: [{
-                    number: 37,
+                    number: 27,
+                    question: "Media terminology"
                    
                 },
                 {
-                    number: 38,
+                    number: 28,
+                     question: "Diet and nutrition"
                  
                 },
                 {
-                    number: 39,
+                    number: 29,
+                     question: "Animal disease"
                  
                 },
                 {
-                    number: 40,
+                    number: 30,
+                     question: "Wildlife medication"
                  
                 },
-                
+               
                 ]
             },
-            
+        ]
+    },
+    {
+        section: 4,
+        audio : [
+            "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio4.mp3"
+        ],
+        parts: [
+            {
+                id: 7,
+                type: 'gap_filling',
+                instruction: "Complete the notes below. Write ONE WORD ONLY for each answer.",
+                html : `
+                    <div className="font-sans leading-relaxed p-6">
+                        <h1 className="text-lg font-bold text-center mb-6">Labyrinths</h1>
+
+                        <div className="mb-8">
+                            <h3 className="text-lg font-bold mb-4">Definition</h3>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>a winding spiral path leading to a central area</li>
+                            </ul>
+
+                            <h3 className="text-lg font-bold mb-4">Labyrinths compared with mazes</h3>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>Mazes are a type of <input type="text" name="31" className="border rounded px-2 py-1 ml-2" /></li>
+                            <li>
+                                <input type="text" name="32" className="border rounded px-2 py-1 ml-2" /> is needed to navigate through a maze
+                            </li>
+                            <li>
+                                the word 'maze' is derived from a word meaning a feeling of <input type="text" name="33" className="border rounded px-2 py-1 ml-2" />
+                            </li>
+                            </ul>
+
+                            <h3 className="text-lg font-bold mb-4">Labyrinths represent a journey through life</h3>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>they have frequently been used in <input type="text" name="34" className="border rounded px-2 py-1 ml-2" /> and prayer</li>
+                            </ul>
+
+                            <h3 className="text-lg font-bold mb-4">Early examples of the labyrinth spiral</h3>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>
+                                Ancient carvings on <input type="text" name="35" className="border rounded px-2 py-1 ml-2" /> have been found across
+                                many cultures
+                            </li>
+                            <li>The Pima, a Native American tribe, wove the symbol on baskets</li>
+                            <li>Ancient Greeks used the symbol on <input type="text" name="36" className="border rounded px-2 py-1 ml-2" /></li>
+                            </ul>
+
+                            <h3 className="text-lg font-bold mb-4">Walking labyrinths</h3>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>
+                                The largest surviving example of a turf labyrinth once had a big <input type="text" name="37" className="border rounded px-2 py-1 ml-2" /> at its centre
+                            </li>
+                            </ul>
+
+                            <h3 className="text-lg font-bold mb-4">Labyrinths nowadays</h3>
+                            <ul className="list-disc pl-5 mb-4">
+                            <li>
+                                Believed to have a beneficial impact on mental and physical health, e.g., walking a maze can reduce a person's <input type="text" name="38" className="border rounded px-2 py-1 ml-2" /> rate
+                            </li>
+                            <li>Used in medical and health and fitness settings and also prisons</li>
+                            <li>Popular with patients, visitors and staff in hospitals</li>
+                            <li>
+                                patients who can't walk can use 'finger labyrinths' made from <input type="text" name="39" className="border rounded px-2 py-1 ml-2" />
+                            </li>
+                            <li>
+                                research has shown that Alzheimer's sufferers experience less <input type="text" name="40" className="border rounded px-2 py-1 ml-2" />
+                            </li>
+                            </ul>
+                        </div>
+                        </div>
+                    `,
+                
+            },
             
         ]
-    }
 
+    },
 
 ]
 
 
     //uploadDocument("reading-questions", {question: question});
-    uploadDocumentWithID("reading-questions", "TXx9UIizmorxstpgYcz0", {question: question} )
+    uploadDocumentWithID("listening-questions", "sample1", {question: question} )

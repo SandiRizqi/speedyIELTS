@@ -1,10 +1,14 @@
 'use client'
 import withUser from "@/hooks/withUser";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import parse, { attributesToProps } from 'html-react-parser';
 import { useRef } from "react";
-import { sample1 as questions } from "./sample1";
+import { useUser } from "@/service/user";
+import { FirestoreDB } from "@/service/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import AudioPlayer from "./AudioPlayer";
+//import { sample1 as questions } from "./sample1";
 
 
 const ControlledInput = ({ value, onChange, ...props }) => {
@@ -25,8 +29,13 @@ const ControlledInput = ({ value, onChange, ...props }) => {
 };
 
 const AcademicListeningPage = () => {
+    const user = useUser();
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
+    const [questions, setQuestion] = useState(null);
+    const [audioPath, setAudioPath ] = useState(null);
+    const db = FirestoreDB();
+    const questionsRef = collection(db, "listening-questions");
     const formRef = useRef(null);
 
     const handleAnswer = (questionId, answer) => {
@@ -198,14 +207,39 @@ const AcademicListeningPage = () => {
         
     };
 
+
+    const getQuestions = async () => {
+        try {
+            const querySnapshot = await getDocs(questionsRef);
+            const questions = querySnapshot.docs.map(doc => {return { ...doc.data(),questionId: doc.id, userId: user.uid}});
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            const selectedQuestion = questions[randomIndex]
+            const quest = selectedQuestion['question']
+            const paths = quest.map(obj => obj.audio);
+            setAudioPath(paths);
+            setQuestion(quest);
+                 
+        } catch (error) {
+            console.error("Error fetching questions:", error);
+        } 
+    };
+
+
+    useEffect(() => {
+        getQuestions();
+    },[])
+
     
 
     return (
         <>
             <Breadcrumb pageName="Academic Listening" />
+            
             <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
+                
                 {questions && (
                     <form onSubmit={handleSubmit} className="min-h-screen" ref={formRef} id="answerform">
+                    {audioPath && (<AudioPlayer audioUrls={audioPath}/>)}
                     <div className="min-h-screen space-y-6">
                         {questions.map((question, index) => {
                             if (question.section === activeTab) {

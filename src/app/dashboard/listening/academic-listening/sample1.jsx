@@ -1,9 +1,7 @@
 export const sample1 = [
     {
         section: 1,
-        audio : [
-            ""
-        ],
+        audio : "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio1.mp3",
         parts: [
             {
                 id: 1,
@@ -59,7 +57,7 @@ export const sample1 = [
     },
     {
         section: 2,
-        audio: "",
+        audio: "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio2.mp3",
         parts: [
             {
                 id: 2,
@@ -209,7 +207,7 @@ export const sample1 = [
     },
     {
         section: 3,
-        audio: "",
+        audio: "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio3.mp3",
         parts: [
             {
                 id: 5,
@@ -325,9 +323,7 @@ export const sample1 = [
     },
     {
         section: 4,
-        audio : [
-            ""
-        ],
+        audio : "gs://ielts-ai-b1478.appspot.com/listening/sample1/ELT_IELTS17_t1_audio4.mp3",
         parts: [
             {
                 id: 7,
