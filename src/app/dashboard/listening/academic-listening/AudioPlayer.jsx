@@ -14,23 +14,16 @@ const AudioPlayer = ({ audioUrls }) => {
     useEffect(() => {
         async function getURL() {
             const storageRef = ref(drive, audioUrls[currentTrack]);
-            return audioRef.current.src = await getDownloadURL(storageRef);
-        }
-        getURL();
-
-        if (isPlaying) {
+            audioRef.current.src = await getDownloadURL(storageRef);
             audioRef.current.play();
         }
 
-    }, [currentTrack, audioUrls, isPlaying]);
-
-    useEffect(() => {
         if (isPlaying) {
-            audioRef.current.play();
+            getURL()
         } else {
             audioRef.current.pause();
         }
-    }, [isPlaying]);
+    }, [isPlaying, currentTrack, audioUrls]);
 
     useEffect(() => {
         const handleEnded = () => {
@@ -48,12 +41,10 @@ const AudioPlayer = ({ audioUrls }) => {
 
     const playNext = () => {
         setCurrentTrack((prevTrack) => (prevTrack + 1) % audioUrls.length);
-        setIsPlaying(true);
     };
 
     const playPrevious = () => {
         setCurrentTrack((prevTrack) => (prevTrack - 1 + audioUrls.length) % audioUrls.length);
-        setIsPlaying(true);
     };
     return (
         <>
