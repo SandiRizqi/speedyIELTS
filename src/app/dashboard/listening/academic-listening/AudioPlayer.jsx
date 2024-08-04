@@ -14,10 +14,14 @@ const AudioPlayer = ({ audioUrls }) => {
     useEffect(() => {
         async function getURL() {
             const storageRef = ref(drive, audioUrls[currentTrack]);
-            audioRef.current.src = await getDownloadURL(storageRef);
-            return audioRef.current.play();
+            return audioRef.current.src = await getDownloadURL(storageRef);
         }
         getURL();
+        
+        if (isPlaying) {
+            audioRef.current.play();
+        }
+
     }, [currentTrack, audioUrls]);
 
     useEffect(() => {
