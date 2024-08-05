@@ -40,11 +40,15 @@ const AudioPlayer = ({ audioUrls }) => {
     };
 
     const playNext = () => {
-        setCurrentTrack((prevTrack) => (prevTrack + 1) % audioUrls.length);
+        if (currentTrack  < audioUrls.length -1) {
+            setCurrentTrack((prevTrack) => (prevTrack + 1) % audioUrls.length);
+        }
     };
 
     const playPrevious = () => {
-        setCurrentTrack((prevTrack) => (prevTrack - 1 + audioUrls.length) % audioUrls.length);
+        if (currentTrack > 0) {
+            setCurrentTrack((prevTrack) => (prevTrack - 1 + audioUrls.length) % audioUrls.length);
+        }  
     };
     return (
         <>
