@@ -5,8 +5,7 @@ import { useState, useCallback, useEffect } from "react";
 import parse, { attributesToProps } from 'html-react-parser';
 import { useRef } from "react";
 import { useUser } from "@/service/user";
-import { FirestoreDB } from "@/service/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { useSearchParams } from "next/navigation";
 import AudioPlayer from "./AudioPlayer";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
@@ -37,9 +36,8 @@ const AcademicListeningPage = () => {
     const [questions, setQuestion] = useState(null);
     const [audioPath, setAudioPath ] = useState(null);
     const functions = FirebaseFunction();
-    const db = FirestoreDB();
-    const questionsRef = collection(db, "listening-questions");
     const formRef = useRef(null);
+    const params = useSearchParams();
 
     const handleAnswer = (questionId, answer) => {
         setAnswer(prev => ({ ...prev, [questionId]: answer }));
@@ -212,7 +210,7 @@ const AcademicListeningPage = () => {
 
     const getQuestionID = async () => {
         const getData = httpsCallable(functions, 'getQuestion');
-        getData({ type: "listening-questions", id: null }).then((result) => {
+        getData({ type: "listening-questions", id: params.get("id") }).then((result) => {
             const quest = result.data['question']
             const paths = quest.map(obj => obj.audio);
             setAudioPath(paths);

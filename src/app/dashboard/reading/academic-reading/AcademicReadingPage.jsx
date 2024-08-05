@@ -2,11 +2,10 @@
 import withUser from "@/hooks/withUser";
 import { useState, useCallback, useEffect } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { FirestoreDB } from "@/service/firebase";
-import { collection, getDocs } from "firebase/firestore";
 import { useUser } from "@/service/user";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
+import { useSearchParams } from 'next/navigation'
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
@@ -36,6 +35,7 @@ const AcademicReadingPage = () => {
     const [activeTab, setActiveTab] = useState(1);
     const [questions, setQuestion] = useState(null);
     const functions = FirebaseFunction();
+    const params = useSearchParams();
    
 
     function TabNavigation() {
@@ -191,7 +191,7 @@ const AcademicReadingPage = () => {
 
     const getQuestionID = async () => {
         const getData = httpsCallable(functions, 'getQuestion');
-        getData({ type: "reading-questions", id: null }).then((result) => {
+        getData({ type: "reading-questions", id: params.get("id") }).then((result) => {
           setQuestion(result.data['question'])
         });
       };
