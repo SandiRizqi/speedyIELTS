@@ -5,7 +5,8 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { useUser } from "@/service/user";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation';
+import parse, { attributesToProps } from 'html-react-parser';
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
@@ -78,6 +79,22 @@ const AcademicReadingPage = () => {
         console.log(answer)
     }
 
+    const options = {
+        replace(domNode) {
+          if (domNode.attribs && domNode.name === 'input') {
+            const props = attributesToProps(domNode.attribs);
+            return<ControlledInput
+            type="text"
+            name={`question-${props.name}`}
+            value={answer[props.name] || "" }
+            onChange={(value) => handleAnswer(props.name, value)}
+            className="w-md p-2 border border-gray-300 rounded"
+            placeholder={props.name}
+        />;
+          }
+        },
+      };
+
     const RenderQuestion = ({part}) => {
         const QuestionWrapper = ({ children }) => (
             <div
@@ -89,12 +106,15 @@ const AcademicReadingPage = () => {
             </div>
         );
 
+        
+
         switch (part.type) {
             
             case "gap_filling":
                 return (
                     <QuestionWrapper>
-                        {part.questions.map((obj, idx) => (
+                        {part.html && (parse(part.html, options))}
+                        {part.questions?.map((obj, idx) => (
                             <div key={idx} >
                                 <p className="font-medium">{obj?.number}. {obj?.question}</p>
                                 <ControlledInput
@@ -113,7 +133,8 @@ const AcademicReadingPage = () => {
             case "matching_headings":
                 return (
                     <QuestionWrapper>
-                        {part.questions.map((obj, idx) => (
+                        
+                        {part.questions?.map((obj, idx) => (
                             <div key={idx} className="space-x-4">
                                 <span className="font-medium">{obj.number}.{obj.question}</span>
                                 <select
@@ -214,9 +235,7 @@ const AcademicReadingPage = () => {
                                 return (
                                     <div className="flex flex-col md:flex-row min-h-screen" key={index}>
                                         <div className="flex flex-col w-full md:w-1/2 relative overflow-y-auto max-h-screen">
-                                            {question.image.map((url, idx) => (
-                                                <img src={url} alt="image" className="" key={idx} />
-                                            ))}
+                                            {question.html && (parse(question.html, options))}
                                         </div>
                                         <div className="w-full md:w-1/2 p-4 flex flex-col overflow-y-auto max-h-screen">
                                             {question.parts.map((obj, idx) => (
