@@ -8,6 +8,8 @@ import { useUser } from "@/service/user";
 import { FirestoreDB } from "@/service/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import AudioPlayer from "./AudioPlayer";
+import { FirebaseFunction } from "@/service/firebase";
+import { httpsCallable } from "firebase/functions";
 //import { sample1 as questions } from "./sample1";
 
 
@@ -34,6 +36,7 @@ const AcademicListeningPage = () => {
     const [activeTab, setActiveTab] = useState(1);
     const [questions, setQuestion] = useState(null);
     const [audioPath, setAudioPath ] = useState(null);
+    const functions = FirebaseFunction();
     const db = FirestoreDB();
     const questionsRef = collection(db, "listening-questions");
     const formRef = useRef(null);
@@ -207,26 +210,21 @@ const AcademicListeningPage = () => {
         
     };
 
-
-    const getQuestions = async () => {
-        try {
-            const querySnapshot = await getDocs(questionsRef);
-            const questions = querySnapshot.docs.map(doc => {return { ...doc.data(),questionId: doc.id, userId: user.uid}});
-            const randomIndex = Math.floor(Math.random() * questions.length);
-            const selectedQuestion = questions[randomIndex]
-            const quest = selectedQuestion['question']
+    const getQuestionID = async () => {
+        const getData = httpsCallable(functions, 'getQuestion');
+        getData({ type: "listening-questions", id: null }).then((result) => {
+            const quest = result.data['question']
             const paths = quest.map(obj => obj.audio);
             setAudioPath(paths);
             setQuestion(quest);
-                 
-        } catch (error) {
-            console.error("Error fetching questions:", error);
-        } 
+        });
     };
 
 
+
     useEffect(() => {
-        getQuestions();
+        //getQuestions();
+        getQuestionID();
     },[])
 
     

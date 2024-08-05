@@ -19,19 +19,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Function to upload a document
-async function uploadDocument(collectionName, documentData) {
-  try {
-    const docRef = await addDoc(collection(db, collectionName), documentData);
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-}
 
 async function uploadDocumentWithID(collectionName, documentID, documentData) {
     try {
-      await setDoc(doc(db, collectionName, documentID), documentData);
+      await setDoc(doc(db, collectionName, documentID), documentData, {merge: true});
       console.log("Document written with ID: ", documentID);
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -448,5 +439,48 @@ const question = [
 ]
 
 
+const ans = {
+    1: ["LITTER"],
+    2: ["DOGS"],
+    3: ["INSECTS"],
+    4: ["BUTTERFLIES"],
+    5: ["WALL"],
+    6: ["ISLAND"],
+    7: ["BOOTS"],
+    8: ["BEGINNERS"],
+    9: ["SPOONS"],
+    10: ["35", "THIRTY FIVE"],
+    11: ["A"],
+    12: ["C"],
+    13: ["B"],
+    14: ["B"],
+    15: ["A", "D"],
+    16: ["A", "D"],
+    17: ["B", "C"],
+    18: ["B", "C"],
+    19: ["D", "E"],
+    20: ["D", "E"],
+    21: ["A"],
+    22: ["B"],
+    23: ["B"],
+    24: ["A"],
+    25: ["C"],
+    26: ["C"],
+    27: ["A"],
+    28: ["E"],
+    29: ["F"],
+    30: ["C"],
+    31: ["PUZZLE"],
+    32: ["LOGIC"],
+    33: ["CONFUSION"],
+    34: ["MEDITATION"],
+    35: ["STONE"],
+    36: ["COINS"],
+    37: ["TREE"],
+    38: ["BREATHING"],
+    39: ["PAPER"],
+    40: ["ANXIETY"]
+}
+
     //uploadDocument("reading-questions", {question: question});
-    uploadDocumentWithID("listening-questions", "sample1", {question: question} )
+uploadDocumentWithID("listening-questions", "sample1", {answers: ans} )

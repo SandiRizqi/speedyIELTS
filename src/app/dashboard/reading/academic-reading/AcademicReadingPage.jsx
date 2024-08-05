@@ -5,6 +5,8 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { FirestoreDB } from "@/service/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useUser } from "@/service/user";
+import { FirebaseFunction } from "@/service/firebase";
+import { httpsCallable } from "firebase/functions";
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
@@ -33,8 +35,8 @@ const AcademicReadingPage = () => {
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
     const [questions, setQuestion] = useState(null);
-    const db = FirestoreDB();
-    const questionsRef = collection(db, "reading-questions");
+    const functions = FirebaseFunction();
+   
 
     function TabNavigation() {
         const tabs = [1, 2, 3];
@@ -185,22 +187,19 @@ const AcademicReadingPage = () => {
         console.log("submit")
     };
 
-    const getQuestions = async () => {
-        try {
-            const querySnapshot = await getDocs(questionsRef);
-            const questions = querySnapshot.docs.map(doc => {return { ...doc.data(),questionId: doc.id, userId: user.uid}});
-            const randomIndex = Math.floor(Math.random() * questions.length);
-            const selectedQuestion = questions[randomIndex]
-            setQuestion(selectedQuestion["question"])
-                 
-        } catch (error) {
-            console.error("Error fetching questions:", error);
-        } 
-    };
+
+
+    const getQuestionID = async () => {
+        const getData = httpsCallable(functions, 'getQuestion');
+        getData({ type: "reading-questions", id: null }).then((result) => {
+          setQuestion(result.data['question'])
+        });
+      };
 
 
     useEffect(() => {
-        getQuestions();
+        //getQuestions();
+        getQuestionID();
     },[])
 
     return (
