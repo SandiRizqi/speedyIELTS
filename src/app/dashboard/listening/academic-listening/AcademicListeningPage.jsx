@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { useUser } from "@/service/user";
 import { useSearchParams } from "next/navigation";
 import AudioPlayer from "./AudioPlayer";
+import ScoreComponent from "./ScoreComponent";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
 //import { sample1 as questions } from "./sample1";
@@ -31,8 +32,10 @@ const ControlledInput = ({ value, onChange, ...props }) => {
 
 const AcademicListeningPage = () => {
     const user = useUser();
+    const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
+    const [testResult, setTestResult] = useState(null);
     const [questions, setQuestion] = useState(null);
     const [audioPath, setAudioPath ] = useState(null);
     const functions = FirebaseFunction();
@@ -200,13 +203,28 @@ const AcademicListeningPage = () => {
                 return null;
         }
 
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form Data:', answer);
-        
     };
+
+    const calculateScore = (userData, keyAnswers) => {
+        let score = 0;
+        const totalQuestions = Object.keys(keyAnswers).length;
+      
+        // Iterate over the key answers
+        for (const [questionId, correctAnswers] of Object.entries(keyAnswers)) {
+          const userAnswer = userData[questionId];
+          if (correctAnswers.includes(userAnswer?.toUpperCase())) {
+            score += 1; // Increase score if the user's answer is correct
+          }
+        }
+        const totalScore = {
+            correct: score,
+            totalQuestion: totalQuestions
+        }
+        return totalScore;
+    };
+      
+
+    
 
     const getQuestionID = async () => {
         const getData = httpsCallable(functions, 'getQuestion');
@@ -218,10 +236,30 @@ const AcademicListeningPage = () => {
         });
     };
 
+    const getAnswers = async (userAnswer) => {
+        let data;
+        let score;
+        setLoading(true);
+        const getData = httpsCallable(functions, 'getQuestionAnswers');
+        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: answer  }).then((result) => {
+            data = result.data;  
+            score = calculateScore(userAnswer, data['answers']);
+            setLoading(false);
+        });
+        return [data, score];   
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const [answerData, score] = await getAnswers(answer);
+        const result = {...answerData, result: score}
+        setTestResult(result);
+    };
+
+
 
 
     useEffect(() => {
-        //getQuestions();
         getQuestionID();
     },[])
 
@@ -235,7 +273,8 @@ const AcademicListeningPage = () => {
                 
                 {questions && (
                     <form onSubmit={handleSubmit} className="min-h-screen" ref={formRef} id="answerform">
-                    {audioPath && (<AudioPlayer audioUrls={audioPath}/>)}
+                    {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
+                    {testResult && (<ScoreComponent score={testResult['result']}/>)}
                     <div className="min-h-screen space-y-6">
                         {questions["questions"].map((question, index) => {
                             if (question.section === activeTab) {
@@ -261,7 +300,7 @@ const AcademicListeningPage = () => {
                             className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
                             type="submit"
                         >
-                            Submit
+                            {!loading ? 'Submit' : 'Loading...'}
                         </button>
                     </div>
                 </form>

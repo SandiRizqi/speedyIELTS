@@ -51,8 +51,8 @@ const AudioPlayer = ({ audioUrls }) => {
         }  
     };
     return (
-        <>
-            <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-md">
+        <div className="flex flex-1 w-full p-4 items-center justify-center  bg-gray-100">
+            <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-bold mb-4">Audio Player</h2>
                 <p className="mb-2">Now playing: Track {currentTrack + 1} of {audioUrls.length}</p>
                 <div className="flex space-x-4">
@@ -76,7 +76,7 @@ const AudioPlayer = ({ audioUrls }) => {
                     </button>
             </div>
         </div >
-        </>
+        </div>
     )
 }
 
