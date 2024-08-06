@@ -98,7 +98,7 @@ const AcademicReadingPage = () => {
     const RenderQuestion = ({part}) => {
         const QuestionWrapper = ({ children }) => (
             <div
-                className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
+                className="flex flex-col justify-center bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
             >
                 <h3 className="text-lg text-gray-700 mb-4">{part?.instruction}</h3>
                 {part?.image && (<img src={part.image} alt="image" className="" />)}
@@ -213,7 +213,7 @@ const AcademicReadingPage = () => {
     const getQuestionID = async () => {
         const getData = httpsCallable(functions, 'getQuestion');
         getData({ type: "reading-questions", id: params.get("id") }).then((result) => {
-          setQuestion(result.data['question'])
+          setQuestion(result.data)
         });
       };
 

@@ -98,7 +98,7 @@ const AcademicListeningPage = () => {
                 name={`question-${props.name}`}
                 value={answer[props.name] || "" }
                 onChange={(value) => handleAnswer(props.name, value)}
-                className="w-md p-2 border border-gray-300 rounded"
+                className="w-md my-4 border border-gray-300"
                 placeholder={props.name}
             />;
               }
@@ -211,7 +211,7 @@ const AcademicListeningPage = () => {
     const getQuestionID = async () => {
         const getData = httpsCallable(functions, 'getQuestion');
         getData({ type: "listening-questions", id: params.get("id") }).then((result) => {
-            const quest = result.data['question']
+            const quest = result.data;
             const paths = quest.map(obj => obj.audio);
             setAudioPath(paths);
             setQuestion(quest);
