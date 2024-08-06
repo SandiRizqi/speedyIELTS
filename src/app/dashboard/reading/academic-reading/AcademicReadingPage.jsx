@@ -88,7 +88,7 @@ const AcademicReadingPage = () => {
             name={`question-${props.name}`}
             value={answer[props.name] || "" }
             onChange={(value) => handleAnswer(props.name, value)}
-            className="w-md p-2 border border-gray-300 rounded"
+            className="w-md my-1 px-2 border border-gray-300 rounded"
             placeholder={props.name}
         />;
           }
@@ -122,7 +122,7 @@ const AcademicReadingPage = () => {
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number]}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-md p-2 border border-gray-300 rounded"
+                                    className="w-md my-1 px-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
                                 />
                             </div>
@@ -138,7 +138,7 @@ const AcademicReadingPage = () => {
                             <div key={idx} className="space-x-4">
                                 <span className="font-medium">{obj.number}.{obj.question}</span>
                                 <select
-                                    className="flex-grow p-2 border border-gray-300 rounded"
+                                    className="flex-grow my-1 px-2 border border-gray-300 rounded"
                                     name={`question-${obj.number}`}
                                     onChange={(e) => handleAnswer(obj.number, e.target.value)}
                                     value={answer[obj.number]}
@@ -191,7 +191,7 @@ const AcademicReadingPage = () => {
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number]}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-md p-2 border border-gray-300 rounded"
+                                    className="w-md my-1 px-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
                                 />
                             </div>
@@ -230,7 +230,7 @@ const AcademicReadingPage = () => {
                 {questions && (
                     <form onSubmit={handleSubmit} className="min-h-screen">
                     <div className="min-h-screen space-y-6">
-                        {questions.map((question, index) => {
+                        {questions["questions"].map((question, index) => {
                             if (question.section === activeTab) {
                                 return (
                                     <div className="flex flex-col md:flex-row min-h-screen" key={index}>
