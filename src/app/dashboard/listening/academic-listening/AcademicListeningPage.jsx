@@ -241,9 +241,9 @@ const AcademicListeningPage = () => {
         let score;
         setLoading(true);
         const getData = httpsCallable(functions, 'getQuestionAnswers');
-        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: answer  }).then((result) => {
+        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: userAnswer }).then((result) => {
             data = result.data;  
-            score = calculateScore(userAnswer, data['answers']);
+            score = data['result']
             setLoading(false);
         });
         return [data, score];   
