@@ -10,7 +10,39 @@ import AudioPlayer from "./AudioPlayer";
 import ScoreComponent from "./ScoreComponent";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
+import Loader from "@/components/common/Loader";
 //import { sample1 as questions } from "./sample1";
+
+
+const Timer = ({ minutes, seconds }) => {
+    const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (timeLeft.seconds > 0) {
+          setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
+        } else if (timeLeft.minutes > 0) {
+          setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }, [timeLeft]);
+
+    useEffect(() => {
+      if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
+        setFinish(true);
+      }
+    }, [timeLeft]);
+
+    return (
+      <div className='block text-center bg-slate-800 rounded-md p-1'>
+        <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
+      </div>
+    );
+  };
 
 
 const ControlledInput = ({ value, onChange, ...props }) => {
@@ -25,10 +57,10 @@ const ControlledInput = ({ value, onChange, ...props }) => {
         //console.log(localValue)
         onChange(localValue);
     }
-
-
     return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur}/>;
 };
+
+
 
 const AcademicListeningPage = () => {
     const user = useUser();
@@ -38,6 +70,7 @@ const AcademicListeningPage = () => {
     const [testResult, setTestResult] = useState(null);
     const [questions, setQuestion] = useState(null);
     const [audioPath, setAudioPath ] = useState(null);
+    const [start, setStart] = useState(false);
     const functions = FirebaseFunction();
     const formRef = useRef(null);
     const params = useSearchParams();
@@ -263,14 +296,16 @@ const AcademicListeningPage = () => {
         getQuestionID();
     },[])
 
+    if (!questions) {
+        return <Loader />
+    };
+
     
 
     return (
         <>
             <Breadcrumb pageName="Academic Listening" />
-            
             <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
-                
                 {questions && (
                     <form onSubmit={handleSubmit} className="min-h-screen" ref={formRef} id="answerform">
                     {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}

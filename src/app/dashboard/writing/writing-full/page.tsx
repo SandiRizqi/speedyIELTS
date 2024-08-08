@@ -6,7 +6,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 export const metadata: Metadata = {
     title: "Speedy IELTS | Writing ",
     description:
-      "This is Next.js Calender page for TailAdmin  Tailwind CSS Admin Dashboard Template",
+      "Boost your IELTS band with Speedy IELTS test platform",
   };
   
 export default function Home() {

@@ -7,6 +7,7 @@ import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
 import { useSearchParams } from 'next/navigation';
 import parse, { attributesToProps } from 'html-react-parser';
+import Loader from "@/components/common/Loader";
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
@@ -224,7 +225,12 @@ const AcademicReadingPage = () => {
     useEffect(() => {
         //getQuestions();
         getQuestionID();
-    },[])
+    },[]);
+
+
+    if (!questions) {
+        return <Loader />
+    }
 
     return (
         <>

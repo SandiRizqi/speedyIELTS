@@ -6,10 +6,11 @@ import AcademicListeningPage from "./AcademicListeningPage";
 export const metadata: Metadata = {
   title: "Speedy IELTS | Academic Listening",
   description:
-    "This is Next.js Calender page for TailAdmin  Tailwind CSS Admin Dashboard Template",
+    "Boost your IELTS band with Speedy IELTS test platform",
 };
 
 const Page = () => {
+
   return (
     <DefaultLayout>
       <AcademicListeningPage />

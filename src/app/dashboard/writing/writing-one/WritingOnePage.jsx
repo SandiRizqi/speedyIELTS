@@ -8,6 +8,30 @@ import AuthStateChangeProvider from '@/service/auth';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import axios from 'axios';
 
+const Timer = ({ minutes, seconds }) => {
+  const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (timeLeft.seconds > 0) {
+        setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
+      } else if (timeLeft.minutes > 0) {
+        setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLeft]);
+
+  return (
+    <div className='block text-center bg-slate-800 rounded-md p-1'>
+      <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
+    </div>
+  );
+};
+
 
 
 const WritingOnePage = () => {
@@ -52,29 +76,7 @@ const WritingOnePage = () => {
   };
 
 
-  const Timer = ({ minutes, seconds }) => {
-    const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-        if (timeLeft.seconds > 0) {
-          setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
-        } else if (timeLeft.minutes > 0) {
-          setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }, [timeLeft]);
-
-    return (
-      <div className='block text-center bg-slate-800 rounded-md p-1'>
-        <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
-      </div>
-    );
-  };
+  
 
 
   const Overall = ({ score }) => {
