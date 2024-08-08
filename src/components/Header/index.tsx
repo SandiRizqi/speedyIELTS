@@ -65,9 +65,9 @@ const Header = (props: {
 
           <Link className="block flex-shrink-0 lg:hidden" href="/">
             <Image
-              width={32}
-              height={32}
-              src={"/images/logo/type/logo_transparent_only.png"}
+              width={50}
+              height={50}
+              src={"/images/logo/type/logo_round.png"}
               className="rounded-full"
               alt="Logo"
             />

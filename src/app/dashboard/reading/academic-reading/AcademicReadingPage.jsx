@@ -10,19 +10,22 @@ import parse, { attributesToProps } from 'html-react-parser';
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
+
 const ControlledInput = ({ value, onChange, ...props }) => {
     const [localValue, setLocalValue] = useState(value);
 
     const handleChange = (e) => {
         setLocalValue(e.target.value);
+       // onChange(e.target.value);
     };
 
     const handleBlur = () => {
+        //console.log(localValue)
         onChange(localValue);
     }
 
 
-    return <input {...props} value={value} onChange={handleChange} onBlur={handleBlur}/>;
+    return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur}/>;
 };
 
 
