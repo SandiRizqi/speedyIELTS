@@ -182,6 +182,14 @@ const menuGroups = [
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  const audioRef = useRef(new Audio());
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+
+  }, [pathname]);
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>

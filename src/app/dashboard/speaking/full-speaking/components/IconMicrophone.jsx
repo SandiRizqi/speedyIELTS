@@ -7,9 +7,9 @@ const IconMicrophone = () => {
     <>
 
       <Image
-        width={50}
-        height={80}
-        src={"/images/logo/type/logo_transparent_only.png"}
+        width={90}
+        height={90}
+        src={"/images/logo/type/logo_round.png"}
         alt="Logo"
         priority
         className="rounded-full"

@@ -2,8 +2,8 @@ import React from 'react';
 
 const StartInstruction = ({setStart}) => {
   return (
-    <div className="flex items-center justify-center h-screen bg-white dark:bg-slate-800">
-      <div className="max-w-md w-full bg-white dark:bg-slate-700 shadow-2xl rounded-lg overflow-hidden">
+    <div className="flex items-center justify-center h-screen">
+      <div className="max-w-md w-full bg-white dark:bg-slate-700 shadow-lg rounded-lg overflow-hidden m-4">
         <div className="bg-gradient-to-r from-indigo-500 to-purple-500 py-6 px-8 text-white text-2xl font-bold rounded-t">
           Test Instructions
         </div>

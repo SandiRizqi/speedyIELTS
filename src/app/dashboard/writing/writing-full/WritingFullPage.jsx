@@ -4,6 +4,7 @@ import WritingOne from './_writingone/page';
 import WritingTwo from './_writingtwo/page';
 import { useState, useEffect, useCallback } from 'react';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
+import StartInstruction from './StartInstruction';
 
 const Timer = ({ minutes, seconds, setFinish }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -77,7 +78,9 @@ export default function WritingFullPage() {
     );
   }
 
-
+  if (!start) {
+    return <StartInstruction setStart={setStart}/>
+  }
 
   return (
     <>
@@ -85,14 +88,6 @@ export default function WritingFullPage() {
       <div className='flex flex-1 justify-center'>
         <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
           {start && (<Timer minutes={60} seconds={0} setFinish={setFinish}/>)}
-          {!start && (<button
-            className="block rounded-lg bg-indigo-500 px-5 py-3 text-xs font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
-            type="button"
-            onClick={() => setStart(true)}
-          >
-            Start
-          </button>)}
-
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800'>
           {activeTab === 1 ? <WritingOne start={start} finish={finish} /> : <WritingTwo start={start} finish={finish} />}

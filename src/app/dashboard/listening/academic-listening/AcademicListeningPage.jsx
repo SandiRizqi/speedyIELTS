@@ -311,10 +311,11 @@ const AcademicListeningPage = () => {
         <>
             <Breadcrumb pageName="Academic Listening" />
             <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
+                {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
+                {testResult && (<ScoreComponent score={testResult['result']}/>)}
                 {questions && (
                     <form onSubmit={handleSubmit} className="min-h-screen" ref={formRef} id="answerform">
-                    {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
-                    {testResult && (<ScoreComponent score={testResult['result']}/>)}
+                    
                     <div className="min-h-screen space-y-6">
                         {questions["questions"].map((question, index) => {
                             if (question.section === activeTab) {

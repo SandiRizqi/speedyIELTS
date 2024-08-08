@@ -5,8 +5,8 @@ import { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: "Next.js SignUp Page | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js SignUp Page TailAdmin Dashboard Template",
+  title: "Speedy IELTS | Sign Up",
+  description: "Boost your IELTS band with Speedy IELTS test platform",
   // other metadata
 };
 
@@ -14,8 +14,8 @@ const SignUp: React.FC = () => {
   return (
   
     <div className="flex flex-1 w-screen h-screen items-center justify-center">
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex flex-wrap items-center">
+      <div className="border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark h-screen w-screen">
+        <div className="flex flex-wrap items-center h-full">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="px-26 py-17.5 text-center">
               <Link className="mb-5.5 inline-block" href="/">
@@ -23,29 +23,26 @@ const SignUp: React.FC = () => {
                   className="hidden dark:block"
                   src={"/images/logo/type/logo_round.png"}
                   alt="Logo"
-                  width={176}
-                  height={32}
+                  width={200}
+                  height={200}
                 />
                 <Image
                   className="dark:hidden"
                   src={"/images/logo/type/logo_round.png"}
                   alt="Logo"
-                  width={176}
-                  height={32}
+                  width={200}
+                  height={200}
                 />
               </Link>
-              <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
-              </p>
+    
             </div>
           </div>
 
-          <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
-            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+          <div className="flex justify-center w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
+            <div className="max-w-screen-sm p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign Up to TailAdmin
+                Sign Up to SpeedyIELTS
               </h2>
 
               <form>

@@ -12,6 +12,8 @@ import { httpsCallable } from 'firebase/functions';
 import { ChatProvider } from './hook/chat';
 import Loading from './components/Loading';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
+import StartInstruction from './StartInstruction';
+import Loader from '@/components/common/Loader';
 
 
 
@@ -50,7 +52,15 @@ const FullSpeakingPage = () => {
 
   useEffect(() => {
     getQuestion();
-  }, [])
+  }, []);
+
+  if (!question) {
+    return <Loader />;
+  }
+
+  if (!start && question) {
+    return <StartInstruction setStart={setStart} />
+  }
 
 
 
@@ -91,15 +101,6 @@ const FullSpeakingPage = () => {
                 <div className="w-full flex-col gap-8 p-4 items-center justify-left flex max-w-60">
                   {start && <Microphone />}
                   {!question && <Loading />}
-                  {!start && question && (
-                    <button
-                      className="block rounded-lg bg-indigo-500  px-5 py-3 text-xs font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
-                      type="button"
-                      onClick={() => setStart(true)}
-                    >
-                      Start
-                    </button>
-                  )}
                 </div>
                 <div className="w-full p-4 min-h-[50vh] h-full">
                   <div className="bg-slate-300 rounded-lg p-4 h-[40vh] pb-16 flex flex-1 flex-col overflow-y-auto w-full dark:bg-slate-500">

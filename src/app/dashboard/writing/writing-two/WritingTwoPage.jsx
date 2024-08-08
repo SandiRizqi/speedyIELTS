@@ -5,6 +5,7 @@ import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import axios from 'axios';
+import StartInstruction from './StartInstruction';
 
 const Timer = ({ minutes, seconds }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -89,6 +90,11 @@ const WritingTwoPage = () => {
         </p>
       </div>
     )
+  };
+
+
+  if(!start) {
+    return <StartInstruction setStart={setStart}/>
   }
 
 

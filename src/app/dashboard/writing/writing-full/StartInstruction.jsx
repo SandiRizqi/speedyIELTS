@@ -9,17 +9,16 @@ const StartInstruction = ({setStart}) => {
         </div>
         <div className="p-8 space-y-6">
           <p className="text-gray-700 dark:text-gray-300 text-lg">
-            Welcome to the Reading test! Please read the following instructions
+            Welcome to the Writing test! Please read the following instructions
             carefully:
           </p>
           <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300">
             <li>You have 60 minutes to complete the test.</li>
             <li>
-              The test consists of 40 questions. you should write or select the best answer.
+              The test is consist of 2 tasks.
             </li>
             <li>
-              You can go back to a previous question before you have submitted
-              your answer.
+              You are allowed to finish task 1 or task 2 first.
             </li>
             <li>
               Your score will be displayed at the end of the exam just after you submit your answer. Good luck!

@@ -7,6 +7,7 @@ import { UserProvider } from '@/service/user';
 import AuthStateChangeProvider from '@/service/auth';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import axios from 'axios';
+import StartInstruction from './StartInstruction';
 
 const Timer = ({ minutes, seconds }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -95,7 +96,9 @@ const WritingOnePage = () => {
   };
 
 
-
+if(!start) {
+  return <StartInstruction setStart={setStart} />
+}
 
 
 
@@ -109,14 +112,6 @@ const WritingOnePage = () => {
         <div className='flex flex-1 justify-center'>
           <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1  top-20 inline-block gap-4 z-50'>
             {start && (<Timer minutes={20} seconds={0} />)}
-            {!start && (<button
-              className="block rounded-lg bg-indigo-500 px-5 py-3 text-xs font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
-              type="button"
-              onClick={() => setStart(true)}
-            >
-              Start
-            </button>)}
-
           </div>
 
           <section className="bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400">
