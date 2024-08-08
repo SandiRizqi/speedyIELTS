@@ -37,7 +37,7 @@ const StartInstruction = ({ setStart }) => {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="max-w-md w-full bg-white dark:bg-slate-700 shadow-lg rounded-lg overflow-hidden m-4">
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-500 py-6 px-8 text-white text-2xl font-bold rounded-t">
+        <div className="bg-indigo-500  py-6 px-8 text-white text-2xl font-bold rounded-t">
           Test Instructions
         </div>
         <div className="p-8 space-y-6">
@@ -45,7 +45,7 @@ const StartInstruction = ({ setStart }) => {
             Welcome to the Speaking test! Please read the following instructions
             carefully:
           </p>
-          <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300">
+          <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 text-sm">
             <li>Makesure your audio recorder is available.</li>
             <li>You have approximately 15 minutes to complete the test.</li>
             <li>

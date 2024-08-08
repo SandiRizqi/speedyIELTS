@@ -97,8 +97,8 @@ const FullSpeakingPage = () => {
           </header>
           <ChatProvider>
             <section className="bg-white rounded-sm pt-14 flex min-h-[70vh] w-full justify-center mb-16 py-8 dark:bg-slate-800">
-              <div className="flex flex-col bg-white  w-full max-w-screen-lg h-full shadow-xl rounded-md">
-                <div className="w-full flex-col gap-8 p-4 items-center justify-left flex max-w-60">
+              <div className="flex flex-col bg-white  w-full max-w-screen-lg h-full shadow-lg rounded-md m-4">
+                <div className="w-full gap-8 p-4 flex max-w-60">
                   {start && <Microphone />}
                   {!question && <Loading />}
                 </div>

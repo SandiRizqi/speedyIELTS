@@ -4,6 +4,10 @@ import { collection, getDocs } from "firebase/firestore";
 import { useUser } from '@/service/user';
 import LoadingQuestion from '@/app/dashboard/_components/LoadingQuestion';
 
+const countWords = (text) => {
+    return text.trim().split(/\s+/).filter(word => word).length;
+};
+
 
 export default function QuestionForm({ start, answer, setAnswer, handleSubmit, loading, finish,  feedback }) {
     const user = useUser();
@@ -13,6 +17,7 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
     const [question, setQuestion] = useState(null);
     const [text, setText] = useState('');
     const [highlightedText, setHighlightedText] = useState(null);
+    const count = countWords(text);
     
 
 
@@ -32,9 +37,7 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
 
 
 
-    const countWords = (text) => {
-        return text.trim().split(/\s+/).filter(word => word).length;
-    };
+    
 
 
     useEffect(() => {
@@ -114,9 +117,9 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
 
                 <div className="flex items-center justify-end gap-2 bg-white p-3">
                     <p className='text-sm text-gray-500'>
-                        Words: {countWords(text)}
+                        Words: {count}
                     </p>
-                    {start && !finish && (
+                    {start && !finish && count > 150 && (
                         <button
                             type="button"
                             className="rounded bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
