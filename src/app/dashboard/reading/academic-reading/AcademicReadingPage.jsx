@@ -8,6 +8,7 @@ import { httpsCallable } from "firebase/functions";
 import { useSearchParams } from 'next/navigation';
 import parse, { attributesToProps } from 'html-react-parser';
 import Loader from "@/components/common/Loader";
+import StartInstruction from "./StartInstruction";
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
@@ -39,6 +40,7 @@ const AcademicReadingPage = () => {
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
     const [questions, setQuestion] = useState(null);
+    const [start, setStart] = useState(false);
     const functions = FirebaseFunction();
     const params = useSearchParams();
    
@@ -230,6 +232,10 @@ const AcademicReadingPage = () => {
 
     if (!questions) {
         return <Loader />
+    };
+
+    if (questions && !start){
+        return <StartInstruction setStart={setStart}/>
     }
 
     return (

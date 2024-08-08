@@ -11,6 +11,7 @@ import ScoreComponent from "./ScoreComponent";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
 import Loader from "@/components/common/Loader";
+import StartInstruction from "./StartInstruction";
 //import { sample1 as questions } from "./sample1";
 
 
@@ -299,6 +300,10 @@ const AcademicListeningPage = () => {
     if (!questions) {
         return <Loader />
     };
+
+    if (questions && !start) {
+        return <StartInstruction setStart={setStart}/>
+    }
 
     
 
