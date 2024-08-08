@@ -15,7 +15,7 @@ const StartInstruction = ({setStart}) => {
           <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300">
             <li>You have 60 minutes to complete the test.</li>
             <li>
-              The test is consist of 2 tasks.
+              The test consists of 2 tasks.
             </li>
             <li>
               You are allowed to finish task 1 or task 2 first.
