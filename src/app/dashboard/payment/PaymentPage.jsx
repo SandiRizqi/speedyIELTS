@@ -19,7 +19,7 @@ const SubsButton = ({ type, action }) => {
 
     return (
         <a
-            className="mt-4 block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-center text-sm font-medium text-white hover:bg-opacity-90 focus:outline-none focus:ring active:text-indigo-500 sm:mt-6"
+            className="mt-4 block   bg-blue-600 px-12 py-3 text-center text-sm font-medium text-white hover:bg-orange-400 focus:bg-orange-400 active:text-indigo-500 sm:mt-6"
             href="#"
             onClick={handleSubs}
             

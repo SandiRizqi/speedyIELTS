@@ -8,6 +8,11 @@ import AuthStateChangeProvider from '@/service/auth';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import axios from 'axios';
 import StartInstruction from './StartInstruction';
+import { FirebaseFunction } from '@/service/firebase';
+import { httpsCallable } from 'firebase/functions';
+import Loader from '@/components/common/Loader';
+
+
 
 const Timer = ({ minutes, seconds }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -36,7 +41,8 @@ const Timer = ({ minutes, seconds }) => {
 
 
 const WritingOnePage = () => {
-
+  const [question, setQuestion] = useState(null);
+  const functions = FirebaseFunction();
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -77,10 +83,25 @@ const WritingOnePage = () => {
   };
 
 
+  const getQuestion = async () => {
+    const getData = httpsCallable(functions, 'getQuestion');
+    try {
+      getData({ type: "writing1-questions"}).then((result) => {
+        const quest = result.data;
+        setQuestion(quest);
+    });
+           
+  } catch (error) {
+      console.error("Error fetching questions:", error);
+  } 
+    
+};
+
+
   
 
 
-  const Overall = ({ score }) => {
+const Overall = ({ score }) => {
     return (
       <div className="text-center">
         <h2 className="text-lg font-medium text-gray-900">
@@ -93,10 +114,19 @@ const WritingOnePage = () => {
         </p>
       </div>
     )
-  };
+};
 
 
-if(!start) {
+useEffect(() => {
+  getQuestion();
+},[])
+
+if (!question) {
+  return<Loader />
+}
+
+
+if(!start && question) {
   return <StartInstruction setStart={setStart} />
 }
 
@@ -163,7 +193,7 @@ if(!start) {
 
 
                 <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-                  <QuestionForm answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish} feedback={feedback} />
+                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish} feedback={feedback} />
                   {feedback && (
                     <div className='mt-4'>
                       <span className='font-bold'>Evaluation: </span>

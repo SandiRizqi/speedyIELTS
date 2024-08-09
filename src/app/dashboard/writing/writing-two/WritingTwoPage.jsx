@@ -6,6 +6,11 @@ import Feedback from './FeedBack';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import axios from 'axios';
 import StartInstruction from './StartInstruction';
+import Loader from '@/components/common/Loader';
+import { httpsCallable } from 'firebase/functions';
+import { FirebaseFunction } from '@/service/firebase';
+
+
 
 const Timer = ({ minutes, seconds }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -35,7 +40,9 @@ const Timer = ({ minutes, seconds }) => {
 
 const WritingTwoPage = () => {
   const [start, setStart] = useState(false);
+  const [question, setQuestion] = useState(null);
   const [finish, setFinish] = useState(false);
+  const functions = FirebaseFunction();
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState({
     createdAt: Date.now(),
@@ -73,6 +80,20 @@ const WritingTwoPage = () => {
     }
   };
 
+  const getQuestion = async () => {
+    const getData = httpsCallable(functions, 'getQuestion');
+    try {
+      getData({ type: "writing2-questions"}).then((result) => {
+        const quest = result.data;
+        setQuestion(quest);
+    });
+           
+  } catch (error) {
+      console.error("Error fetching questions:", error);
+  } 
+    
+};
+
 
   
 
@@ -92,8 +113,17 @@ const WritingTwoPage = () => {
     )
   };
 
+  useEffect(() => {
+    getQuestion();
 
-  if(!start) {
+  },[])
+
+  if (!question) {
+    return <Loader />
+  }
+
+
+  if(!start && question) {
     return <StartInstruction setStart={setStart}/>
   }
 
@@ -107,14 +137,6 @@ const WritingTwoPage = () => {
         <div className='flex flex-1 justify-center'>
           <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
             {start && (<Timer minutes={40} seconds={0} />)}
-            {!start && (<button
-              className="block rounded-lg bg-indigo-500 px-5 py-3 text-xs font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
-              type="button"
-              onClick={() => setStart(true)}
-            >
-              Start
-            </button>)}
-
           </div>
           
 
@@ -166,7 +188,7 @@ const WritingTwoPage = () => {
 
 
                 <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-                  <QuestionForm answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish} feedback={feedback} />
+                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish} feedback={feedback} />
                   {feedback && (
                     <div className='mt-4'>
                       <span className='font-bold'>Evaluation: </span>

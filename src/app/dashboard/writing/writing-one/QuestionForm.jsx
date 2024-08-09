@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { FirestoreDB, FirebaseStorge } from '@/service/firebase';
-import { collection, getDocs } from "firebase/firestore";
+import { FirebaseStorge } from '@/service/firebase';
 import { ref, getDownloadURL } from 'firebase/storage';
 import LoadingQuestion from '@/app/dashboard/_components/LoadingQuestion';
 import { useUser } from '@/service/user';
@@ -11,13 +10,10 @@ const countWords = (text) => {
 };
 
 
-export default function QuestionForm({ start, answer, setAnswer, handleSubmit, loading, finish, feedback}) {
+export default function QuestionForm({ start, quest, answer, setAnswer, handleSubmit, loading, finish, feedback}) {
     const user = useUser();
-    const db = FirestoreDB();
     const drive = FirebaseStorge();
-    const questionsRef = collection(db, "writing1-questions");
-    const [loadquestion, setLoadQuestion] = useState(true);
-    const [question, setQuestion] = useState(null);
+    const [question, setQuestion] = useState({...quest, userId: user.uid});
     const [text, setText] = useState('');
     const count = countWords(text);
     const [highlightedText, setHighlightedText] = useState("");
@@ -57,39 +53,24 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
             try {
                 const storageRef = ref(drive, quest.picture);
                 const url = await getDownloadURL(storageRef);
-                setQuestion({...quest, pictureURL: url})
-                setAnswer({...answer, pictureURL: url, ...quest})
-                setLoadQuestion(false);
+                setQuestion({...quest, pictureURL: url, userId: user.uid})
+                setAnswer({...answer, pictureURL: url, ...quest, userId: user.uid});
               } catch (error) {
                 console.error("Error fetching image URL:", error);
               }
         };
 
-        const getQuestions = async () => {
-            try {
-                const querySnapshot = await getDocs(questionsRef);
-                const questions = querySnapshot.docs.map(doc => {return { ...doc.data(),questionId: doc.id, userId: user.uid}});
-                const randomIndex = Math.floor(Math.random() * questions.length);
-                const selectedQuestion = questions[randomIndex]
-                getPicture(selectedQuestion);
-                     
-            } catch (error) {
-                console.error("Error fetching questions:", error);
-            } 
+        
+
+        if (quest) {
+            getPicture(quest)
         };
 
-        if (!question) {
-            getQuestions();
-        };
+    }, [quest]);
 
 
 
-
-    }, [question]);
-
-
-
-    if (loadquestion && question === null) {
+    if (!question.pictureURL) {
         return <LoadingQuestion />
     }
 
@@ -110,7 +91,7 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
 
 
             <div
-                className="overflow-hidden rounded-lg border border-gray-200 mt-4 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                className="overflow-hidden rounded-lg border border-gray-200 mt-4 shadow-sm"
             >
 
                 
@@ -140,7 +121,7 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
                     {start && !finish && count > 50 && (
                         <button
                             type="button"
-                            className="rounded bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+                            className="bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-orange-400"
                             onClick={handleSubmit}
                             disabled={loading}
                         >

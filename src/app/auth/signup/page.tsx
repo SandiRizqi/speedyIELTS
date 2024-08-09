@@ -18,20 +18,20 @@ const SignUp: React.FC = () => {
         <div className="flex flex-wrap items-center h-full">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="px-26 py-17.5 text-center h-full items-center flex justify-center">
-              <Link className="mb-5.5 inline-block" href="/">
+              <Link className="mb-5.5 inline-block" href="#">
                 <Image
                   className="hidden dark:block"
                   src={"/images/logo/type/logo_round.png"}
                   alt="Logo"
-                  width={200}
-                  height={200}
+                  width={300}
+                  height={300}
                 />
                 <Image
                   className="dark:hidden"
                   src={"/images/logo/type/logo_round.png"}
                   alt="Logo"
-                  width={200}
-                  height={200}
+                  width={300}
+                  height={300}
                 />
               </Link>
     
@@ -186,7 +186,7 @@ const SignUp: React.FC = () => {
                   <input
                     type="submit"
                     value="Create account"
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                    className="w-full cursor-pointer rounded-lg border border-blue-600 bg-blue-600 p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
 

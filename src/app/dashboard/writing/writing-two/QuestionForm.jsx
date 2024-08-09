@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { FirestoreDB, } from '@/service/firebase';
-import { collection, getDocs } from "firebase/firestore";
 import { useUser } from '@/service/user';
-import LoadingQuestion from '@/app/dashboard/_components/LoadingQuestion';
+
 
 const countWords = (text) => {
     return text.trim().split(/\s+/).filter(word => word).length;
 };
 
 
-export default function QuestionForm({ start, answer, setAnswer, handleSubmit, loading, finish,  feedback }) {
+export default function QuestionForm({ start, quest, answer, setAnswer, handleSubmit, loading, finish,  feedback }) {
     const user = useUser();
-    const db = FirestoreDB();
-    const questionsRef = collection(db, "writing2-questions");
-    const [loadquestion, setLoadQuestion] = useState(true);
-    const [question, setQuestion] = useState(null);
+    const [question, setQuestion] = useState({...quest, userId: user.uid, question: quest.questions});
     const [text, setText] = useState('');
     const [highlightedText, setHighlightedText] = useState(null);
     const count = countWords(text);
@@ -51,35 +46,13 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
 
     useEffect(() => {
 
-        const getQuestions = async () => {
-            try {
-                const querySnapshot = await getDocs(questionsRef);
-                const questions = querySnapshot.docs.map(doc => {return { ...doc.data(),questionId: doc.id, userId: user.uid}});
-                const randomIndex = Math.floor(Math.random() * questions.length);
-                const selectedQuestion = questions[randomIndex]
-                setQuestion(selectedQuestion);
-                setAnswer({...answer, ...selectedQuestion});
-                setLoadQuestion(false);
-                     
-            } catch (error) {
-                console.error("Error fetching questions:", error);
-            } 
+        if (quest) {
+            setQuestion({...quest, userId: user.uid, question: quest.questions});
+            setAnswer({...answer, ...quest, userId: user.uid, question: quest.questions});
         };
 
-        if (!question) {
-            getQuestions();
-        };
 
-     
-
-    }, [question]);
-
-
-
-    if (loadquestion && question === null) {
-        return <LoadingQuestion />
-    }
-
+    }, [quest]);
 
 
     return (

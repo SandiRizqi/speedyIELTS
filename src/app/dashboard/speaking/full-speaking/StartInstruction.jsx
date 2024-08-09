@@ -36,8 +36,8 @@ const StartInstruction = ({ setStart }) => {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="max-w-md w-full bg-white dark:bg-slate-700 shadow-lg rounded-lg overflow-hidden m-4">
-        <div className="bg-indigo-500  py-6 px-8 text-white text-2xl font-bold rounded-t">
+      <div className="max-w-lg w-full bg-white dark:bg-slate-700 shadow-lg rounded-lg overflow-hidden m-4">
+        <div className="bg-slate-800  py-6 px-8 text-white text-2xl font-bold rounded-t">
           Test Instructions
         </div>
         <div className="p-8 space-y-6">
@@ -57,7 +57,7 @@ const StartInstruction = ({ setStart }) => {
           </ul>
           <div className="flex justify-center">
             {isRecorderAvailable ? (
-              <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-md transition-colors duration-300" onClick={() => setStart(true)}>
+              <button className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-3 px-8 transition-colors duration-300" onClick={() => setStart(true)}>
                 Start test
               </button>
             ) : (
@@ -66,7 +66,7 @@ const StartInstruction = ({ setStart }) => {
                 <span className="block sm:inline"> Please enable microphone permissions and try again.</span>
                 <button
                   onClick={refreshPage}
-                  className="mt-4 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 flex w-full justify-center"
+                  className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-orange-400 flex w-full justify-center"
                 >
                   Refresh Page
                 </button>

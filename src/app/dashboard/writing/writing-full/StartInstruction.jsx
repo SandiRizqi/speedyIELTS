@@ -3,8 +3,8 @@ import React from 'react';
 const StartInstruction = ({setStart}) => {
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="max-w-md w-full bg-white dark:bg-slate-700 shadow-2xl rounded-lg overflow-hidden m-4">
-        <div className="bg-indigo-500  py-6 px-8 text-white text-2xl font-bold rounded-t">
+      <div className="max-w-lg w-full bg-white dark:bg-slate-700 shadow-2xl rounded-lg overflow-hidden m-4">
+        <div className="bg-slate-800  py-6 px-8 text-white text-2xl font-bold rounded-t">
           Test Instructions
         </div>
         <div className="p-8 space-y-6">
@@ -25,7 +25,7 @@ const StartInstruction = ({setStart}) => {
             </li>
           </ul>
           <div className="flex justify-center">
-            <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-md transition-colors duration-300" onClick={() => setStart(true)}>
+            <button className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-3 px-8  transition-colors duration-300" onClick={() => setStart(true)}>
               Start test
             </button>
           </div>
