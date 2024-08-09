@@ -16,8 +16,8 @@ const SignUp: React.FC = () => {
     <div className="flex flex-1 w-screen h-screen items-center justify-center">
       <div className="border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark h-screen w-screen">
         <div className="flex flex-wrap items-center h-full">
-          <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="px-26 py-17.5 text-center">
+          <div className="hidden w-full xl:block xl:w-1/2 bg-slate-800">
+            <div className="px-26 py-17.5 text-center h-screen items-center flex justify-center">
               <Link className="mb-5.5 inline-block" href="/">
                 <Image
                   className="hidden dark:block"
