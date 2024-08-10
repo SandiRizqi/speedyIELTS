@@ -1,5 +1,6 @@
 'use client'
 import withUser from "@/hooks/withUser";
+import { useRef } from "react";
 import { useState, useCallback, useEffect } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { useUser } from "@/service/user";
@@ -13,22 +14,7 @@ import StartInstruction from "./StartInstruction";
 
 
 
-const ControlledInput = ({ value, onChange, ...props }) => {
-    const [localValue, setLocalValue] = useState(value);
 
-    const handleChange = (e) => {
-        setLocalValue(e.target.value);
-       // onChange(e.target.value);
-    };
-
-    const handleBlur = () => {
-        //console.log(localValue)
-        onChange(localValue);
-    }
-
-
-    return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur}/>;
-};
 
 const Timer = ({ minutes, seconds }) => {
     const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -57,73 +43,97 @@ const Timer = ({ minutes, seconds }) => {
 
 const PassageWrapper = ({children}) => {
 
+    const containerRef = useRef(null);
 
-    useEffect(() => {
-        const handleMouseUp = () => {
-          const selection = window.getSelection();
-          if (selection && selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-    
-            // Extract the selected contents
-            const selectedContents = range.extractContents();
-    
-            // Create a new document fragment to manipulate the selected content
-            const fragment = document.createDocumentFragment();
-    
-            // Loop through each child node in the selected contents
-            Array.from(selectedContents.childNodes).forEach((node) => {
-              if (node.nodeType === Node.ELEMENT_NODE) {
-                // If it's an element node with the highlight, remove it
-                if (node.classList.contains('bg-yellow-300')) {
-                  node.classList.remove('bg-yellow-300');
-                  fragment.appendChild(node); // Add the node back without highlight
-                } else {
-                  // If not highlighted, wrap in a new span with highlight
-                  const wrapper = document.createElement('span');
-                  wrapper.className = 'bg-yellow-300';
-                  wrapper.appendChild(node);
-                  fragment.appendChild(wrapper);
-                }
-              } else if (node.nodeType === Node.TEXT_NODE) {
-                // For text nodes, wrap in a span with highlight
+  useEffect(() => {
+    const handleMouseUp = (event) => {
+      // Only handle mouseup events within the container and not on input elements
+      if (containerRef.current && containerRef.current.contains(event.target) && event.target.tagName !== 'INPUT') {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+  
+          // Extract the selected contents
+          const selectedContents = range.extractContents();
+  
+          // Create a new document fragment to manipulate the selected content
+          const fragment = document.createDocumentFragment();
+  
+          // Loop through each child node in the selected contents
+          Array.from(selectedContents.childNodes).forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              // If it's an element node with the highlight, remove it
+              if (node.classList.contains('bg-yellow-300')) {
+                node.classList.remove('bg-yellow-300');
+                fragment.appendChild(node); // Add the node back without highlight
+              } else {
+                // If not highlighted, wrap in a new span with highlight
                 const wrapper = document.createElement('span');
                 wrapper.className = 'bg-yellow-300';
-                wrapper.textContent = node.textContent;
+                wrapper.appendChild(node);
                 fragment.appendChild(wrapper);
               }
-            });
-    
-            // Insert the modified fragment back into the document
-            range.insertNode(fragment);
-          }
-        };
-    
-        document.addEventListener('mouseup', handleMouseUp);
-    
-        return () => {
-          document.removeEventListener('mouseup', handleMouseUp);
-        };
-      }, []);
+            } else if (node.nodeType === Node.TEXT_NODE) {
+              // For text nodes, wrap in a span with highlight
+              const wrapper = document.createElement('span');
+              wrapper.className = 'bg-yellow-300';
+              wrapper.textContent = node.textContent;
+              fragment.appendChild(wrapper);
+            }
+          });
+  
+          // Insert the modified fragment back into the document
+          range.insertNode(fragment);
+        }
+      }
+    };
+
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
 
-    return <>
+    return <div ref={containerRef}>
     {children}
-    </>
+    </div>
 }
 
 
+const ControlledInput = ({ value, onChange, ...props }) => {
+    const [localValue, setLocalValue] = useState(value);
+
+    const handleChange = (e) => {
+        setLocalValue(e.target.value);
+       // onChange(e.target.value);
+    };
+
+    const handleBlur = () => {
+        //console.log(localValue)
+        onChange(localValue);
+    }
+
+
+    return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur}/>;
+};
 
 const AcademicReadingPage = () => {
     const user = useUser();
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
     const [questions, setQuestion] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [start, setStart] = useState(false);
     const functions = FirebaseFunction();
     const params = useSearchParams();
 
 
     
+    const handleAnswer = (questionId, value) => {
+        setAnswer(prev => ({ ...prev, [questionId]: value }));
+    }
    
 
     function TabNavigation() {
@@ -161,11 +171,6 @@ const AcademicReadingPage = () => {
         );
       }
 
-    const handleAnswer = (number, value) => {
-        setAnswer(prev => ({ ...prev, [number]: value }))
-        console.log(answer)
-    }
-
     const options = {
         replace(domNode) {
           if (domNode.attribs && domNode.name === 'input') {
@@ -181,6 +186,7 @@ const AcademicReadingPage = () => {
           }
         },
       };
+    
 
     const RenderQuestion = ({part}) => {
         const QuestionWrapper = ({ children }) => (
@@ -193,21 +199,22 @@ const AcademicReadingPage = () => {
             </div>
         );
 
+       
+
         
 
         switch (part.type) {
-            
             case "gap_filling":
                 return (
                     <QuestionWrapper>
-                        {part.html && (<div className="w-full">{parse(part.html, options)}</div>)}
+                        {part.html && (parse(part.html, options))}
                         {part.questions?.map((obj, idx) => (
                             <div key={idx} >
                                 <p className="font-medium">{obj?.number}. {obj?.question}</p>
                                 <ControlledInput
                                     type="text"
                                     name={`question-${obj.number}`}
-                                    value={answer[obj.number]}
+                                    value={answer[obj.number] || ""}
                                     onChange={(value) => handleAnswer(obj.number, value)}
                                     className="w-md my-1 px-2 border border-gray-300 rounded overflow-x-auto max-w-md"
                                     placeholder="Type your answer here"
@@ -220,7 +227,6 @@ const AcademicReadingPage = () => {
             case "matching_headings":
                 return (
                     <QuestionWrapper>
-                        
                         {part.questions?.map((obj, idx) => (
                             <div key={idx} className="space-x-4">
                                 <span className="font-medium">{obj.number}.{obj.question}</span>
@@ -291,10 +297,25 @@ const AcademicReadingPage = () => {
 
     }
 
-    async function handleSubmit() {
-        console.log("submit")
+    const getAnswers = async (userAnswer) => {
+        let data;
+        let score;
+        setLoading(true);
+        const getData = httpsCallable(functions, 'getQuestionAnswers');
+        await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid }).then((result) => {
+            data = result.data;  
+            score = data['result']
+            setLoading(false);
+        });
+        return [data, score];   
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const [answerData, score] = await getAnswers(answer);
+        const result = {...answerData, result: score}
+        setTestResult(result);
+    };
 
 
     const getQuestionID = async () => {
@@ -357,7 +378,7 @@ const AcademicReadingPage = () => {
                             className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
                             type="submit"
                         >
-                            Submit
+                            {!loading ? 'Submit' : 'Loading...'}
                         </button>
                     </div>
                 </form>

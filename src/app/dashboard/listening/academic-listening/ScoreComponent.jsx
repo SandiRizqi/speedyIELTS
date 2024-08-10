@@ -14,7 +14,7 @@ const ScoreComponent = ({ score }) => {
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-2">Band</h2>
           <div className="text-6xl font-extrabold text-green-500">
-            {score['band']}
+            {score['overall']}
           </div>
         </div>
         </div>

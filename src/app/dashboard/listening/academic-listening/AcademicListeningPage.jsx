@@ -275,7 +275,7 @@ const AcademicListeningPage = () => {
         let score;
         setLoading(true);
         const getData = httpsCallable(functions, 'getQuestionAnswers');
-        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: userAnswer }).then((result) => {
+        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid }).then((result) => {
             data = result.data;  
             score = data['result']
             setLoading(false);
@@ -315,7 +315,6 @@ const AcademicListeningPage = () => {
                 {testResult && (<ScoreComponent score={testResult['result']}/>)}
                 {questions && (
                     <form onSubmit={handleSubmit} className="min-h-screen" ref={formRef} id="answerform">
-                    
                     <div className="min-h-screen space-y-6">
                         {questions["questions"].map((question, index) => {
                             if (question.section === activeTab) {
