@@ -12,6 +12,7 @@ import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
 import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
+import {SuccessMessage} from "@/app/dashboard/_components/Alert";
 //import { sample1 as questions } from "./sample1";
 
 
@@ -279,6 +280,7 @@ const AcademicListeningPage = () => {
             data = result.data;  
             score = data['result']
             setLoading(false);
+            SuccessMessage({ score: score['overall'] });
         });
         return [data, score];   
     };

@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import parse, { attributesToProps } from 'html-react-parser';
 import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
+import {SuccessMessage} from "@/app/dashboard/_components/Alert";
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
@@ -305,6 +306,7 @@ const AcademicReadingPage = () => {
         await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid }).then((result) => {
             data = result.data;  
             score = data['result']
+            SuccessMessage({score: score["overall"]})
             setLoading(false);
         });
         return [data, score];   
