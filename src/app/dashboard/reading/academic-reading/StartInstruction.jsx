@@ -18,8 +18,11 @@ const StartInstruction = ({setStart}) => {
               The test consists of 40 questions. you should write or select the best answer.
             </li>
             <li>
-              You can go back to a previous question before you have submitted
+              You can go back to previous questions before you submit
               your answer.
+            </li>
+            <li>
+              You can highlight text by selecting it with your mouse. To remove the highlight, simply select the highlighted text again.
             </li>
             <li>
               Your score will be displayed at the end of the exam just after you submit your answer. Good luck!

@@ -5,7 +5,7 @@ import { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: "Speedy IELTS | Sign Up",
+  title: "SpeedyIELTS | Sign Up",
   description: "Boost your IELTS band with Speedy IELTS test platform",
   // other metadata
 };

@@ -3,6 +3,9 @@ import { useChat } from "../hook/chat";
 import { useEffect, useState } from "react";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
+import Loader from "@/components/common/Loader";
+import { useUser } from '@/service/user';
+
 
 function dialogToString(dialogArray) {
     let dialogString = "";
@@ -20,18 +23,20 @@ function dialogToString(dialogArray) {
 
 const SpeakingFeedback = ({ finished }) => {
     const chat = useChat();
+    const user = useUser();
     const functions = FirebaseFunction();
     const { chatState } = chat;
     const [allDialogue, setAllDialogue] = useState('');
     const [Feedback, setFeedback] = useState(null);
     const [highlightedText, setHighlightedText] = useState("")
-    const [loading, isLoading] = useState(true);
+    const [loading, isLoading] = useState(false);
 
     const getFeedback = async (text) => {
-        console.log(text);
+        isLoading(true);
         const getFb = httpsCallable(functions, 'getSpeakingScore');
-        getFb({ dialogue: text }).then((result) => {
-            setFeedback(result.data);
+        getFb({ dialogue: text, userId: user.uid, testType: "mini-speaking" }).then((result) => {
+            setFeedback(result.data["result"]);
+            isLoading(false)
         });
     };
 
@@ -49,7 +54,7 @@ const SpeakingFeedback = ({ finished }) => {
         sentencesWithRevisions.forEach(({ mistakes, revision }) => {
             const pattern = new RegExp(`(${mistakes})`, "gi");
             paragraph = paragraph.replace(pattern, sentence => {
-                return `<p class="bg-red-400 inline-block whitespace-pre text-white">${sentence}</p> \n <p class="bg-green-400 inline-block whitespace-pre text-white">${revision}</p>`;
+                return `<p class="bg-danger inline-block whitespace-pre text-white">${sentence}</p> \n <p class="bg-green-400 inline-block whitespace-pre">${revision}</p>`;
             });
         });
 
@@ -66,17 +71,10 @@ const SpeakingFeedback = ({ finished }) => {
     return (
         <>
             <div
-                className="mt-2 p-2 rounded text-wrap break-words max-w-full"
-                dangerouslySetInnerHTML={{ __html: `<span className="text-wrap break-words">${highlightedText}</span>` }}
+                className="mt-2 p-2 rounded text-wrap break-words max-w-full overflow-x-auto"
+                dangerouslySetInnerHTML={{ __html: `<span className="text-wrap break-words dark:text-white">${highlightedText}</span>` }}
             />
-            <button
-                className="block bg-blue-600  px-5 py-3 text-xs font-medium text-white transition hover:bg-orange-400 focus:outline-none focus:ring"
-                type="button"
-                onClick={() => getFeedback(allDialogue)}
-            >
-                Refresh
-            </button>
-
+            {loading && (<Loader />)}
         </>
     )
 };

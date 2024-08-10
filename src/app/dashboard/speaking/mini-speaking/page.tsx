@@ -1,9 +1,9 @@
-import WritingOnePage from "./WritingOnePage";
+import FullSpeakingPage from "./FullSpeakingPage";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {
-  title: "SpeedyIELTS | Writing Task 1",
+  title: "SpeedyIELTS | Mini Speaking",
   description:
     "Boost your IELTS band with Speedy IELTS test platform",
 };
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <DefaultLayout>
-      <WritingOnePage />
+      <FullSpeakingPage />
     </DefaultLayout>
   );
 };

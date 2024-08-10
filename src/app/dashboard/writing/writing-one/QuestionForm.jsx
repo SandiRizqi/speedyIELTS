@@ -23,7 +23,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
   const handleHighlisht = (value) => {
     const pattern = new RegExp(value.join("|"), "gi");
     let paragraph = text;
-    paragraph = paragraph.replace(pattern, match => `<span class="bg-red-400 text-white">${match}</span>`);
+    paragraph = paragraph.replace(pattern, match => `<span class="bg-danger text-white">${match}</span>`);
     setHighlightedText(paragraph);
   };
 
@@ -82,7 +82,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
 
             <div className="text-left bg-gray-100 rounded-md p-4">
                 <p className="max-w-full mb-4 text-md font-bold text-gray-500">
-                    {question.question}
+                    {question.questions}
                 </p>
             </div>
             <div className='w-full items-center justify-center flex mt-4'>

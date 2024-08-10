@@ -67,7 +67,7 @@ export default function Feedback({feedback, loading}) {
                 {feedback.corrections?.map((item, idx) => (
                     <div className='flex flex-col flex-1 gap-1 mt-4' key={idx}>
                         <span
-                        className="inline-flex items-center justify-start rounded-md bg-red-100 px-2.5 py-0.5 text-red-700"
+                        className="inline-flex items-center justify-start rounded-md bg-danger text-white px-2.5 py-0.5 text-red-700"
                     >
                         
                         <p className="whitespace-wrap text-sm">{item.mistakes}</p>

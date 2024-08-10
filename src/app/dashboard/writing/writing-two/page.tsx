@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {
-  title: "Speedy IELTS | Writing Part 2",
+  title: "SpeedyIELTS | Writing Task 2",
   description:
     "Boost your IELTS band with Speedy IELTS test platform",
 };

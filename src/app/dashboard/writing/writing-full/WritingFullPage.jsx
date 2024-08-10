@@ -70,7 +70,7 @@ export default function WritingFullPage() {
                 }`}
               onClick={() => setActiveTab(tab)}
             >
-              SECTION-{tab}
+              TASK-{tab}
             </button>
           ))}
         </div>
@@ -95,7 +95,7 @@ export default function WritingFullPage() {
           <div className="m-8 flex justify-end gap-4">
             <TabNavigation />
             <button
-              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+              className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
 
             >
               Submit

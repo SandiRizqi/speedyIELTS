@@ -9,7 +9,7 @@ const countWords = (text) => {
 
 export default function QuestionForm({ start, quest, answer, setAnswer, handleSubmit, loading, finish,  feedback }) {
     const user = useUser();
-    const [question, setQuestion] = useState({...quest, userId: user.uid, question: quest.questions});
+    const [question, setQuestion] = useState({...quest, userId: user.uid});
     const [text, setText] = useState('');
     const [highlightedText, setHighlightedText] = useState(null);
     const count = countWords(text);
@@ -19,7 +19,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
     const handleHighlisht = (value) => {
         const pattern = new RegExp(value.join("|"), "gi");
         let paragraph = text;
-        paragraph = paragraph.replace(pattern, match => `<span class="bg-red-400 text-white">${match}</span>`);
+        paragraph = paragraph.replace(pattern, match => `<span class="bg-danger text-white">${match}</span>`);
         setHighlightedText(paragraph);
     };
 
@@ -47,8 +47,8 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
     useEffect(() => {
 
         if (quest) {
-            setQuestion({...quest, userId: user.uid, question: quest.questions});
-            setAnswer({...answer, ...quest, userId: user.uid, question: quest.questions});
+            setQuestion({...quest, userId: user.uid});
+            setAnswer({...answer, ...quest, userId: user.uid});
         };
 
 
@@ -59,7 +59,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
         <div className='mt-4 border border-gray-200 rounded-md p-4 md:mt-0'>
             <div className="text-left bg-gray-100 rounded-md p-4">
                 <p className="max-w-full mb-4 text-md font-bold text-gray-500">
-                    {question.question}
+                    {question.questions}
                 </p>
             </div>
             
@@ -95,7 +95,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
                     {start && !finish && count > 150 && (
                         <button
                             type="button"
-                            className="rounded bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+                            className="bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-orange-400"
                             onClick={handleSubmit}
                             disabled={loading}
                         >

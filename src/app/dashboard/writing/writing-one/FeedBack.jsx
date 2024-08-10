@@ -13,27 +13,27 @@ export default function Feedback({feedback, loading}) {
                 <dl className="-my-3 divide-y divide-gray-100 text-sm">
                     <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
                         <dt className="font-medium text-gray-900 dark:text-slate-400">Grammar & Accuracy</dt>
-                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.grammar?.score}</dd>
+                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.grammar}</dd>
                     </div>
 
                     <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
                         <dt className="font-medium text-gray-900 dark:text-slate-400">Lexical Resource</dt>
-                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.lexical?.score}</dd>
+                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.lexical}</dd>
                     </div>
 
                     <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
                         <dt className="font-medium text-gray-900 dark:text-slate-400">Vocabulary Range</dt>
-                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.vocabulary?.score}</dd>
+                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.vocabulary}</dd>
                     </div>
 
                     <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
                         <dt className="font-medium text-gray-900 dark:text-slate-400">Coherence & Cohesion</dt>
-                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.cohen?.score}</dd>
+                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.cohen}</dd>
                     </div>
 
                     <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
                         <dt className="font-medium text-gray-900 dark:text-slate-400">Task Achivement</dt>
-                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.task?.score}</dd>
+                        <dd className="text-gray-700 sm:col-span-2 dark:text-slate-400">{feedback.task}</dd>
                     </div>
 
                     <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
@@ -67,7 +67,7 @@ export default function Feedback({feedback, loading}) {
                 {feedback.corrections?.map((item, idx) => (
                     <div className='flex flex-col flex-1 gap-1 mt-4' key={idx}>
                         <span
-                        className="inline-flex items-center justify-start rounded-md bg-red-100 px-2.5 py-0.5 text-red-700"
+                        className="inline-flex items-center justify-start rounded-md bg-danger text-white px-2.5 py-0.5 text-red-700"
                     >
                         <p className="whitespace-wrap text-sm">{item.mistakes}</p>
                     </span>

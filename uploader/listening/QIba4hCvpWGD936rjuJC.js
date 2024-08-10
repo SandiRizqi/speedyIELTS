@@ -1,40 +1,4 @@
-const { initializeApp } = require('firebase/app');
-const { getFirestore, collection, addDoc,setDoc, doc } = require('firebase/firestore');
-
-// Your Firebase configuration object
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyBpEG3UKag8YVwKjvrql1RsKXytEQ_jqo4",
-    authDomain: "ielts-ai-b1478.firebaseapp.com",
-    databaseURL: "https://ielts-ai-b1478-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "ielts-ai-b1478",
-    storageBucket: "ielts-ai-b1478.appspot.com",
-    messagingSenderId: "585188926994",
-    appId: "1:585188926994:web:22fce2fb5f7e46ee99dacb",
-    measurementId: "G-LH95ET351W"
-  };
-
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-
-async function uploadDocumentWithID(collectionName, documentID, documentData) {
-    try {
-      await setDoc(doc(db, collectionName, documentID), documentData, {merge: true});
-      console.log("Document written with ID: ", documentID);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  }
-
-// Example usage
-
-
-
-
-const question = [
+export const question = [
     {
         section: 1,
         audio: "gs://ielts-ai-b1478.appspot.com/listening/QIba4hCvpWGD936rjuJC/ELT_IELTS17_t4_audio1.mp3",
@@ -375,7 +339,7 @@ const question = [
 ]
 
 
-const ans = {
+export const answer = {
     1: ["FLOOR", "FLOORS"],
     2: ["FRIDGE"],
     3: ["SHIRTS"],
@@ -417,8 +381,3 @@ const ans = {
     39: ["CLOUDY"],
     40: ["LITRE", "LITER"]
 }
-
-
-
-    //uploadDocument("reading-questions", {question: question});
-uploadDocumentWithID("listening-questions", "QIba4hCvpWGD936rjuJC", {answers: ans, question: question} )

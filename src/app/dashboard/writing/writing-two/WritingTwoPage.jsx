@@ -133,7 +133,7 @@ const WritingTwoPage = () => {
 
   return (
       <>
-        <Breadcrumb pageName='Writing Part Two'/>
+        <Breadcrumb pageName='Writing Task 2'/>
         <div className='flex flex-1 justify-center'>
           <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
             {start && (<Timer minutes={40} seconds={0} />)}

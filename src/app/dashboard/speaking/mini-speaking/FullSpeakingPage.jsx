@@ -22,7 +22,7 @@ const FullSpeakingPage = () => {
   const functions = FirebaseFunction();
   const [question, setQuestion] = useState(null);
   const [start, setStart] = useState(false);
-  const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
+  const order = ["intro1", "part1","closing"];
   const [chatHistory, setChatHistory] = useState([]);
   const [index, setIndex] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -64,13 +64,13 @@ const FullSpeakingPage = () => {
   return (
     <UserProvider>
       <AuthStateChangeProvider>
-        <Breadcrumb pageName='Full Speaking'/>
-        <div className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400'>
+        <Breadcrumb pageName='Mini Speaking'/>
+        <div className='bg-white rounded-sm w-full h-full min-h-screen py-14 dark:bg-slate-800 dark:text-slate-400'>
           <header className="w-full">
             <div className="mx-auto max-w-screen-xl py-14 px-4 sm:px-6 sm:py-12 lg:px-8">
               <div className="sm:flex sm:items-center sm:justify-between">
                 <div className="text-center sm:text-left ">
-                  <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Full-speaking</h1>
+                  <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Mini-Speaking</h1>
                   <div className='flex flex-col mt-4'>
                     <span className="mt-1 inline-flex items-center gap-1.5">
                       <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
@@ -98,15 +98,12 @@ const FullSpeakingPage = () => {
                 <div className="w-full gap-8 p-4 flex max-w-60">
                   {start && <Microphone />}
                 </div>
-                <div className="w-full p-4 min-h-[50vh] h-full">
-                  <div className="bg-slate-300 rounded-lg p-4 h-[40vh] pb-16 flex flex-1 flex-col overflow-y-auto w-full dark:bg-slate-500">
+                <div className="p-4 min-h-[50vh] h-full">
+                  <div className="bg-slate-200 rounded-lg p-4 h-[40vh] flex flex-1 flex-col overflow-y-auto dark:bg-black max-w-full-xl overflow-x-auto dark:text-white">
                     {chatHistory && chatHistory.map((step, idx) => {
-                      if (step === "part1" || step === "part3") {
+                      if (step === "part1") {
                         return <div key={idx}><DynamicChat question={question[step]} changeStep={setIndex} step={index} /></div>
                       };
-                      if (step === "part2") {
-                        return <div key={idx}><PartTwo question={question[step]} index={index} setIndex={setIndex} /></div>
-                      }
                       return <div key={idx}><IntroChat index={index} setIndex={setIndex} question={question[step]} /></div>
                     })}
                     {finished && <SpeakingFeedback finished={finished}/>}

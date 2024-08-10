@@ -30,8 +30,86 @@ const ControlledInput = ({ value, onChange, ...props }) => {
     return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur}/>;
 };
 
+const Timer = ({ minutes, seconds }) => {
+    const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
+  
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (timeLeft.seconds > 0) {
+          setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
+        } else if (timeLeft.minutes > 0) {
+          setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+  
+      return () => clearInterval(interval);
+    }, [timeLeft]);
+  
+    return (
+      <div className='block text-center bg-slate-800 rounded-md p-1'>
+        <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
+      </div>
+    );
+  };
 
 
+const PassageWrapper = ({children}) => {
+
+
+    useEffect(() => {
+        const handleMouseUp = () => {
+          const selection = window.getSelection();
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+    
+            // Extract the selected contents
+            const selectedContents = range.extractContents();
+    
+            // Create a new document fragment to manipulate the selected content
+            const fragment = document.createDocumentFragment();
+    
+            // Loop through each child node in the selected contents
+            Array.from(selectedContents.childNodes).forEach((node) => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                // If it's an element node with the highlight, remove it
+                if (node.classList.contains('bg-yellow-300')) {
+                  node.classList.remove('bg-yellow-300');
+                  fragment.appendChild(node); // Add the node back without highlight
+                } else {
+                  // If not highlighted, wrap in a new span with highlight
+                  const wrapper = document.createElement('span');
+                  wrapper.className = 'bg-yellow-300';
+                  wrapper.appendChild(node);
+                  fragment.appendChild(wrapper);
+                }
+              } else if (node.nodeType === Node.TEXT_NODE) {
+                // For text nodes, wrap in a span with highlight
+                const wrapper = document.createElement('span');
+                wrapper.className = 'bg-yellow-300';
+                wrapper.textContent = node.textContent;
+                fragment.appendChild(wrapper);
+              }
+            });
+    
+            // Insert the modified fragment back into the document
+            range.insertNode(fragment);
+          }
+        };
+    
+        document.addEventListener('mouseup', handleMouseUp);
+    
+        return () => {
+          document.removeEventListener('mouseup', handleMouseUp);
+        };
+      }, []);
+
+
+    return <>
+    {children}
+    </>
+}
 
 
 
@@ -43,6 +121,9 @@ const AcademicReadingPage = () => {
     const [start, setStart] = useState(false);
     const functions = FirebaseFunction();
     const params = useSearchParams();
+
+
+    
    
 
     function TabNavigation() {
@@ -104,7 +185,7 @@ const AcademicReadingPage = () => {
     const RenderQuestion = ({part}) => {
         const QuestionWrapper = ({ children }) => (
             <div
-                className="flex flex-col justify-center bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
+                className="flex flex-col max-w-full justify-center bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
             >
                 <h3 className="text-lg text-gray-700 mb-4">{part?.instruction}</h3>
                 {part?.image && (<img src={part.image} alt="image" className="" />)}
@@ -119,7 +200,7 @@ const AcademicReadingPage = () => {
             case "gap_filling":
                 return (
                     <QuestionWrapper>
-                        {part.html && (parse(part.html, options))}
+                        {part.html && (<div className="w-full">{parse(part.html, options)}</div>)}
                         {part.questions?.map((obj, idx) => (
                             <div key={idx} >
                                 <p className="font-medium">{obj?.number}. {obj?.question}</p>
@@ -128,7 +209,7 @@ const AcademicReadingPage = () => {
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number]}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-md my-1 px-2 border border-gray-300 rounded"
+                                    className="w-md my-1 px-2 border border-gray-300 rounded overflow-x-auto max-w-md"
                                     placeholder="Type your answer here"
                                 />
                             </div>
@@ -144,12 +225,12 @@ const AcademicReadingPage = () => {
                             <div key={idx} className="space-x-4">
                                 <span className="font-medium">{obj.number}.{obj.question}</span>
                                 <select
-                                    className="flex-grow my-1 px-2 border border-gray-300 rounded"
+                                    className="flex-grow my-1 px-2 border border-gray-300 rounded overflow-x-auto max-w-md"
                                     name={`question-${obj.number}`}
                                     onChange={(e) => handleAnswer(obj.number, e.target.value)}
                                     value={answer[obj.number]}
                                 >
-                                    <option value="">Select</option>
+                                    <option value="" >Select</option>
                                     {Object.keys(part.options).map((key, index) => (
                                         <option key={index} value={key}>{key}. {part.options[key]}</option>
                                     ))}
@@ -241,7 +322,11 @@ const AcademicReadingPage = () => {
     return (
         <>
             <Breadcrumb pageName="Academic Reading" />
-            <main className='bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
+            <div className="flex flex-1 justify-center">
+            <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1  top-20 inline-block gap-4 z-50'>
+            {start && (<Timer minutes={60} seconds={0} />)}
+          </div>
+            <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
                 {questions && (
                     <form onSubmit={handleSubmit} className="min-h-screen">
                     <div className="min-h-screen space-y-6">
@@ -250,7 +335,7 @@ const AcademicReadingPage = () => {
                                 return (
                                     <div className="flex flex-col md:flex-row min-h-screen" key={index}>
                                         <div className="flex flex-col w-full md:w-1/2 relative overflow-y-auto max-h-screen">
-                                            {question.html && (parse(question.html, options))}
+                                            {question.html && (<PassageWrapper>{parse(question.html, options)}</PassageWrapper>)}
                                         </div>
                                         <div className="w-full md:w-1/2 p-4 flex flex-col overflow-y-auto max-h-screen">
                                             {question.parts.map((obj, idx) => (
@@ -278,6 +363,9 @@ const AcademicReadingPage = () => {
                 </form>
                 )}
             </main>
+
+            </div>
+            
         </>
     )
 };
