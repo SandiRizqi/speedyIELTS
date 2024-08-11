@@ -1,9 +1,8 @@
 'use client'
 import withUser from "@/hooks/withUser";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import parse, { attributesToProps } from 'html-react-parser';
-import { useRef } from "react";
 import { useUser } from "@/service/user";
 import { useSearchParams } from "next/navigation";
 import AudioPlayer from "./AudioPlayer";
@@ -13,6 +12,7 @@ import { httpsCallable } from "firebase/functions";
 import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
 import {SuccessMessage} from "@/app/dashboard/_components/Alert";
+
 //import { sample1 as questions } from "./sample1";
 
 
@@ -76,6 +76,9 @@ const AcademicListeningPage = () => {
     const functions = FirebaseFunction();
     const formRef = useRef(null);
     const params = useSearchParams();
+
+
+
 
     const handleAnswer = (questionId, answer) => {
         setAnswer(prev => ({ ...prev, [questionId]: answer }));
@@ -294,9 +297,9 @@ const AcademicListeningPage = () => {
 
 
 
-
     useEffect(() => {
         getQuestionID();
+        
     },[])
 
     if (!questions) {
@@ -306,6 +309,9 @@ const AcademicListeningPage = () => {
     if (questions && !start) {
         return <StartInstruction setStart={setStart}/>
     }
+
+
+    
 
     
 
