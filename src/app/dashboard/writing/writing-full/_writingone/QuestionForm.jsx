@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { FirestoreDB, FirebaseStorge } from '@/service/firebase';
-import { collection, getDocs } from "firebase/firestore";
+import { FirebaseStorge } from '@/service/firebase';
 import { ref, getDownloadURL } from 'firebase/storage';
-import LoadingQuestion from '../LoadingQuestion';
 
 
-export default function QuestionForm({ start, answer, setAnswer, handleSubmit, loading, finish, feedback}) {
-    const db = FirestoreDB();
+
+
+export default function QuestionForm({ finish, answer, setAnswer, feedback, question}) {
     const drive = FirebaseStorge();
-    const questionsRef = collection(db, "writing1-questions");
-    const [loadquestion, setLoadQuestion] = useState(true);
-    const [question, setQuestion] = useState(null);
+    const [questions, setQuestion] = useState(question);
     const [text, setText] = useState('');
     const [highlightedText, setHighlightedText] = useState("");
     
@@ -51,40 +48,22 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
                 const storageRef = ref(drive, quest.picture);
                 const url = await getDownloadURL(storageRef);
                 setQuestion({...quest, pictureURL: url})
-                setAnswer({...answer, pictureURL: url, question: quest.question})
-                setLoadQuestion(false);
+                setAnswer({...answer, pictureURL: url, question: quest.questions})
               } catch (error) {
                 console.error("Error fetching image URL:", error);
               }
         };
 
-        const getQuestions = async () => {
-            try {
-                const querySnapshot = await getDocs(questionsRef);
-                const questions = querySnapshot.docs.map(doc => doc.data());
-                const randomIndex = Math.floor(Math.random() * questions.length);
-                const selectedQuestion = questions[randomIndex]
-                getPicture(selectedQuestion);
-                     
-            } catch (error) {
-                console.error("Error fetching questions:", error);
-            } 
-        };
 
-        if (!question) {
-            getQuestions();
+        if (questions) {
+            getPicture(question);
         };
 
 
 
 
-    }, [question]);
+    }, [questions]);
 
-
-
-    if (loadquestion && question === null) {
-        return <LoadingQuestion />
-    }
 
 
 
@@ -94,11 +73,11 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
 
             <div className="text-left bg-gray-100 rounded-md p-4">
                 <p className="max-w-full mb-4 text-md font-bold text-gray-500">
-                    {question.question}
+                    {questions.questions}
                 </p>
             </div>
             <div className='w-full items-center justify-center flex mt-4'>
-                <img src={question.pictureURL} alt="img" />
+                <img src={questions.pictureURL} alt="img" />
             </div>
 
 
@@ -114,7 +93,7 @@ export default function QuestionForm({ start, answer, setAnswer, handleSubmit, l
                         rows="8"
                         onChange={handleAnswerChange}
                         value={text}
-                        disabled={!start}
+                        disabled={finish}
                         placeholder="Enter your answer here... ."
                     ></textarea>
                 )}

@@ -5,6 +5,9 @@ import WritingTwo from './_writingtwo/page';
 import { useState, useEffect, useCallback } from 'react';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import StartInstruction from './StartInstruction';
+import Loader from '@/components/common/Loader';
+import { httpsCallable } from 'firebase/functions';
+import { FirebaseFunction } from '@/service/firebase';
 
 const Timer = ({ minutes, seconds, setFinish }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -39,6 +42,8 @@ const Timer = ({ minutes, seconds, setFinish }) => {
 export default function WritingFullPage() {
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
+  const [question, setQuestion] = useState(null);
+  const functions = FirebaseFunction();
   const [activeTab, setActiveTab] = useState(1);
 
   
@@ -76,11 +81,56 @@ export default function WritingFullPage() {
         </div>
       </div>
     );
+  };
+
+  const getQuestion = async (typequest) => {
+    const getData = httpsCallable(functions, 'getQuestion');
+    let quest;
+    try {
+      await getData({ type: typequest }).then((result) => {
+        quest = result.data;
+      });
+      return quest;
+
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+    }
+
+  };
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [question1, question2] = await Promise.all([
+          getQuestion("writing1-questions"),
+          getQuestion("writing2-questions"),
+        ]);
+
+        if (!question1 || !question2) {
+          throw new Error('Failed to fetch data');
+        };
+        console.log(question1, question2)
+        setQuestion({question1: question1, question2: question2})
+
+        
+      } catch (error) {
+        console.log(error.message);
+      };
+    };
+
+    fetchData();
+
+  }, [])
+
+  if (!question) {
+    return <Loader />
   }
 
-  if (!start) {
+  if (!start && question) {
     return <StartInstruction setStart={setStart}/>
-  }
+  };
+
 
   return (
     <>
@@ -89,8 +139,8 @@ export default function WritingFullPage() {
         <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
           {start && (<Timer minutes={60} seconds={0} setFinish={setFinish}/>)}
         </div>
-        <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800'>
-          {activeTab === 1 ? <WritingOne start={start} finish={finish} /> : <WritingTwo start={start} finish={finish} />}
+        <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>
+          {activeTab === 1 ? <WritingOne finish={finish} question={question}/> : <WritingTwo finish={finish} question={question} />}
 
           <div className="m-8 flex justify-end gap-4">
             <TabNavigation />

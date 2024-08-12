@@ -5,7 +5,7 @@ import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import axios from 'axios';
 
-const WritingTwo = ({start, finish}) => {
+const WritingTwo = ({finish, question}) => {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState({
     questionId: '',
@@ -29,7 +29,6 @@ const WritingTwo = ({start, finish}) => {
       axios.post(`${process.env.NEXT_PUBLIC_EXAMINER_URL}/getwritingscore`, answer, config)
         .then((res) => {
           setFeedback(res.data)
-          console.log(res.data)
           setLoading(false);
         })
         .catch(() => {
@@ -114,7 +113,7 @@ const WritingTwo = ({start, finish}) => {
 
 
           <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-            <QuestionForm answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish}  feedback={feedback} />
+            <QuestionForm answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit}  loading={loading} finish={finish}  feedback={feedback} question={question['question2']} />
             {feedback && (
               <div className='mt-4'>
                 <span className='font-bold'>Evaluation: </span>
