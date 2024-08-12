@@ -52,7 +52,7 @@ const AudioPlayer = ({ audioUrls }) => {
         }  
     };
     return (
-        <div className="flex flex-1 w-full p-4 items-center justify-center  bg-gray-100">
+        <div className="flex flex-1 max-w-screen p-4 items-center justify-center  bg-gray-100">
             <audio ref={audioRef}>
                 <source src={currentUrl} type="audio/mpeg" />
             </audio>

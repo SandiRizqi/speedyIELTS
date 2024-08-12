@@ -34,7 +34,7 @@ const DefaultLayout = ({
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main>
-            <div className={fullpage.includes(pathname) ?  "mx-auto w-full p-4 md:p-6 2xl:p-10 h-full min-h-screen": "mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 h-full min-h-screen"}>
+            <div className={fullpage.includes(pathname) ?  "mx-auto max-w-screen p-4 md:p-6 2xl:p-10 h-full min-h-screen": "mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 h-full min-h-screen"}>
               <Motion>
                 {children}
               </Motion>
