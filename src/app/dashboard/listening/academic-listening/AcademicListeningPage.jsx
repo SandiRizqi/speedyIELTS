@@ -13,6 +13,7 @@ import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
 import {SuccessMessage} from "@/app/dashboard/_components/Alert";
 
+
 //import { sample1 as questions } from "./sample1";
 
 
@@ -76,6 +77,7 @@ const AcademicListeningPage = () => {
     const functions = FirebaseFunction();
     const formRef = useRef(null);
     const params = useSearchParams();
+  
 
 
 
@@ -243,23 +245,6 @@ const AcademicListeningPage = () => {
 
     };
 
-    const calculateScore = (userData, keyAnswers) => {
-        let score = 0;
-        const totalQuestions = Object.keys(keyAnswers).length;
-      
-        // Iterate over the key answers
-        for (const [questionId, correctAnswers] of Object.entries(keyAnswers)) {
-          const userAnswer = userData[questionId];
-          if (correctAnswers.includes(userAnswer?.toUpperCase())) {
-            score += 1; // Increase score if the user's answer is correct
-          }
-        }
-        const totalScore = {
-            correct: score,
-            totalQuestion: totalQuestions
-        }
-        return totalScore;
-    };
       
 
     
@@ -318,7 +303,7 @@ const AcademicListeningPage = () => {
     return (
         <>
             <Breadcrumb pageName="Academic Listening" />
-            <main className='bg-white text-black rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
+            <main className='bg-white text-black rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main" >
                 {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
                 {testResult && (<ScoreComponent score={testResult['result']}/>)}
                 {questions && (

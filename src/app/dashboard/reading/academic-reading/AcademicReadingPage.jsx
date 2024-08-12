@@ -10,7 +10,8 @@ import { useSearchParams } from 'next/navigation';
 import parse, { attributesToProps } from 'html-react-parser';
 import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
-import {SuccessMessage} from "@/app/dashboard/_components/Alert";
+import {SuccessMessage, ErrorMessage} from "@/app/dashboard/_components/Alert";
+import ScoreComponent from "./ScoreComponent";
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
@@ -125,6 +126,7 @@ const AcademicReadingPage = () => {
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
     const [questions, setQuestion] = useState(null);
+    const [testResult, setTestResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [start, setStart] = useState(false);
     const functions = FirebaseFunction();
@@ -180,6 +182,7 @@ const AcademicReadingPage = () => {
             type="text"
             name={`question-${props.name}`}
             value={answer[props.name] || "" }
+            disable={testResult}
             onChange={(value) => handleAnswer(props.name, value)}
             className="w-md my-1 px-2 border border-gray-300 rounded"
             placeholder={props.name}
@@ -299,17 +302,21 @@ const AcademicReadingPage = () => {
     }
 
     const getAnswers = async (userAnswer) => {
-        let data;
-        let score;
-        setLoading(true);
-        const getData = httpsCallable(functions, 'getQuestionAnswers');
-        await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid }).then((result) => {
-            data = result.data;  
-            score = data['result']
-            SuccessMessage({score: score["overall"]})
-            setLoading(false);
-        });
-        return [data, score];   
+        try {
+            let data;
+            let score;
+            setLoading(true);
+            const getData = httpsCallable(functions, 'getQuestionAnswers');
+            await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid }).then((result) => {
+                data = result.data;  
+                score = data['result']
+                SuccessMessage({score: score["overall"]})
+                setLoading(false);
+            });
+            return [data, score];   
+        } catch {
+            ErrorMessage("Error calculating your score.")
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -350,8 +357,9 @@ const AcademicReadingPage = () => {
             {start && (<Timer minutes={60} seconds={0} />)}
           </div>
             <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
+                {testResult && (<ScoreComponent score={testResult['result']}/>)}
                 {questions && (
-                    <form onSubmit={handleSubmit} className="min-h-screen">
+                    <form onSubmit={handleSubmit} className="min-h-screen" >
                     <div className="min-h-screen space-y-6">
                         {questions["questions"].map((question, index) => {
                             if (question.section === activeTab) {
@@ -386,7 +394,6 @@ const AcademicReadingPage = () => {
                 </form>
                 )}
             </main>
-
             </div>
             
         </>
