@@ -3,43 +3,10 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
-import axios from 'axios';
-
-const WritingOne = ({start, finish, question}) => {
-  const [loading, setLoading] = useState(false);
-  const [answer, setAnswer] = useState({
-    questionId: '',
-    testType: 'WritingTask1',
-    answer: '',
-  });
-  const [feedback, setFeedback] = useState(null);
 
 
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    try {
-      axios.post(`${process.env.NEXT_PUBLIC_EXAMINER_URL}/getwritingscore`, answer, config)
-        .then((res) => {
-          setFeedback(res.data)
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-    catch (error) {
-      console.log(error);
-      setLoading(false)
-    }
-  };
+const WritingOne = ({question, setAnswer, feedback, isLoading}) => {
 
 
 
@@ -93,7 +60,7 @@ const WritingOne = ({start, finish, question}) => {
               </div>
 
               <div className="mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
-                {finish && feedback && (<Overall score={feedback.overall} />)}
+                {feedback && (<Overall score={feedback.overall} />)}
               </div>
             </div>
           </div>
@@ -107,13 +74,13 @@ const WritingOne = ({start, finish, question}) => {
                 Feedback :
               </p>
             </div>
-            {!feedback && !loading && (<span className='inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700'>Submit your answer to get feedback and score!</span>)}
-            <Feedback feedback={feedback} loading={loading} />
+            {!feedback && !isLoading && (<span className='inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700'>Submit your answer to get feedback and score!</span>)}
+            <Feedback feedback={feedback} loading={isLoading} />
           </div>
 
 
           <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-            <QuestionForm answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish} feedback={feedback} question={question['question1']}/>
+            <QuestionForm setAnswer={setAnswer}  loading={isLoading} feedback={feedback} question={question['question1']}/>
             {feedback && (
               <div className='mt-4'>
                 <span className='font-bold'>Evaluation: </span>

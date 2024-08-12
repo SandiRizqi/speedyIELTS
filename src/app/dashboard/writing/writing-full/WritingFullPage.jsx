@@ -8,6 +8,8 @@ import StartInstruction from './StartInstruction';
 import Loader from '@/components/common/Loader';
 import { httpsCallable } from 'firebase/functions';
 import { FirebaseFunction } from '@/service/firebase';
+import { SuccessMessage, ErrorMessage } from '../../_components/Alert';
+import axios from 'axios';
 
 const Timer = ({ minutes, seconds, setFinish }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -42,11 +44,75 @@ const Timer = ({ minutes, seconds, setFinish }) => {
 export default function WritingFullPage() {
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [answer, setAnswer] = useState({
+    task1: {
+      createdAt: Date.now(),
+      questionId: '',
+      testType: 'WritingTask1',
+      answer: '',
+    },
+    task2:
+    {
+      createdAt: Date.now(),
+      questionId: '',
+      testType: 'WritingTask2',
+      answer: '',
+    }
+  });
+  const [feedback, setFeedback] = useState(null);
   const [question, setQuestion] = useState(null);
   const functions = FirebaseFunction();
   const [activeTab, setActiveTab] = useState(1);
 
-  
+
+
+  const getResult = async (values) => {
+    let data;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_EXAMINER_URL}/getwritingscore`, values, config)
+        .then((res) => {
+          data = res.data
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      return data;
+    }
+    catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const [feedback1, feedback2] = await Promise.all([
+        getResult(answer['task1']),
+        getResult[answer['task2']],
+      ]);
+
+      setIsLoading(false);
+
+      if (!feedback1 || !feedback2) {
+        throw new Error('Failed to fetch data');
+      };
+
+      setFeedback({ feedback1: feedback1, feedback2: feedback2 });
+      SuccessMessage({ score: 2 })
+
+
+    } catch (e) {
+      ErrorMessage(e);
+      setIsLoading(false);
+    }
+  };
+
 
 
   function TabNavigation() {
@@ -70,8 +136,8 @@ export default function WritingFullPage() {
               aria-selected={activeTab === tab}
               tabIndex={activeTab === tab ? 0 : -1}
               className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
-                  ? 'border-b-2 border-blue-500 text-blue-500'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'border-b-2 border-blue-500 text-blue-500'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
               onClick={() => setActiveTab(tab)}
             >
@@ -110,10 +176,9 @@ export default function WritingFullPage() {
         if (!question1 || !question2) {
           throw new Error('Failed to fetch data');
         };
-        console.log(question1, question2)
-        setQuestion({question1: question1, question2: question2})
+        setAnswer(prev => ({ ...prev, task1: { ...prev['task1'], questionId: question1['questionId'] }, task2: { ...prev['task2'], questionId: question2['questionId'] } }))
+        setQuestion({ question1: question1, question2: question2 });
 
-        
       } catch (error) {
         console.log(error.message);
       };
@@ -128,7 +193,7 @@ export default function WritingFullPage() {
   }
 
   if (!start && question) {
-    return <StartInstruction setStart={setStart}/>
+    return <StartInstruction setStart={setStart} />
   };
 
 
@@ -137,18 +202,19 @@ export default function WritingFullPage() {
       <Breadcrumb pageName='Writing' />
       <div className='flex flex-1 justify-center'>
         <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
-          {start && (<Timer minutes={60} seconds={0} setFinish={setFinish}/>)}
+          {start && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>
-          {activeTab === 1 ? <WritingOne finish={finish} question={question}/> : <WritingTwo finish={finish} question={question} />}
+          {activeTab === 1 ? <WritingOne question={question} answer={answer['task1']} setAnswer={setAnswer} feedback={feedback?.feedback1} isLoading={isLoading} /> : <WritingTwo question={question} answer={answer['task2']} setAnswer={setAnswer} feedback={feedback?.feedback2} isLoading={isLoading} />}
 
           <div className="m-8 flex justify-end gap-4">
             <TabNavigation />
             <button
               className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-
+              onClick={() => handleSubmit()}
+              disabled={feedback}
             >
-              Submit
+              {isLoading ? "Loading...": "Submit"}
             </button>
           </div>
         </div>

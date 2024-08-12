@@ -5,7 +5,7 @@ import { ref, getDownloadURL } from 'firebase/storage';
 
 
 
-export default function QuestionForm({ finish, answer, setAnswer, feedback, question}) {
+export default function QuestionForm({ setAnswer, feedback, question, loading}) {
     const drive = FirebaseStorge();
     const [questions, setQuestion] = useState(question);
     const [text, setText] = useState('');
@@ -23,7 +23,7 @@ export default function QuestionForm({ finish, answer, setAnswer, feedback, ques
 
 
     const handleAnswerChange = (event) => {
-        setAnswer({ ...answer, answer: event.target.value});
+        setAnswer(prev => ({...prev, task1 : { ...prev['task1'],  answer: event.target.value}}));
         setText(event.target.value);
     };
 
@@ -48,7 +48,7 @@ export default function QuestionForm({ finish, answer, setAnswer, feedback, ques
                 const storageRef = ref(drive, quest.picture);
                 const url = await getDownloadURL(storageRef);
                 setQuestion({...quest, pictureURL: url})
-                setAnswer({...answer, pictureURL: url, question: quest.questions})
+                setAnswer(prev => ({...prev, task1: { pictureURL: url, ...prev['task1']}}))
               } catch (error) {
                 console.error("Error fetching image URL:", error);
               }
@@ -62,7 +62,7 @@ export default function QuestionForm({ finish, answer, setAnswer, feedback, ques
 
 
 
-    }, [questions]);
+    }, []);
 
 
 
@@ -93,7 +93,7 @@ export default function QuestionForm({ finish, answer, setAnswer, feedback, ques
                         rows="8"
                         onChange={handleAnswerChange}
                         value={text}
-                        disabled={finish}
+                        disabled={loading}
                         placeholder="Enter your answer here... ."
                     ></textarea>
                 )}

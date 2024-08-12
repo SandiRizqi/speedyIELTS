@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 
 
-export default function QuestionForm({ answer, setAnswer, finish, feedback, question }) {
+export default function QuestionForm({ setAnswer, feedback, question, loading }) {
     const [text, setText] = useState('');
     const [highlightedText, setHighlightedText] = useState("");
     
@@ -18,7 +18,7 @@ export default function QuestionForm({ answer, setAnswer, finish, feedback, ques
 
 
     const handleAnswerChange = (event) => {
-        setAnswer({ ...answer, answer: event.target.value });
+        setAnswer(prev => ({ ...prev, task2 : { ...prev['task2'], answer: event.target.value }}));
         setText(event.target.value);
     };
 
@@ -61,7 +61,7 @@ export default function QuestionForm({ answer, setAnswer, finish, feedback, ques
                                     rows="13"
                                     onChange={handleAnswerChange}
                                     value={text}
-                                    disabled={finish}
+                                    disabled={loading}
                                     placeholder="Enter your answer here... ."
                                 ></textarea>
                             )}

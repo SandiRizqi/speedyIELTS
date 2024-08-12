@@ -15,7 +15,6 @@ const DefaultLayout = ({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const fullpage = ['/dashboard/reading/academic-reading']
-  console.log(pathname)
  
 
   return (
