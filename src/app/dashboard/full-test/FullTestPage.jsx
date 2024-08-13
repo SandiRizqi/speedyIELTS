@@ -4,10 +4,12 @@ import { useEffect, useState, useCallback } from "react";
 import AcademicListeningPage from "../listening/academic-listening/AcademicListeningPage";
 import AcademicReadingPage from "../reading/academic-reading/AcademicReadingPage";
 import WritingFullPage from "../writing/writing-full/WritingFullPage";
+import StartInstruction from "./StartInstruction";
 
 
 const FullTestPage = () => {
     const [activeTab, setActiveTab] = useState('listening');
+    const [start, setStart] = useState(false);
 
     function TabNavigation() {
         const tabs = ['listening', 'reading', 'writing', 'speaking'];
@@ -16,8 +18,11 @@ const FullTestPage = () => {
           if (e.key === 'ArrowRight') {
             setActiveTab((prev) => (prev + 1) % tabs.length);
           } else if (e.key === 'ArrowLeft') {
-            setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
+            // Prevent any action when ArrowLeft is pressed
+            e.preventDefault();
           }
+
+
         }, [tabs.length]);
       
         return (
@@ -59,13 +64,19 @@ const FullTestPage = () => {
 
     };
 
+    if(!start) {
+        return <StartInstruction setStart={setStart}/>
+    }
+
 
 
     return (
-        <div className={activeTab !== 'reading' ? "mx-auto max-w-screen-2xl": "mx-auto max-w-full"}>
+        <>
         <TabNavigation />
+        <div className={activeTab !== 'reading' ? "mx-auto max-w-screen-2xl": "mx-auto max-w-full"}>
         <RenderPage page={activeTab}/>
         </div>
+        </>
     )
 }
 
