@@ -77,7 +77,7 @@ export default function QuestionForm({ setAnswer, feedback, question, loading}) 
                 </p>
             </div>
             <div className='w-full items-center justify-center flex mt-4'>
-                <img src={questions.pictureURL} alt="img" />
+                <img src={questions.pictureURL} alt="img"  className='max-h-400 object-contain'/>
             </div>
 
 
