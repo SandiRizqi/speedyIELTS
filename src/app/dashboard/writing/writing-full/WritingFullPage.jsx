@@ -41,7 +41,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
   );
 };
 
-export default function WritingFullPage({isFullTest, collectAnswer}) {
+export default function WritingFullPage({isFullTest, setCollectAnswer, setFinishTest}) {
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
