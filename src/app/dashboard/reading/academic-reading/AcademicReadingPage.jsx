@@ -121,7 +121,7 @@ const ControlledInput = ({ value, onChange, ...props }) => {
     return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur} />;
 };
 
-const AcademicReadingPage = () => {
+const AcademicReadingPage = ({isFullTest, setCollectAnswer, setFinishTest}) => {
     const user = useUser();
     const [answer, setAnswer] = useState({});
     const [activeTab, setActiveTab] = useState(1);
@@ -333,6 +333,12 @@ const AcademicReadingPage = () => {
         });
     };
 
+    const handleCollect =  (e) => {
+        e.preventDefault();
+        console.log(answer);
+        //setCollectAnswer(prev => ({...prev, reading: answer}));
+    };
+
 
     useEffect(() => {
         //getQuestions();
@@ -358,7 +364,7 @@ const AcademicReadingPage = () => {
                 <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
                     {testResult && (<ScoreComponent score={testResult['result']} />)}
                     {questions && (
-                        <form onSubmit={handleSubmit} className="min-h-screen" >
+                        <form  className="min-h-screen" >
                             <div className="min-h-screen space-y-6">
                                 {questions["questions"].map((question, index) => {
                                     if (question.section === activeTab) {
@@ -386,7 +392,8 @@ const AcademicReadingPage = () => {
                                 {!testResult && (
                                     <button
                                         className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                                        type="submit"
+                                        type="button"
+                                        onClick={!isFullTest ? handleSubmit: handleCollect}
                                     >
                                         {!loading ? 'Submit' : 'Loading...'}
                                     </button>

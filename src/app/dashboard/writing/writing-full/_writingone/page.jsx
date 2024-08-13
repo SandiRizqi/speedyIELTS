@@ -6,7 +6,7 @@ import Feedback from './FeedBack';
 
 
 
-const WritingOne = ({question, setAnswer, feedback, isLoading}) => {
+const WritingOne = ({answer,question, setAnswer, feedback, isLoading}) => {
 
 
 
@@ -80,7 +80,7 @@ const WritingOne = ({question, setAnswer, feedback, isLoading}) => {
 
 
           <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-            <QuestionForm setAnswer={setAnswer}  loading={isLoading} feedback={feedback} question={question['question1']}/>
+            <QuestionForm answer={answer} setAnswer={setAnswer}  loading={isLoading} feedback={feedback} question={question['question1']}/>
             {feedback && (
               <div className='mt-4'>
                 <span className='font-bold'>Evaluation: </span>

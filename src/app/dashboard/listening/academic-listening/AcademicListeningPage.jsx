@@ -65,7 +65,7 @@ const ControlledInput = ({ value, onChange, ...props }) => {
 
 
 
-const AcademicListeningPage = () => {
+const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) => {
     const user = useUser();
     const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState({});
@@ -281,6 +281,13 @@ const AcademicListeningPage = () => {
     };
 
 
+    const handleCollect =  (e) => {
+        e.preventDefault();
+        console.log(answer);
+        //setCollectAnswer(prev => ({...prev, reading: answer}));
+    };
+
+
 
     useEffect(() => {
         getQuestionID();
@@ -307,7 +314,7 @@ const AcademicListeningPage = () => {
                 {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
                 {testResult && (<ScoreComponent score={testResult['result']}/>)}
                 {questions && (
-                    <form onSubmit={handleSubmit} className="min-h-screen" ref={formRef} id="answerform">
+                    <form  className="min-h-screen" ref={formRef} >
                     <div className="min-h-screen space-y-6">
                         {questions["questions"].map((question, index) => {
                             if (question.section === activeTab) {
@@ -332,7 +339,8 @@ const AcademicListeningPage = () => {
                         {!testResult && (
                             <button
                             className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                            type="submit"
+                            type="button"
+                            onClick={!isFullTest ? handleSubmit: handleCollect}
                         >
                             {!loading ? 'Submit' : 'Loading...'}
                         </button>

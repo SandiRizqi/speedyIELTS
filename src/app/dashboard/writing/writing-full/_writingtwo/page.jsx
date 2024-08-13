@@ -76,7 +76,7 @@ const WritingTwo = ({question, answer, setAnswer, feedback, isLoading}) => {
 
 
           <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-            <QuestionForm setAnswer={setAnswer}  loading={isLoading}  feedback={feedback} question={question['question2']} />
+            <QuestionForm answer={answer} setAnswer={setAnswer}  loading={isLoading}  feedback={feedback} question={question['question2']} />
             {feedback && (
               <div className='mt-4'>
                 <span className='font-bold'>Evaluation: </span>

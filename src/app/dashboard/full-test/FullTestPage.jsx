@@ -9,6 +9,8 @@ import StartInstruction from "./StartInstruction";
 
 const FullTestPage = () => {
     const [activeTab, setActiveTab] = useState('listening');
+    const [finishTest, setFinishTest] = useState([])
+    const [collectAnswer, setCollectAnswer] = useState({});
     const [start, setStart] = useState(false);
 
     function TabNavigation() {
@@ -53,11 +55,11 @@ const FullTestPage = () => {
 
         switch (page) {
             case 'listening':
-                return (<div className="max-w-screen-2xl"><AcademicListeningPage /></div>)
+                return (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={setCollectAnswer}/></div>)
             case 'reading':
-                return (<AcademicReadingPage />)
+                return (<AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={setCollectAnswer}/>)
             case 'writing':
-                return <WritingFullPage />
+                return <WritingFullPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={setCollectAnswer}/>
             default:
                 return null;
         }
@@ -74,7 +76,7 @@ const FullTestPage = () => {
         <>
         <TabNavigation />
         <div className={activeTab !== 'reading' ? "mx-auto max-w-screen-2xl": "mx-auto max-w-full"}>
-        <RenderPage page={activeTab}/>
+            <RenderPage page={activeTab}/>
         </div>
         </>
     )

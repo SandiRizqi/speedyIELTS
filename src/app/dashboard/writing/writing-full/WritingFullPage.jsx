@@ -41,7 +41,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
   );
 };
 
-export default function WritingFullPage() {
+export default function WritingFullPage({isFullTest, collectAnswer}) {
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -90,6 +90,10 @@ export default function WritingFullPage() {
   };
 
   const handleSubmit = async () => {
+    if (isFullTest) {
+      return console.log(answer)
+    }
+
     setIsLoading(true);
     try {
       const [feedback1, feedback2] = await Promise.all([
