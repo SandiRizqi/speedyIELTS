@@ -145,7 +145,7 @@ const menuGroups = [
 
         ),
         label: "Full test",
-        route: "#",
+        route: "/dashboard/full-test",
       },
     ]
   },
