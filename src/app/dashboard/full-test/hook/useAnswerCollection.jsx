@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-export const InitState = {};
+export const InitState = {listening: {}, reading: {}, writing: {}, speaking: {}};
 
 
 
@@ -11,16 +11,16 @@ export const useAnswer = () => {
 }
 
 export const AnswerProvider = (props) => {
-    const [state, setState] = useState(InitState);
+    const [globalState, setGlobalState] = useState(InitState);
 
     const addAnswer = (data) => {
-        setState(prev => ({...prev, data}));
-        console.log(state);
+        setGlobalState(data);
+        console.log(globalState);
     };
 
 
     const values = {
-        state,
+        globalState,
         addAnswer,
     }
 

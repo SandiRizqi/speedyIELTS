@@ -121,11 +121,11 @@ const ControlledInput = ({ value, onChange, ...props }) => {
     return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur} />;
 };
 
-const AcademicReadingPage = ({isFullTest, setCollectAnswer, setFinishTest}) => {
+const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) => {
     const user = useUser();
-    const [answer, setAnswer] = useState({});
+    const [answer, setAnswer] = useState(savedAnswer || {});
     const [activeTab, setActiveTab] = useState(1);
-    const [questions, setQuestion] = useState(null);
+    const [questions, setQuestion] = useState(savedQuestion);
     const [testResult, setTestResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [start, setStart] = useState(false);
@@ -327,22 +327,30 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setFinishTest}) => {
     };
 
 
-    const getQuestionID = async () => {
-        const getData = httpsCallable(functions, 'getQuestion');
-        getData({ type: "reading-questions", id: params.get("id") }).then((result) => {
-            setQuestion(result.data)
-        });
-    };
+    
 
     const handleCollect =  (e) => {
         e.preventDefault();
-        setCollectAnswer({reading: answer});
+        setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], answer: answer}}));
+        setNextTest('writing')
     };
 
 
     useEffect(() => {
         //getQuestions();
-        getQuestionID();
+        const getQuestionID = async () => {
+            const getData = httpsCallable(functions, 'getQuestion');
+            await getData({ type: "reading-questions", id: params.get("id") }).then((result) => {
+                setQuestion(result.data);
+                if (isFullTest) {
+                    setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], question: result.data}}));
+                }
+            });
+        };
+
+        if(!questions) {
+            getQuestionID();
+        }
     }, []);
 
 

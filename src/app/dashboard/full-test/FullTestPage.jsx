@@ -10,9 +10,8 @@ import { useAnswer } from "./hook/useAnswerCollection";
 
 const FullTestPage = () => {
     const [activeTab, setActiveTab] = useState('listening');
-    const [finishTest, setFinishTest] = useState([])
     const [start, setStart] = useState(false);
-    const {addAnswer} = useAnswer();
+    const {globalState, addAnswer} = useAnswer();
 
     function TabNavigation() {
         const tabs = ['listening', 'reading', 'writing', 'speaking'];
@@ -36,13 +35,14 @@ const FullTestPage = () => {
                   key={index}
                   role="tab"
                   aria-selected={activeTab === tab}
+                  disabled
                   tabIndex={activeTab === tab ? 0 : -1}
                   className={`py-2 px-4 font-medium text-sm focus:outline-none ${
                     activeTab === tab
                       ? 'border-b-2 border-blue-500 text-blue-500'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
-                  onClick={() => setActiveTab(tab)}
+                 
                 >
                   {tab.toUpperCase()}
                 </button>
@@ -52,20 +52,6 @@ const FullTestPage = () => {
         );
       }
 
-    const RenderPage = () => {
-
-        switch (activeTab) {
-            case 'listening':
-                return <div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/></div>
-            case 'reading':
-                return <AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>
-            case 'writing':
-                return <WritingFullPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>
-            default:
-                return null;
-        }
-
-    };
 
     if(!start) {
         return <StartInstruction setStart={setStart}/>
@@ -77,9 +63,9 @@ const FullTestPage = () => {
         <>
         <TabNavigation />
         <div className={activeTab !== 'reading' ? "mx-auto max-w-screen-2xl": "mx-auto max-w-full"}>
-            {activeTab === 'listening' && (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/></div>)}
-            {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>)}
-            {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>)}
+            {activeTab === 'listening' && (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['listening']?.question} savedAudio={globalState['listening']?.audio} savedAnswer={globalState['listening']?.answer}/></div>)}
+            {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['reading']?.question} savedAnswer={globalState['reading']?.answer}/>)}
+            {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer}/>)}
         </div>
         </>
     )

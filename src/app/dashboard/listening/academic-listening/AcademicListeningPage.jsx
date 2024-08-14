@@ -66,14 +66,14 @@ const ControlledInput = ({ value, onChange, ...props }) => {
 
 
 
-const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) => {
+const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAudio, savedAnswer}) => {
     const user = useUser();
     const [loading, setLoading] = useState(false);
-    const [answer, setAnswer] = useState({});
+    const [answer, setAnswer] = useState(savedAnswer || {});
     const [activeTab, setActiveTab] = useState(1);
     const [testResult, setTestResult] = useState(null);
-    const [questions, setQuestion] = useState(null);
-    const [audioPath, setAudioPath ] = useState(null);
+    const [questions, setQuestion] = useState(savedQuestion);
+    const [audioPath, setAudioPath ] = useState(savedAudio);
     const [start, setStart] = useState(false);
     const functions = FirebaseFunction();
     const formRef = useRef(null);
@@ -276,7 +276,8 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) =>
 
     const handleCollect =  (e) => {
         e.preventDefault();
-        setCollectAnswer({listening: answer});
+        setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], answer: answer}}));
+        setNextTest('reading');
     };
 
 
@@ -289,10 +290,16 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) =>
                 const paths = quest["questions"].map(obj => obj.audio);
                 setAudioPath(paths);
                 setQuestion(quest);
+                if (isFullTest) {
+                    setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], question: quest, audio: paths}}));
+                }
             });
         };
 
-        getQuestionID();   
+        if(!questions) {
+            getQuestionID();   
+        };
+        
     },[])
 
     if (!questions) {

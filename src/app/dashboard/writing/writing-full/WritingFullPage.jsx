@@ -41,11 +41,11 @@ const Timer = ({ minutes, seconds, setFinish }) => {
   );
 };
 
-export default function WritingFullPage({isFullTest, setCollectAnswer, setFinishTest}) {
+export default function WritingFullPage({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) {
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [answer, setAnswer] = useState({
+  const [answer, setAnswer] = useState(savedAnswer || {
     task1: {
       createdAt: Date.now(),
       questionId: '',
@@ -61,7 +61,7 @@ export default function WritingFullPage({isFullTest, setCollectAnswer, setFinish
     }
   });
   const [feedback, setFeedback] = useState(null);
-  const [question, setQuestion] = useState(null);
+  const [question, setQuestion] = useState(savedQuestion);
   const functions = FirebaseFunction();
   const [activeTab, setActiveTab] = useState(1);
 
@@ -91,7 +91,7 @@ export default function WritingFullPage({isFullTest, setCollectAnswer, setFinish
 
   const handleSubmit = async () => {
     if (isFullTest) {
-      return console.log(answer)
+      return setCollectAnswer(prev => ({...prev, writing: {...prev['writing'], answer: answer}}));
     }
 
     setIsLoading(true);
@@ -159,6 +159,7 @@ export default function WritingFullPage({isFullTest, setCollectAnswer, setFinish
     try {
       await getData({ type: typequest }).then((result) => {
         quest = result.data;
+
       });
       return quest;
 
@@ -182,6 +183,9 @@ export default function WritingFullPage({isFullTest, setCollectAnswer, setFinish
         };
         setAnswer(prev => ({ ...prev, task1: { ...prev['task1'], questionId: question1['questionId'] }, task2: { ...prev['task2'], questionId: question2['questionId'] } }))
         setQuestion({ question1: question1, question2: question2 });
+        if (isFullTest) {
+          setCollectAnswer(prev => ({...prev, writing: {...prev['writing'], question: {question1: question1, question2: question2}}}));
+        }
 
       } catch (error) {
         console.log(error.message);
