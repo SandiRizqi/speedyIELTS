@@ -52,13 +52,13 @@ const FullTestPage = () => {
         );
       }
 
-    const RenderPage = ({page}) => {
+    const RenderPage = () => {
 
-        switch (page) {
+        switch (activeTab) {
             case 'listening':
-                return (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/></div>)
+                return <div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/></div>
             case 'reading':
-                return (<AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>)
+                return <AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>
             case 'writing':
                 return <WritingFullPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>
             default:
@@ -77,7 +77,9 @@ const FullTestPage = () => {
         <>
         <TabNavigation />
         <div className={activeTab !== 'reading' ? "mx-auto max-w-screen-2xl": "mx-auto max-w-full"}>
-            <RenderPage page={activeTab}/>
+            {activeTab === 'listening' && (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/></div>)}
+            {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>)}
+            {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>)}
         </div>
         </>
     )

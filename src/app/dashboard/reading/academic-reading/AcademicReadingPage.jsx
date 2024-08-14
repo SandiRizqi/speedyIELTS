@@ -336,8 +336,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setFinishTest}) => {
 
     const handleCollect =  (e) => {
         e.preventDefault();
-        console.log(answer);
-        //setCollectAnswer(prev => ({...prev, reading: answer}));
+        setCollectAnswer({reading: answer});
     };
 
 

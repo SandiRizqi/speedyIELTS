@@ -14,7 +14,7 @@ export const AnswerProvider = (props) => {
     const [state, setState] = useState(InitState);
 
     const addAnswer = (data) => {
-        setState({...state, data});
+        setState(prev => ({...prev, data}));
         console.log(state);
     };
 
