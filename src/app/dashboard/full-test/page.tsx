@@ -1,7 +1,7 @@
 
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import FullTestPage from "./FullTestPage";
+import Container from "./Container";
 
 export const metadata: Metadata = {
   title: "SpeedyIELTS | Full Test",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <DefaultLayout>
-      <FullTestPage />
+      <Container />
     </DefaultLayout>
   );
 };

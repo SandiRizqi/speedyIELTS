@@ -5,13 +5,14 @@ import AcademicListeningPage from "../listening/academic-listening/AcademicListe
 import AcademicReadingPage from "../reading/academic-reading/AcademicReadingPage";
 import WritingFullPage from "../writing/writing-full/WritingFullPage";
 import StartInstruction from "./StartInstruction";
+import { useAnswer } from "./hook/useAnswerCollection";
 
 
 const FullTestPage = () => {
     const [activeTab, setActiveTab] = useState('listening');
     const [finishTest, setFinishTest] = useState([])
-    const [collectAnswer, setCollectAnswer] = useState({});
     const [start, setStart] = useState(false);
+    const {addAnswer} = useAnswer();
 
     function TabNavigation() {
         const tabs = ['listening', 'reading', 'writing', 'speaking'];
@@ -55,11 +56,11 @@ const FullTestPage = () => {
 
         switch (page) {
             case 'listening':
-                return (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={setCollectAnswer}/></div>)
+                return (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/></div>)
             case 'reading':
-                return (<AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={setCollectAnswer}/>)
+                return (<AcademicReadingPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>)
             case 'writing':
-                return <WritingFullPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={setCollectAnswer}/>
+                return <WritingFullPage isFullTest={true} setFinishTest={setFinishTest} setCollectAnswer={addAnswer}/>
             default:
                 return null;
         }

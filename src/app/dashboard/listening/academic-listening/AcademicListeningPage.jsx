@@ -14,6 +14,7 @@ import StartInstruction from "./StartInstruction";
 import {SuccessMessage} from "@/app/dashboard/_components/Alert";
 
 
+
 //import { sample1 as questions } from "./sample1";
 
 
@@ -249,15 +250,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) =>
 
     
 
-    const getQuestionID = async () => {
-        const getData = httpsCallable(functions, 'getQuestion');
-        getData({ type: "listening-questions", id: params.get("id") }).then((result) => {
-            const quest = result.data;
-            const paths = quest["questions"].map(obj => obj.audio);
-            setAudioPath(paths);
-            setQuestion(quest);
-        });
-    };
+    
 
     const getAnswers = async (userAnswer) => {
         let data;
@@ -283,15 +276,23 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) =>
 
     const handleCollect =  (e) => {
         e.preventDefault();
-        console.log(answer);
-        //setCollectAnswer(prev => ({...prev, reading: answer}));
+        setCollectAnswer({listening: answer});
     };
 
 
 
     useEffect(() => {
-        getQuestionID();
-        
+        const getQuestionID = async () => {
+            const getData = httpsCallable(functions, 'getQuestion');
+            getData({ type: "listening-questions", id: params.get("id") }).then((result) => {
+                const quest = result.data;
+                const paths = quest["questions"].map(obj => obj.audio);
+                setAudioPath(paths);
+                setQuestion(quest);
+            });
+        };
+
+        getQuestionID();   
     },[])
 
     if (!questions) {
@@ -314,7 +315,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) =>
                 {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
                 {testResult && (<ScoreComponent score={testResult['result']}/>)}
                 {questions && (
-                    <form  className="min-h-screen" ref={formRef} >
+                    <form  className="min-h-screen"  ref={formRef} onSubmit={!isFullTest ? handleSubmit: handleCollect}>
                     <div className="min-h-screen space-y-6">
                         {questions["questions"].map((question, index) => {
                             if (question.section === activeTab) {
@@ -339,8 +340,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setFinishTest}) =>
                         {!testResult && (
                             <button
                             className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                            type="button"
-                            onClick={!isFullTest ? handleSubmit: handleCollect}
+                            type="submit"
                         >
                             {!loading ? 'Submit' : 'Loading...'}
                         </button>
