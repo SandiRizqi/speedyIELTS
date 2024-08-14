@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <DefaultLayout>
-        <WritingFullPage isFullTest={false} setCollectAnswer={null} setFinishTest={null}/>
+        <WritingFullPage isFullTest={false} setCollectAnswer={null} setNextTest={null} savedQuestion={null} savedAnswer={null}/>
       </DefaultLayout>
     </>
   );
