@@ -6,7 +6,7 @@ export default function Feedback({feedback, loading}) {
    
 
     return (
-        <section className='mt-4 overflow-y-auto scrollbar p-4 w-full max-h-screen'>
+        <section className='mt-4 overflow-y-auto scrollbar w-full max-h-screen'>
             {!feedback && loading && <LoadingContent />}
             {feedback && (
             <div className="flow-root  dark:text-slate-400">

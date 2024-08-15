@@ -8,17 +8,18 @@ import { ref, getDownloadURL } from 'firebase/storage';
 export default function QuestionForm({ answer, setAnswer, feedback, question, loading}) {
     const drive = FirebaseStorge();
     const [questions, setQuestion] = useState(question);
-    const [text, setText] = useState('');
+    const [text, setText] = useState(answer['answer'] || '');
     const [highlightedText, setHighlightedText] = useState("");
     
 
 
-  const handleHighlisht = (value) => {
-    const pattern = new RegExp(value.join("|"), "gi");
-    let paragraph = answer['answer'];
-    paragraph = paragraph.replace(pattern, match => `<span class="bg-red-400">${match}</span>`);
-    setHighlightedText(paragraph);
-  };
+    const handleHighlisht = (value) => {
+        const pattern = new RegExp(value.join("|"), "gi");
+        let paragraph = text
+        paragraph = paragraph.replace(pattern, match => `<span class="bg-danger text-white">${match}</span>`);
+        paragraph = paragraph.replace(/\n/g, "<br />");
+        setHighlightedText(paragraph);
+    };
 
 
 

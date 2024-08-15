@@ -3,15 +3,16 @@ import React, { useState, useEffect } from 'react';
 
 
 export default function QuestionForm({ answer, setAnswer, feedback, question, loading }) {
-    const [text, setText] = useState('');
+    const [text, setText] = useState(answer['answer'] || '');
     const [highlightedText, setHighlightedText] = useState("");
     
 
 
     const handleHighlisht = (value) => {
         const pattern = new RegExp(value.join("|"), "gi");
-        let paragraph = answer['answer'];
-        paragraph = paragraph.replace(pattern, match => `<span class="bg-red-400">${match}</span>`);
+        let paragraph = text;
+        paragraph = paragraph.replace(pattern, match => `<span class="bg-danger text-white">${match}</span>`);
+        paragraph = paragraph.replace(/\n/g, "<br />");
         setHighlightedText(paragraph);
     };
 

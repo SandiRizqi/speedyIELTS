@@ -10,7 +10,7 @@ const countWords = (text) => {
 export default function QuestionForm({ start, quest, answer, setAnswer, handleSubmit, loading, finish,  feedback }) {
     const user = useUser();
     const [question, setQuestion] = useState({...quest, userId: user.uid});
-    const [text, setText] = useState('');
+    const [text, setText] = useState(answer['answer'] || '');
     const [highlightedText, setHighlightedText] = useState(null);
     const count = countWords(text);
     
@@ -20,6 +20,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
         const pattern = new RegExp(value.join("|"), "gi");
         let paragraph = text;
         paragraph = paragraph.replace(pattern, match => `<span class="bg-danger text-white">${match}</span>`);
+        paragraph = paragraph.replace(/\n/g, "<br />");
         setHighlightedText(paragraph);
     };
 

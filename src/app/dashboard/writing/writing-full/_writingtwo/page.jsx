@@ -1,30 +1,24 @@
 'use client'
 import React from 'react';
 import QuestionForm from './QuestionForm';
+import { useRef, useEffect } from 'react';
 import Feedback from './FeedBack';
+import ScoreDisplay from '../../ScoreDisplay';
 
 
 const WritingTwo = ({question, answer, setAnswer, feedback, isLoading}) => {
-  
+  const textareaRef = useRef(null);
 
-  const Overall = ({ score }) => {
-    return (
-      <div className="text-center">
-        <h2 className="text-lg font-medium text-gray-900">
-          Overall Score
-          <span className="sr-only">Plan</span>
-        </h2>
+  const adjustHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
 
-        <p className="mt-2 sm:mt-4">
-          <strong className="text-3xl font-bold text-gray-900 sm:text-4xl"> {score} </strong>
-        </p>
-      </div>
-    )
-  }
-
-
-
-
+  useEffect(() => {
+    adjustHeight();
+  }, [feedback]);
 
   return (
 
@@ -55,43 +49,42 @@ const WritingTwo = ({question, answer, setAnswer, feedback, isLoading}) => {
 
               </div>
 
-              <div className="mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
-                {feedback && (<Overall score={feedback.overall} />)}
-              </div>
+            
             </div>
           </div>
         </header>
+        {feedback && (<ScoreDisplay result={feedback}/>)}
 
 
         <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className='flex flex-col min-h-full'>
-            <div className="text-left">
-              <p className="max-w-full text-md text-gray-500">
-                Feedback :
-              </p>
-            </div>
-            {!feedback && !isLoading && (<span className='inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700'>Submit your answer to get feedback and score!</span>)}
-            <Feedback feedback={feedback} loading={isLoading} />
-          </div>
-
-
-          <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-            <QuestionForm answer={answer} setAnswer={setAnswer}  loading={isLoading}  feedback={feedback} question={question['question2']} />
+          <div className="lg:order-1 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <QuestionForm answer={answer} setAnswer={setAnswer} loading={isLoading} feedback={feedback} question={question['question2']} />
             {feedback && (
               <div className='mt-4'>
                 <span className='font-bold'>Evaluation: </span>
                 <textarea
-                  id="OrderNotes"
-                  className="w-full resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
-                  rows="13"
+                  ref={textareaRef}
+                  className="w-full p-4 resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
+                  rows={1}
                   disabled
                   value={feedback.evaluation}
+                  style={{ overflow: 'hidden', resize: 'none' }}
                 ></textarea>
               </div>
             )}
           </div>
 
-
+          <div className='lg:order-1 lg:col-span-1 flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
+            <div className='flex flex-col min-h-full'>
+              <div className="text-left">
+                <p className="max-w-full text-md text-gray-500">
+                  Feedback :
+                </p>
+              </div>
+              {!feedback && !isLoading && (<span className='inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700'>Submit your answer to get feedback and score!</span>)}
+              <Feedback feedback={feedback} loading={isLoading} />
+            </div>
+          </div>
         </div>
 
       </div>

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import { UserProvider } from '@/service/user';
@@ -54,6 +54,7 @@ const WritingOnePage = () => {
     answer: '',
   });
   const [feedback, setFeedback] = useState(null);
+  const textareaRef = useRef(null);
 
 
 
@@ -65,64 +66,57 @@ const WritingOnePage = () => {
         const respon = result.data;
         setFeedback(respon["result"])
         setLoading(false);
-        SuccessMessage({score: respon['result']['overall']})
+        SuccessMessage({ score: respon['result']['overall'] })
 
-    });
-           
-  } catch (error) {
+      });
+
+    } catch (error) {
       console.error("Error fetching questions:", error);
       setLoading(false);
-  } 
-    
-};
+    }
+
+  };
 
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      await getData({ type: "writing1-questions"}).then((result) => {
+      await getData({ type: "writing1-questions" }).then((result) => {
         const quest = result.data;
         setQuestion(quest);
-    });
-           
-  } catch (error) {
+      });
+
+    } catch (error) {
       console.error("Error fetching questions:", error);
-  } 
-    
-};
+    }
+
+  };
 
 
-  
+
+  const adjustHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [feedback]);
+
+  useEffect(() => {
+    getQuestion();
+  }, [])
+
+  if (!question) {
+    return <Loader />
+  }
 
 
-const Overall = ({ score }) => {
-    return (
-      <div className="text-center">
-        <h2 className="text-lg font-medium text-gray-900">
-          Overall Score
-          <span className="sr-only">Plan</span>
-        </h2>
-
-        <p className="mt-2 sm:mt-4">
-          <strong className="text-3xl font-bold text-gray-900 sm:text-4xl"> {score} </strong>
-        </p>
-      </div>
-    )
-};
-
-
-useEffect(() => {
-  getQuestion();
-},[])
-
-if (!question) {
-  return<Loader />
-}
-
-
-if(!start && question) {
-  return <StartInstruction setStart={setStart} />
-}
+  if (!start && question) {
+    return <StartInstruction setStart={setStart} />
+  }
 
 
 
@@ -132,7 +126,7 @@ if(!start && question) {
   return (
     <UserProvider>
       <AuthStateChangeProvider>
-      <Breadcrumb pageName='Writing Task 1'/>
+        <Breadcrumb pageName='Writing Task 1' />
         <div className='flex flex-1 justify-center'>
           <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1  top-20 inline-block gap-4 z-50'>
             {start && (<Timer minutes={20} seconds={0} />)}
@@ -146,34 +140,49 @@ if(!start && question) {
                   <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="text-center sm:text-left ">
                       <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Writing Task 1</h1>
-                      {!feedback && (
-                        <div className='flex flex-col mt-4'>
-                        <span className="mt-1 inline-flex items-center gap-1.5">
-                          <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> Write minimum 150 words within 20 minutes.</p>
-                        </span>
+                      <div className='flex flex-col mt-4'>
+                          <span className="mt-1 inline-flex items-center gap-1.5">
+                            <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> Write minimum 150 words within 20 minutes.</p>
+                          </span>
 
-                        <span className="mt-1 inline-flex items-center gap-1.5">
-                          <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> Follow the task instruction to complete the test.</p>
-                        </span>
+                          <span className="mt-1 inline-flex items-center gap-1.5">
+                            <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> Follow the task instruction to complete the test.</p>
+                          </span>
 
-                        <span className="mt-1 inline-flex items-center gap-1.5">
-                          <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> The test will be automatically submitted after it finishes.</p>
-                        </span>
+                          <span className="mt-1 inline-flex items-center gap-1.5">
+                            <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> The test will be automatically submitted after it finishes.</p>
+                          </span>
 
-                        <span className="mt-1 inline-flex items-center gap-1.5">
-                          <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> The result will be generated instantly after the test is finished.</p>
-                        </span>
-                      </div>
-                      )}
+                          <span className="mt-1 inline-flex items-center gap-1.5">
+                            <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> The result will be generated instantly after the test is finished.</p>
+                          </span>
+                        </div>
 
                     </div>
                   </div>
                 </div>
               </header>
-              {feedback && (<ScoreDisplay result={feedback}/>)}
+              {feedback && (<ScoreDisplay result={feedback} />)}
 
-              <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3 ">
-                <div className='flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
+              <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div className="lg:order-1 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={getWritingScore} start={start} loading={loading} finish={finish} feedback={feedback} />
+                  {feedback && (
+                    <div className='mt-4'>
+                      <span className='font-bold'>Evaluation: </span>
+                      <textarea
+                        ref={textareaRef}
+                        className="w-full p-4 resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
+                        rows={1}
+                        disabled
+                        value={feedback.evaluation}
+                        style={{ overflow: 'hidden', resize: 'none' }}
+                      ></textarea>
+                    </div>
+                  )}
+                </div>
+
+                <div className='lg:order-1 lg:col-span-1 flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
                   <div className="text-left">
                     <p className="max-w-full text-md text-gray-900 dark:text-slate-300">
                       Feedback :
@@ -184,26 +193,12 @@ if(!start && question) {
                 </div>
 
 
-                <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={getWritingScore} start={start} loading={loading} finish={finish} feedback={feedback} />
-                  {feedback && (
-                    <div className='mt-4'>
-                      <span className='font-bold'>Evaluation: </span>
-                      <textarea
-                        id="OrderNotes"
-                        className="w-full p-4 resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
-                        rows="13"
-                        disabled
-                        value={feedback.evaluation}
-                      ></textarea>
-                    </div>
-                  )}
-                </div>
+
               </div>
             </div>
 
           </section>
-      
+
         </div>
       </AuthStateChangeProvider>
     </UserProvider>

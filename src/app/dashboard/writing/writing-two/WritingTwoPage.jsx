@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
@@ -51,6 +51,7 @@ const WritingTwoPage = () => {
     answer: '',
   });
   const [feedback, setFeedback] = useState(null);
+  const textareaRef = useRef(null);
 
 
 
@@ -87,24 +88,20 @@ const WritingTwoPage = () => {
     
 };
 
+const adjustHeight = () => {
+  if (textareaRef.current) {
+    textareaRef.current.style.height = 'auto';
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  }
+};
+
+useEffect(() => {
+  adjustHeight();
+}, [feedback]);
+
 
   
 
-
-  const Overall = ({ score }) => {
-    return (
-      <div class="text-center">
-        <h2 class="text-lg font-medium text-gray-900">
-          Overall Score
-          <span class="sr-only">Plan</span>
-        </h2>
-
-        <p class="mt-2 sm:mt-4">
-          <strong class="text-3xl font-bold text-gray-900 sm:text-4xl"> {score} </strong>
-        </p>
-      </div>
-    )
-  };
 
   useEffect(() => {
     getQuestion();
@@ -140,8 +137,7 @@ const WritingTwoPage = () => {
                   <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="text-center sm:text-left">
                       <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Writing Task 2</h1>
-                      {!feedback && (
-                        <div className='flex flex-col mt-4'>
+                      <div className='flex flex-col mt-4'>
                         <span className="mt-1 inline-flex items-center gap-1.5">
                           <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> Write minimum 250 words within 40 minutes.</p>
                         </span>
@@ -158,7 +154,6 @@ const WritingTwoPage = () => {
                           <p className="mt-1.5 text-sm text-gray-500 items-center"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> The result will be generated instantly after the test is finished.</p>
                         </span>
                       </div>
-                      )}
 
                     </div>
                   </div>
@@ -169,7 +164,24 @@ const WritingTwoPage = () => {
 
 
               <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <div className='flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
+                <div className="lg:order-1 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={getWritingScore} start={start} loading={loading} finish={finish} feedback={feedback} />
+                  {feedback && (
+                    <div className='mt-4'>
+                      <span className='font-bold'>Evaluation: </span>
+                      <textarea
+                        ref={textareaRef}
+                        className="w-full p-4 resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
+                        rows={1}
+                        disabled
+                        value={feedback.evaluation}
+                        style={{ overflow: 'hidden', resize: 'none' }}
+                      ></textarea>
+                    </div>
+                  )}
+                </div>
+
+                <div className='lg:order-1 lg:col-span-1 flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
                   <div className="text-left">
                     <p className="max-w-full text-md text-gray-900 dark:text-slate-300">
                       Feedback :
@@ -178,25 +190,6 @@ const WritingTwoPage = () => {
                   {!feedback && !loading && (<span className='inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700'>Submit your answer to get feedback and score!</span>)}
                   <Feedback feedback={feedback} loading={loading} />
                 </div>
-
-
-                <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={getWritingScore} start={start} loading={loading} finish={finish} feedback={feedback} />
-                  {feedback && (
-                    <div className='mt-4'>
-                      <span className='font-bold'>Evaluation: </span>
-                      <textarea
-                        id="OrderNotes"
-                        className="w-full resize-none border border-gray-300 p-4 rounded-md align-top focus:ring-0 sm:text-sm"
-                        rows="30"
-                        disabled
-                        value={feedback?.evaluation}
-                      ></textarea>
-                    </div>
-                  )}
-                </div>
-
-
               </div>
             
             </div>

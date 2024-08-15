@@ -41,7 +41,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
   );
 };
 
-export default function WritingFullPage({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) {
+export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) {
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,38 +67,30 @@ export default function WritingFullPage({isFullTest, setCollectAnswer, setNextTe
 
 
 
-  const getResult = async (values) => {
-    let data;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+  const getWritingScore = async (values) => {
+    const getData = httpsCallable(functions, 'getWritingScore');
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_EXAMINER_URL}/getwritingscore`, values, config)
-        .then((res) => {
-          data = res.data
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      return data;
+      const res = await getData(values);
+      const respon = res.data;
+      const result = respon["result"];
+      return result; // Return the result here
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      return undefined; // Return undefined explicitly in case of an error
     }
-    catch (error) {
-      console.log(error);
-    }
+
   };
 
   const handleSubmit = async () => {
     if (isFullTest) {
-      return setCollectAnswer(prev => ({...prev, writing: {...prev['writing'], answer: answer}}));
+      return setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], answer: answer } }));
     }
 
     setIsLoading(true);
     try {
       const [feedback1, feedback2] = await Promise.all([
-        getResult(answer['task1']),
-        getResult[answer['task2']],
+        getWritingScore(answer['task1']),
+        getWritingScore(answer['task2']),
       ]);
 
       setIsLoading(false);
@@ -175,16 +167,16 @@ export default function WritingFullPage({isFullTest, setCollectAnswer, setNextTe
       try {
         const [question1, question2] = await Promise.all([
           getQuestion("writing1-questions"),
-          getQuestion("writing2-questions"),
+           getQuestion("writing2-questions"),
         ]);
 
         if (!question1 || !question2) {
           throw new Error('Failed to fetch data');
         };
-        setAnswer(prev => ({ ...prev, task1: { ...prev['task1'], questionId: question1['questionId'] }, task2: { ...prev['task2'], questionId: question2['questionId'] } }))
+        setAnswer(prev => ({ ...prev, task1: { ...prev['task1'], ...question1 }, task2: { ...prev['task2'], ...question2 } }))
         setQuestion({ question1: question1, question2: question2 });
         if (isFullTest) {
-          setCollectAnswer(prev => ({...prev, writing: {...prev['writing'], question: {question1: question1, question2: question2}}}));
+          setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], question: { question1: question1, question2: question2 } } }));
         }
 
       } catch (error) {
@@ -217,13 +209,14 @@ export default function WritingFullPage({isFullTest, setCollectAnswer, setNextTe
 
           <div className="m-8 flex justify-end gap-4">
             <TabNavigation />
-            <button
-              className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-              onClick={() => handleSubmit()}
-              disabled={feedback}
-            >
-              {isLoading ? "Loading...": "Submit"}
-            </button>
+            {!feedback && (
+              <button
+                className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+                onClick={() => handleSubmit()}
+              >
+                {isLoading ? "Loading..." : "Submit"}
+              </button>
+            )}
           </div>
         </div>
       </div>

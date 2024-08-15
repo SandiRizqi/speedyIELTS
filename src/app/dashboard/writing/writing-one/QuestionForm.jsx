@@ -14,18 +14,19 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
     const user = useUser();
     const drive = FirebaseStorge();
     const [question, setQuestion] = useState({...quest, userId: user.uid});
-    const [text, setText] = useState('');
+    const [text, setText] = useState(answer['answer'] || '');
     const count = countWords(text);
     const [highlightedText, setHighlightedText] = useState("");
     
 
 
-  const handleHighlisht = (value) => {
-    const pattern = new RegExp(value.join("|"), "gi");
-    let paragraph = text;
-    paragraph = paragraph.replace(pattern, match => `<span class="bg-danger text-white">${match}</span>`);
-    setHighlightedText(paragraph);
-  };
+    const handleHighlisht = (value) => {
+        const pattern = new RegExp(value.join("|"), "gi");
+        let paragraph = text;
+        paragraph = paragraph.replace(pattern, match => `<span class="bg-danger text-white">${match}</span>`);
+        paragraph = paragraph.replace(/\n/g, "<br />");
+        setHighlightedText(paragraph);
+    };
 
 
 
@@ -78,7 +79,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
 
 
     return (
-        <div className='mt-4 border border-gray-200 rounded-md p-4 md:mt-0'>
+        <div className='border border-gray-200 rounded-md p-4 md:mt-0'>
 
             <div className="text-left bg-gray-100 rounded-md p-4">
                 <p className="max-w-full mb-4 text-md font-bold text-gray-500">
