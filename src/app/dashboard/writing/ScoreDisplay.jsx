@@ -9,7 +9,7 @@ const CircularScore = ({ score, size = 'small' }) => {
 
   // Determine the color based on the score
   const getColor = () => {
-    if (score < 4) return 'text-red-500';
+    if (score < 4) return 'text-danger';
     if (score >= 4 && score <= 6) return 'text-yellow-500';
     return 'text-green-500';
   };
@@ -49,7 +49,7 @@ const CircularScore = ({ score, size = 'small' }) => {
 const ScoreCategory = ({ title, score, items }) => {
   // Determine the color based on the score for item
   const getItemColor = (itemScore) => {
-    if (itemScore < 4) return 'bg-red-500';
+    if (itemScore < 4) return 'bg-danger';
     if (itemScore >= 4 && itemScore <= 6) return 'bg-yellow-500';
     return 'bg-green-500';
   };
@@ -92,11 +92,6 @@ const ScoreDisplay = ({result}) => {
           title="LEXICAL RESOURCE" 
           score={result?.lexical.score}
           items={result?.lexical.details.map((obj) => {return { score: obj.score, text: obj.text }})}
-        />
-        <ScoreCategory 
-          title="VOCABULARY" 
-          score={result?.vocabulary.score}
-          items={result?.vocabulary.details.map((obj) => {return { score: obj.score, text: obj.text }})}
         />
         <ScoreCategory 
           title="COHERENCE AND COHESION" 

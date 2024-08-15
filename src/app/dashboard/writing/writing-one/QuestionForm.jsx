@@ -118,7 +118,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
                     <p className='text-sm text-gray-500'>
                         Words: {count}
                     </p>
-                    {start && !finish && count > 50 && (
+                    {!feedback && count > 50 && (
                         <button
                             type="button"
                             className="bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-orange-400"
