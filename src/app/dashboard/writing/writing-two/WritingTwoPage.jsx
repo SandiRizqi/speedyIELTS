@@ -54,36 +54,28 @@ const WritingTwoPage = () => {
 
 
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const getWritingScore = async () => {
     setLoading(true);
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+    const getData = httpsCallable(functions, 'getWritingScore');
     try {
-      axios.post(`${process.env.NEXT_PUBLIC_EXAMINER_URL}/getwritingscore`, answer, config)
-        .then((res) => {
-          setFeedback(res.data);
-          setLoading(false);
-          setFinish(true);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-    catch (error) {
-      console.log(error);
-      setLoading(false)
-    }
-  };
+      await getData(answer).then((result) => {
+        const respon = result.data;
+        setFeedback(respon["result"])
+        setLoading(false);
+
+    });
+           
+  } catch (error) {
+      console.error("Error fetching questions:", error);
+      setLoading(false);
+  } 
+    
+};
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      getData({ type: "writing2-questions"}).then((result) => {
+      await getData({ type: "writing2-questions"}).then((result) => {
         const quest = result.data;
         setQuestion(quest);
     });
@@ -188,7 +180,7 @@ const WritingTwoPage = () => {
 
 
                 <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish} feedback={feedback} />
+                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={getWritingScore} start={start} loading={loading} finish={finish} feedback={feedback} />
                   {feedback && (
                     <div className='mt-4'>
                       <span className='font-bold'>Evaluation: </span>
