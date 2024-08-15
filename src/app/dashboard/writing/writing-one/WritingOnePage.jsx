@@ -6,10 +6,11 @@ import Feedback from './FeedBack';
 import { UserProvider } from '@/service/user';
 import AuthStateChangeProvider from '@/service/auth';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
-import axios from 'axios';
+import { SuccessMessage } from '../../_components/Alert';
 import StartInstruction from './StartInstruction';
 import { FirebaseFunction } from '@/service/firebase';
 import { httpsCallable } from 'firebase/functions';
+import ScoreDisplay from '../ScoreDisplay';
 import Loader from '@/components/common/Loader';
 
 
@@ -56,37 +57,30 @@ const WritingOnePage = () => {
 
 
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const getWritingScore = async () => {
     setLoading(true);
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+    const getData = httpsCallable(functions, 'getWritingScore');
     try {
-      axios.post(`${process.env.NEXT_PUBLIC_EXAMINER_URL}/getwritingscore`, answer, config)
-        .then((res) => {
-          setFeedback(res.data);
-          setLoading(false);
-          setFinish(true);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-    catch (error) {
-      console.log(error);
-      setLoading(false)
-    }
-  };
+      await getData(answer).then((result) => {
+        const respon = result.data;
+        setFeedback(respon["result"])
+        setLoading(false);
+        SuccessMessage({score: respon['result']['overall']})
+
+    });
+           
+  } catch (error) {
+      console.error("Error fetching questions:", error);
+      setLoading(false);
+  } 
+    
+};
 
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      getData({ type: "writing1-questions"}).then((result) => {
+      await getData({ type: "writing1-questions"}).then((result) => {
         const quest = result.data;
         setQuestion(quest);
     });
@@ -152,7 +146,8 @@ if(!start && question) {
                   <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="text-center sm:text-left ">
                       <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Writing Task 1</h1>
-                      <div className='flex flex-col mt-4'>
+                      {!feedback && (
+                        <div className='flex flex-col mt-4'>
                         <span className="mt-1 inline-flex items-center gap-1.5">
                           <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> Write minimum 150 words within 20 minutes.</p>
                         </span>
@@ -169,16 +164,13 @@ if(!start && question) {
                           <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> The result will be generated instantly after the test is finished.</p>
                         </span>
                       </div>
+                      )}
 
-                    </div>
-
-                    <div className="mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
-                      {finish && feedback && (<Overall score={feedback.overall} />)}
                     </div>
                   </div>
                 </div>
               </header>
-
+              {feedback && (<ScoreDisplay result={feedback}/>)}
 
               <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3 ">
                 <div className='flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
@@ -193,7 +185,7 @@ if(!start && question) {
 
 
                 <div className="mt-4 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 xs:col-span-1 xs:row-span-1 xs:row-start-1">
-                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={handleSubmit} start={start} loading={loading} finish={finish} feedback={feedback} />
+                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={getWritingScore} start={start} loading={loading} finish={finish} feedback={feedback} />
                   {feedback && (
                     <div className='mt-4'>
                       <span className='font-bold'>Evaluation: </span>

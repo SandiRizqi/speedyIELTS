@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
-import axios from 'axios';
+import ScoreDisplay from '../ScoreDisplay';
 import StartInstruction from './StartInstruction';
 import Loader from '@/components/common/Loader';
 import { httpsCallable } from 'firebase/functions';
 import { FirebaseFunction } from '@/service/firebase';
-
+import { SuccessMessage } from '../../_components/Alert';
 
 
 const Timer = ({ minutes, seconds }) => {
@@ -62,6 +62,7 @@ const WritingTwoPage = () => {
         const respon = result.data;
         setFeedback(respon["result"])
         setLoading(false);
+        SuccessMessage({score: respon['result']['overall']})
 
     });
            
@@ -139,7 +140,8 @@ const WritingTwoPage = () => {
                   <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="text-center sm:text-left">
                       <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Writing Task 2</h1>
-                      <div className='flex flex-col mt-4'>
+                      {!feedback && (
+                        <div className='flex flex-col mt-4'>
                         <span className="mt-1 inline-flex items-center gap-1.5">
                           <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> Write minimum 250 words within 40 minutes.</p>
                         </span>
@@ -156,15 +158,14 @@ const WritingTwoPage = () => {
                           <p className="mt-1.5 text-sm text-gray-500 items-center"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span> The result will be generated instantly after the test is finished.</p>
                         </span>
                       </div>
+                      )}
 
-                    </div>
-
-                    <div className="mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
-                      {finish && feedback && (<Overall score={feedback.overall} />)}
                     </div>
                   </div>
                 </div>
               </header>
+
+              {feedback && (<ScoreDisplay result={feedback}/>)}
 
 
               <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
