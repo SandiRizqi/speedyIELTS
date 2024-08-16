@@ -100,7 +100,7 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
       };
 
       setFeedback({ feedback1: feedback1, feedback2: feedback2 });
-      SuccessMessage({ score: 2 })
+      //SuccessMessage({score: null})
 
 
     } catch (e) {
@@ -202,7 +202,7 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
       <Breadcrumb pageName='Writing' />
       <div className='flex flex-1 justify-center'>
         <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
-          {start && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
+          {start && !feedback && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>
           {activeTab === 1 ? <WritingOne question={question} answer={answer['task1']} setAnswer={setAnswer} feedback={feedback?.feedback1} isLoading={isLoading} /> : <WritingTwo question={question} answer={answer['task2']} setAnswer={setAnswer} feedback={feedback?.feedback2} isLoading={isLoading} />}

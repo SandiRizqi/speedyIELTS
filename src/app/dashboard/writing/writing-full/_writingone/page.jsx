@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import QuestionForm from './QuestionForm';
 import Feedback from './FeedBack';
 import ScoreDisplay from '../../ScoreDisplay';
+import LoadingScore from '../../LoadingScore';
 
 
 const WritingOne = ({ answer, question, setAnswer, feedback, isLoading }) => {
@@ -59,6 +60,7 @@ const WritingOne = ({ answer, question, setAnswer, feedback, isLoading }) => {
           </div>
         </header>
         {feedback && (<ScoreDisplay result={feedback}/>)}
+        {isLoading && <LoadingScore />}
 
         <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="lg:order-1 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
