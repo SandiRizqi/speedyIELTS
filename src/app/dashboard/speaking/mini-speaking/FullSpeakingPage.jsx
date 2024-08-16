@@ -7,7 +7,7 @@ import AuthStateChangeProvider from '@/service/auth';
 import { Microphone } from './components/Microphone';
 import IntroChat from './components/IntroChat';
 import { FirebaseFunction } from '@/service/firebase';
-import PartTwo from './components/PartTwo';
+import VoiceAssistant from '../VoiceAssistant';
 import { httpsCallable } from 'firebase/functions';
 import { ChatProvider } from './hook/chat';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
@@ -98,13 +98,16 @@ const FullSpeakingPage = () => {
                 <div className="w-full gap-8 p-4 flex max-w-60">
                   {start && <Microphone />}
                 </div>
+                
                 <div className="p-4 min-h-[50vh] h-full">
-                  <div className="bg-slate-200 rounded-lg p-4 h-[40vh] flex flex-1 flex-col overflow-y-auto dark:bg-black max-w-full-xl overflow-x-auto dark:text-white">
+                  <div className={finished ? "bg-slate-200 rounded-lg p-4 h-[40vh] flex flex-1 flex-col overflow-y-auto dark:bg-black max-w-full-xl overflow-x-auto dark:text-white": "bg-white rounded-lg p-4  flex flex-1 flex-col dark:bg-black max-w-full-xl  dark:text-white"}>
                     {chatHistory && chatHistory.map((step, idx) => {
                       if (step === "part1") {
-                        return <div key={idx}><DynamicChat question={question[step]} changeStep={setIndex} step={index} /></div>
+                        return <VoiceAssistant questions={question[step]} key={idx}/>
+                        //return <div key={idx}><DynamicChat question={question[step]} changeStep={setIndex} step={index} /></div>
                       };
-                      return <div key={idx}><IntroChat index={index} setIndex={setIndex} question={question[step]} /></div>
+                      return <VoiceAssistant questions={[question[step]]} key={idx}/>
+                      //return <div key={idx}><IntroChat index={index} setIndex={setIndex} question={question[step]} /></div>
                     })}
                     {finished && <SpeakingFeedback finished={finished}/>}
                   </div>
