@@ -42,7 +42,9 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
     useEffect(() => {
         if(feedback){
             const ListMistakes = feedback.corrections?.map(obj => obj.mistakes);
-            handleHighlisht(ListMistakes);
+            if(ListMistakes){
+                handleHighlisht(ListMistakes);
+            }
         }
 
     },[feedback])

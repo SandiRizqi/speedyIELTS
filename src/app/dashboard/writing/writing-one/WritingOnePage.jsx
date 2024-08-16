@@ -11,6 +11,7 @@ import StartInstruction from './StartInstruction';
 import { FirebaseFunction } from '@/service/firebase';
 import { httpsCallable } from 'firebase/functions';
 import ScoreDisplay from '../ScoreDisplay';
+import LoadingScore from '../LoadingScore';
 import Loader from '@/components/common/Loader';
 
 
@@ -163,6 +164,7 @@ const WritingOnePage = () => {
                 </div>
               </header>
               {feedback && (<ScoreDisplay result={feedback} />)}
+              {!feedback && loading && (<LoadingScore />)}
 
               <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
                 <div className="lg:order-1 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">

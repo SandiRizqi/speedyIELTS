@@ -10,7 +10,7 @@ import Loader from '@/components/common/Loader';
 import { httpsCallable } from 'firebase/functions';
 import { FirebaseFunction } from '@/service/firebase';
 import { SuccessMessage } from '../../_components/Alert';
-
+import LoadingScore from '../LoadingScore';
 
 const Timer = ({ minutes, seconds }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -161,6 +161,7 @@ useEffect(() => {
               </header>
 
               {feedback && (<ScoreDisplay result={feedback}/>)}
+              {!feedback && loading && (<LoadingScore />)}
 
 
               <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
