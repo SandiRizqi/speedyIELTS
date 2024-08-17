@@ -33,7 +33,7 @@ const VoiceAssistant = ({ questions, setMessages }) => {
 
 
   const VOLUME_THRESHOLD = 5;
-  const SILENCE_DURATION = 5000;
+  const SILENCE_DURATION = 3000;
   const QUESTION_WAIT_TIME = 60000; // 1 minute
 
 
@@ -56,6 +56,8 @@ const VoiceAssistant = ({ questions, setMessages }) => {
     setAssistantSpeaking(true);
     const utterance = new SpeechSynthesisUtterance(questions[index]);
     setMessages(prevMessages => [...prevMessages, { sender: 'assistant', text: questions[index] }]);
+   
+
     utterance.onend = () => {
       setAssistantSpeaking(false);
       startRecording();
@@ -240,7 +242,7 @@ const VoiceAssistant = ({ questions, setMessages }) => {
                   key={index}
                   className={`w-1 rounded-full transition-all duration-300 ${assistantSpeaking || recordingStatus !== 'inactive' ? 'bg-slate-700 animate-wave' : 'bg-slate-300'}`}
                   style={{
-                    height: `${assistantSpeaking || recordingStatus !== 'inactive' ? Math.min(volume * 2, 100) : 20}%`,
+                    height: `${assistantSpeaking || recordingStatus !== 'inactive' ? Math.min(volume * 10, 100) : 20}%`,
                     animationDelay: `${index * 0.05}s`
                   }}
                 ></div>
