@@ -28,7 +28,6 @@ const VoiceAssistant = ({ questions, setMessages }) => {
     transcript,
     listening,
     resetTranscript,
-    browserSupportsSpeechRecognition
   } = useSpeechRecognition();
 
 
@@ -39,9 +38,6 @@ const VoiceAssistant = ({ questions, setMessages }) => {
 
 
 
-  if (!browserSupportsSpeechRecognition) {
-    return <span>Browser doesn't support speech recognition.</span>;
-  }
  
 
 

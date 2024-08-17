@@ -1,4 +1,5 @@
 'use client'
+import 'regenerator-runtime/runtime';
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { UserProvider } from '@/service/user';
@@ -9,6 +10,8 @@ import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import Loader from '@/components/common/Loader';
 import VoiceAssistant from './VoiceAssistant';
 import StartInstruction from './StartInstruction';
+import { useSpeechRecognition } from 'react-speech-recognition';
+
 
 
 
@@ -19,6 +22,9 @@ const FullSpeakingPage = () => {
   const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
+  const {
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
 
 
 
@@ -54,6 +60,10 @@ const FullSpeakingPage = () => {
     return <StartInstruction setStart={setStart} />
   }
 
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
+
 
 
   return (
@@ -66,7 +76,7 @@ const FullSpeakingPage = () => {
         <div className="flex flex-col md:flex-row h-full">
           {/* Assistant Column */}
           <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-            <VoiceAssistant questions={question['part1']} setMessages={setMessages}/>
+            {start && question && (<VoiceAssistant questions={question['part1']} setMessages={setMessages}/>)}
           </div>
 
           {/* Chat Column */}
