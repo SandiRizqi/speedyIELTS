@@ -19,7 +19,9 @@ const FullSpeakingPage = () => {
   const functions = FirebaseFunction();
   const [question, setQuestion] = useState(null);
   const [start, setStart] = useState(false);
+  const [statusTest, setStatusTest] = useState(true);
   const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
+  const [indexStep, setIndexStep] = useState(0)
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const {
@@ -30,14 +32,25 @@ const FullSpeakingPage = () => {
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'get_speaking_questions');
-    getData({ type: "speaking" }).then((result) => {
+    await getData({ type: "speaking" }).then((result) => {
       setQuestion(result.data);
     });
   };
+  
+  function handleNext() {
+    if (indexStep < order.length) {
+      setIndexStep(prev => prev + 1);
+      console.log(order[indexStep])
+    } else {
+      console.log("Test Finished")
+    }
+  }
 
 
   useEffect(() => {
-    getQuestion();
+    if (!question) {
+      getQuestion();
+    }
   }, []);
 
   // Function to scroll to the bottom of the messages
@@ -48,6 +61,7 @@ const FullSpeakingPage = () => {
   // Use effect to trigger the scroll when messages change
   useEffect(() => {
     scrollToBottom();
+    console.log(messages)
   }, [messages]);
 
   if (!question) {
@@ -64,8 +78,6 @@ const FullSpeakingPage = () => {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
-
-
   return (
     <UserProvider>
       <AuthStateChangeProvider>
@@ -76,7 +88,8 @@ const FullSpeakingPage = () => {
         <div className="flex flex-col md:flex-row h-full">
           {/* Assistant Column */}
           <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-            {start && question && (<VoiceAssistant questions={question['part1']} setMessages={setMessages}/>)}
+            {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext}/>)}
+            {(order[indexStep] === 'part1' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]}  setMessages={setMessages} handleNextPart={handleNext} />) }
           </div>
 
           {/* Chat Column */}
@@ -86,6 +99,15 @@ const FullSpeakingPage = () => {
                 <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>
                     {message.text}
+                    {message.audioUrl && (
+                  <div className="mt-2">
+                    <audio controls className='w-full'>
+                      <source src={message.audioUrl} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                )}
+
                   </div>
                 </div>
               ))}

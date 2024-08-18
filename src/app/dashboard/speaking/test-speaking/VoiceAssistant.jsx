@@ -5,9 +5,8 @@ import { Mic, Play, Pause } from 'lucide-react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 
-const VoiceAssistant = ({ questions, setMessages }) => {
+const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0);
   const [recordingStatus, setRecordingStatus] = useState('inactive');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -21,7 +20,7 @@ const VoiceAssistant = ({ questions, setMessages }) => {
   const synth = useRef(window.speechSynthesis);
   const audioChunks = useRef([]);
   const silenceTimer = useRef(null);
-  const [isStart, setIsStart] = useState(false);
+  const [isStart, setIsStart] = useState(start || false);
   const silenceStart = useRef(null);
 
   const {
@@ -33,15 +32,23 @@ const VoiceAssistant = ({ questions, setMessages }) => {
 
 
   const VOLUME_THRESHOLD = 5;
-  const SILENCE_DURATION = 3000;
+  const SILENCE_DURATION = 5000;
   const QUESTION_WAIT_TIME = 60000; // 1 minute
 
 
 
  
-
+  
 
   const startConversation = () => {
+    if(intro) {
+      const utterance = new SpeechSynthesisUtterance(intro);
+      utterance.onend = () => {
+        handleNextPart();
+      };
+      return synth.current.speak(utterance);
+    };
+
     setIsStart(true);
     setCurrentQuestionIndex(0);
     //askQuestion(0);
@@ -53,11 +60,10 @@ const VoiceAssistant = ({ questions, setMessages }) => {
 
 
   const askQuestion = (index) => {
+    SpeechRecognition.stopListening()
     setAssistantSpeaking(true);
     const utterance = new SpeechSynthesisUtterance(questions[index]);
     setMessages(prevMessages => [...prevMessages, { sender: 'assistant', text: questions[index] }]);
-   
-
     utterance.onend = () => {
       setAssistantSpeaking(false);
       startRecording();
@@ -89,9 +95,10 @@ const VoiceAssistant = ({ questions, setMessages }) => {
       setIsRecording(true);
       setRecordingStatus('listening');
       resetSilenceDetection();
+      SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
       animateWaveform();
       //resetTranscript();
-      SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
+      
       // Set a timer to stop recording after 1 minute if no voice is detected for 5 seconds
       silenceTimer.current = setTimeout(stopRecording, QUESTION_WAIT_TIME);
 
@@ -117,9 +124,9 @@ const VoiceAssistant = ({ questions, setMessages }) => {
       
 
       if (currentQuestionIndex < questions.length - 1) {
-        setTimeout(() => {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-        }, 1000);
+      } else {
+        handleNextPart();
       }
     }
   };
@@ -128,6 +135,8 @@ const VoiceAssistant = ({ questions, setMessages }) => {
     silenceStart.current = null;
   };
 
+
+  
   const checkSilence = (currentTime, avgVolume) => {
     if (avgVolume <= VOLUME_THRESHOLD) {
       if (silenceStart.current === null) {
@@ -142,6 +151,9 @@ const VoiceAssistant = ({ questions, setMessages }) => {
     return false;
   };
 
+
+
+
   const animateWaveform = () => {
     const dataArray = new Uint8Array(analyser.current.frequencyBinCount);
     analyser.current.getByteTimeDomainData(dataArray);
@@ -150,37 +162,31 @@ const VoiceAssistant = ({ questions, setMessages }) => {
     const avgVolume = sum / dataArray.length;
     setVolume(avgVolume);
 
-    const currentTime = Date.now();
-
-    if (avgVolume > VOLUME_THRESHOLD && !assistantSpeaking) {
-      if (recordingStatus !== 'recording') {
-        setRecordingStatus('recording');
-
-        if (mediaRecorder.current.state !== 'recording') {
-          mediaRecorder.current.start();
-          audioChunks.current = [];
+    
+    if (!assistantSpeaking) {
+      if (avgVolume > VOLUME_THRESHOLD) {
+        if (recordingStatus !== 'recording') {
+          setRecordingStatus('recording');
+  
+          if (mediaRecorder.current.state !== 'recording') {
+            mediaRecorder.current.start();
+            audioChunks.current = [];
+          }
+          resetSilenceDetection();
         }
-        resetSilenceDetection();
-      }
-    } else if (!assistantSpeaking) {
-      if (checkSilence(currentTime, avgVolume)) {
-        setRecordingStatus('listening');
-        setTimeout(stopRecording, 1000); // Stop recording after a brief pause
-        resetSilenceDetection();
+      } else {
+        const currentTime = Date.now();
+        if (checkSilence(currentTime, avgVolume)) {
+          setRecordingStatus('listening');
+          stopRecording() // Stop recording after a brief pause
+          resetSilenceDetection();
+        }
       }
     }
 
     animationFrame.current = requestAnimationFrame(animateWaveform);
   };
 
-  const togglePlayback = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
 
   useEffect(() => {
     return () => {
@@ -196,19 +202,19 @@ const VoiceAssistant = ({ questions, setMessages }) => {
 
   useEffect(() => {
     if (transcript && !listening) {
-      setMessages(prevMessages => [...prevMessages, { sender: 'user', text: transcript }])
+      setMessages(prevMessages => [...prevMessages, { sender: 'user', text: transcript, audioUrl: audioRef.current.src }])
       resetTranscript();
     }
 
-  },[transcript, listening])
+  },[listening])
 
   useEffect(() => {
-    if (currentQuestionIndex < questions.length && isStart) {
+    if (currentQuestionIndex < questions?.length && isStart) {
       askQuestion(currentQuestionIndex);
     } else {
-      console.log("Conversation ended");
+      console.log("Conversation ended"); 
     }
-  }, [currentQuestionIndex, isStart]);
+  }, [currentQuestionIndex, isStart, questions]);
 
   return (
     <div className="">
@@ -236,7 +242,7 @@ const VoiceAssistant = ({ questions, setMessages }) => {
 
           {/* Waveform */}
           <div className="w-full h-24 bg-white bg-opacity-30 rounded-2xl overflow-hidden relative">
-            <div className="absolute inset-0 flex items-center justify-around">
+            <div className="absolute inset-0 flex items-center justify-around p-2">
               {[...Array(20)].map((_, index) => (
                 <div
                   key={index}
@@ -254,28 +260,10 @@ const VoiceAssistant = ({ questions, setMessages }) => {
           <button
             onClick={startConversation}
             disabled={isRecording || assistantSpeaking}
-            className={`flex items-center justify-center py-2 px-6 rounded-full text-white font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-pink-300 ${isRecording || assistantSpeaking ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400  focus:ring-blue-500'
+            className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${isRecording || assistantSpeaking ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
               }`}
           >
-            Start
-          </button>
-          <button
-            onClick={togglePlayback}
-            disabled={!audioRef.current?.src}
-            className={`flex items-center justify-center py-3 px-6 rounded-full text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!audioRef.current?.src ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400 '
-              }`}
-          >
-            {isPlaying ? (
-              <>
-                <Pause className="w-5 h-5 mr-2" />
-                Pause
-              </>
-            ) : (
-              <>
-                <Play className="w-5 h-5 mr-2" />
-                Play
-              </>
-            )}
+            Start Conversation
           </button>
         </div>
       </div>
