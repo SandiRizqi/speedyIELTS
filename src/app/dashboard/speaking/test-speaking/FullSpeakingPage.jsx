@@ -31,9 +31,9 @@ const FullSpeakingPage = () => {
 
 
   const getQuestion = async () => {
-    const getData = httpsCallable(functions, 'get_speaking_questions');
-    await getData({ type: "speaking" }).then((result) => {
-      setQuestion(result.data);
+    const getData = httpsCallable(functions, 'getQuestion');
+    await getData({ type: "speaking-questions" }).then((result) => {
+      setQuestion(result.data['questions']);
     });
   };
   
@@ -88,7 +88,7 @@ const FullSpeakingPage = () => {
         <div className="flex flex-col md:flex-row h-full">
           {/* Assistant Column */}
           <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-            {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext}/>)}
+            {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} examiner={question['examiner']}/>)}
             {(order[indexStep] === 'part1' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]}  setMessages={setMessages} handleNextPart={handleNext} />) }
           </div>
 

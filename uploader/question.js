@@ -1,7 +1,7 @@
 const { initializeApp } = require('firebase/app');
 const { getFirestore, setDoc, doc } = require('firebase/firestore');
 
-const { question } = require("./reading/TXx9UIizmorxstpgYcz0")
+const { question } = require("./speaking/speaking_18_4")
 
 // Your Firebase configuration object
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -32,8 +32,7 @@ async function uploadDocumentWithID(collectionName, documentID, documentData) {
   }
 
 // Example usage
-console.log(question)
 
 
     //uploadDocument("reading-questions", {question: question});
-uploadDocumentWithID("reading-questions", "TXx9UIizmorxstpgYcz0", {question: question} )
+uploadDocumentWithID("speaking-questions", "speaking_18_4", {question: question} )

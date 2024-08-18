@@ -5,7 +5,7 @@ import { Mic, Play, Pause } from 'lucide-react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 
-const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }) => {
+const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPart }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [volume, setVolume] = useState(0);
   const [recordingStatus, setRecordingStatus] = useState('inactive');
@@ -20,7 +20,7 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }
   const synth = useRef(window.speechSynthesis);
   const audioChunks = useRef([]);
   const silenceTimer = useRef(null);
-  const [isStart, setIsStart] = useState(start || false);
+  const [isStart, setIsStart] = useState(false);
   const silenceStart = useRef(null);
 
   const {
@@ -42,7 +42,17 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }
 
   const startConversation = () => {
     if(intro) {
+      console.log(examiner['gender'])
       const utterance = new SpeechSynthesisUtterance(intro);
+      const voices = synth.current.getVoices();
+      const selectedVoice = voices.find(voice => voice.lang.startsWith('en-'));
+
+      if (selectedVoice) {
+          utterance.voice = selectedVoice;
+      } else {
+          console.warn('Desired voice not found, using default voice.');
+      }
+
       utterance.onend = () => {
         handleNextPart();
       };
