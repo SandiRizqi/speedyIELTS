@@ -38,7 +38,7 @@ const FullSpeakingPage = () => {
   };
   
   function handleNext() {
-    if (indexStep < order.length) {
+    if (indexStep < order.length - 1) {
       setIndexStep(prev => prev + 1);
     } else {
       setStatusTest(false);
