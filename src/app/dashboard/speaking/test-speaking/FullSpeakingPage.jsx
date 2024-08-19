@@ -11,7 +11,7 @@ import Loader from '@/components/common/Loader';
 import VoiceAssistant from './VoiceAssistant';
 import StartInstruction from './StartInstruction';
 import { useSpeechRecognition } from 'react-speech-recognition';
-
+import PartTwo from './PartTwo';
 
 
 
@@ -21,7 +21,7 @@ const FullSpeakingPage = () => {
   const [start, setStart] = useState(false);
   const [statusTest, setStatusTest] = useState(true);
   const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
-  const [indexStep, setIndexStep] = useState(0)
+  const [indexStep, setIndexStep] = useState(2)
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const {
@@ -40,7 +40,6 @@ const FullSpeakingPage = () => {
   function handleNext() {
     if (indexStep < order.length) {
       setIndexStep(prev => prev + 1);
-      console.log(order[indexStep])
     } else {
       console.log("Test Finished")
     }
@@ -88,8 +87,9 @@ const FullSpeakingPage = () => {
         <div className="flex flex-col md:flex-row h-full">
           {/* Assistant Column */}
           <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-            {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} examiner={question['examiner']}/>)}
-            {(order[indexStep] === 'part1' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]}  setMessages={setMessages} handleNextPart={handleNext} />) }
+            {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
+            {(order[indexStep] === 'part1' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]}  setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />) }
+            
           </div>
 
           {/* Chat Column */}
@@ -111,6 +111,7 @@ const FullSpeakingPage = () => {
                   </div>
                 </div>
               ))}
+              {order[indexStep] === 'part2' && <PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]}/>}
                <div ref={messagesEndRef} />
             </div>
             <div className="p-4 border-t mt-auto">

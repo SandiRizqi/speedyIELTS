@@ -5,7 +5,7 @@ import { Mic, Play, Pause } from 'lucide-react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 
-const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPart }) => {
+const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPart, currectSection }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [volume, setVolume] = useState(0);
   const [recordingStatus, setRecordingStatus] = useState('inactive');
@@ -42,7 +42,7 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
 
   const startConversation = () => {
     if(intro) {
-      console.log(examiner['gender'])
+      //console.log(examiner['gender'])
       const utterance = new SpeechSynthesisUtterance(intro);
       const voices = synth.current.getVoices();
       const selectedVoice = voices.find(voice => voice.lang.startsWith('en-'));
@@ -221,9 +221,11 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
   useEffect(() => {
     if (currentQuestionIndex < questions?.length && isStart) {
       askQuestion(currentQuestionIndex);
-    } else {
+    } else if (currentQuestionIndex > questions?.length ) {
       console.log("Conversation ended"); 
     }
+
+    console.log(currectSection)
   }, [currentQuestionIndex, isStart, questions]);
 
   return (
