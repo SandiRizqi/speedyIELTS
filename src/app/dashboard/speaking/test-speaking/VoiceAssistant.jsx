@@ -5,7 +5,7 @@ import { Mic, Play, Pause } from 'lucide-react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 
-const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPart, currectSection }) => {
+const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPart, currectSection, start }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [volume, setVolume] = useState(0);
   const [recordingStatus, setRecordingStatus] = useState('inactive');
@@ -133,7 +133,7 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
       SpeechRecognition.stopListening()
       
 
-      if (currentQuestionIndex < questions.length - 1) {
+      if (currentQuestionIndex < questions.length) {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);
       } else {
         handleNextPart();
@@ -222,10 +222,19 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
     if (currentQuestionIndex < questions?.length && isStart) {
       askQuestion(currentQuestionIndex);
     } else if (currentQuestionIndex > questions?.length ) {
-      console.log("Conversation ended"); 
+      console.log("Conversation ended");
     }
 
   }, [currentQuestionIndex, isStart, questions]);
+
+
+  useEffect(() => {
+    if(start) {
+      startConversation();
+    }
+  }, [start])
+
+
 
   return (
     <div className="">

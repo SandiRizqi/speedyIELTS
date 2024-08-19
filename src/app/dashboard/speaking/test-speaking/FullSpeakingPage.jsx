@@ -19,9 +19,9 @@ const FullSpeakingPage = () => {
   const functions = FirebaseFunction();
   const [question, setQuestion] = useState(null);
   const [start, setStart] = useState(false);
-  const [statusTest, setStatusTest] = useState(true);
+  const [statusTest, setStatusTest] = useState(false);
   const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
-  const [indexStep, setIndexStep] = useState(2)
+  const [indexStep, setIndexStep] = useState(0)
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const {
@@ -87,8 +87,8 @@ const FullSpeakingPage = () => {
         <div className="flex flex-col md:flex-row h-full">
           {/* Assistant Column */}
           <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-            {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
-            {(order[indexStep] === 'part1' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]}  setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />) }
+            {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3' || order[indexStep] === 'closing') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest}/>)}
+            {(order[indexStep] === 'part1' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]}  setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest}/>) }
             
           </div>
 
@@ -116,6 +116,16 @@ const FullSpeakingPage = () => {
             </div>
             <div className="p-4 border-t mt-auto">
               <div className="flex space-x-2">
+             
+          <button
+            onClick={() => setStatusTest(true)}
+            disabled={statusTest}
+            className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+              }`}
+          >
+            Start Conversation
+          </button>
+        
 
               </div>
             </div>
