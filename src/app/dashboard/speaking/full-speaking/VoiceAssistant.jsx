@@ -5,7 +5,7 @@ import { Mic, Play, Pause } from 'lucide-react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 
-const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPart, currectSection, start }) => {
+const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [volume, setVolume] = useState(0);
   const [recordingStatus, setRecordingStatus] = useState('inactive');
@@ -34,13 +34,13 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
   const VOLUME_THRESHOLD = 5;
   const SILENCE_DURATION = 5000;
   const QUESTION_WAIT_TIME = 60000; // 1 minute
-
-
+  
 
  
   
 
   const startConversation = () => {
+
     if(intro) {
       //console.log(examiner['gender'])
       const utterance = new SpeechSynthesisUtterance(intro);
@@ -135,8 +135,6 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
 
       if (currentQuestionIndex < questions.length - 1) {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-      } else {
-        handleNextPart();
       }
     }
   };
@@ -207,6 +205,7 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
         cancelAnimationFrame(animationFrame.current);
       }
       clearTimeout(silenceTimer.current);
+      synth.current.cancel();
     };
   }, []);
 
@@ -219,12 +218,12 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
   },[listening])
 
   useEffect(() => {
+   
     if (currentQuestionIndex < questions?.length && isStart) {
       askQuestion(currentQuestionIndex);
-    } else if (currentQuestionIndex > questions?.length ) {
-      console.log("Conversation ended");
+    } else if (currentQuestionIndex >= questions?.length && isStart ) {
+      handleNextPart();
     }
-
   }, [currentQuestionIndex, isStart, questions]);
 
 
@@ -233,6 +232,8 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
       startConversation();
     }
   }, [start])
+
+
 
 
 

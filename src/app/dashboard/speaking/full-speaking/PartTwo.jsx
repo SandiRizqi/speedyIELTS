@@ -114,7 +114,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
 
   return (
     <div className="flex flex-col w-full">
-      {status === 'waiting' && (<Timer minutes={0} seconds={10} status={status} setStatus={setStatus}/>)}
+      {status === 'waiting' && (<Timer minutes={0} seconds={5} status={status} setStatus={setStatus}/>)}
       {status === 'listening' && (<Timer minutes={0} seconds={10} status={status} setStatus={setStatus}/>)}
       {status === 'waiting' && (<div
         className="mt-2 p-2 w-full h-full rounded"
