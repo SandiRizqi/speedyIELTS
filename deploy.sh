@@ -11,3 +11,5 @@ git push origin main
 
 # Check out back to the develop branch
 git checkout develop
+
+git branch

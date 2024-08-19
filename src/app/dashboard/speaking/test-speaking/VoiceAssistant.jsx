@@ -225,7 +225,6 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
       console.log("Conversation ended"); 
     }
 
-    console.log(currectSection)
   }, [currentQuestionIndex, isStart, questions]);
 
   return (
