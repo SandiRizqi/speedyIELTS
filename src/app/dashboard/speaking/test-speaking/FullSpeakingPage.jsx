@@ -95,7 +95,7 @@ const FullSpeakingPage = () => {
           {/* Chat Column */}
           <div className="md:w-2/3 flex flex-col justify-between max-h-[34rem] dark:bg-slate-700">
             <div className="overflow-y-auto p-4 space-y-4 ">
-              {messages.map((message, index) => (
+              { order[indexStep] !== 'part2' ? messages.map((message, index) => (
                 <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>
                     {message.text}
@@ -110,12 +110,12 @@ const FullSpeakingPage = () => {
 
                   </div>
                 </div>
-              ))}
+              )): null }
               {order[indexStep] === 'part2' && <PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]}/>}
                <div ref={messagesEndRef} />
             </div>
             <div className="p-4 border-t mt-auto">
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 justify-center">
              
           <button
             onClick={() => setStatusTest(true)}

@@ -133,7 +133,7 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
       SpeechRecognition.stopListening()
       
 
-      if (currentQuestionIndex < questions.length) {
+      if (currentQuestionIndex < questions.length - 1) {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);
       } else {
         handleNextPart();
@@ -277,14 +277,7 @@ const VoiceAssistant = ({ examiner, intro, questions, setMessages, handleNextPar
           </div>
         </div>
         <div className="flex justify-center space-x-4">
-          <button
-            onClick={startConversation}
-            disabled={isRecording || assistantSpeaking}
-            className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${isRecording || assistantSpeaking ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
-              }`}
-          >
-            Start Conversation
-          </button>
+         
         </div>
       </div>
       <audio ref={audioRef} />
