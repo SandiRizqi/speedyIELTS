@@ -49,7 +49,7 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
     colors: ["#3C50E0", "#80CAEE"],
     chart: {
       fontFamily: "Satoshi, sans-serif",
-      type: "bar",
+      type: seriesdata.length > 10 ? "line": "bar",
       height: 335,
       stacked: true,
       toolbar: {
@@ -88,6 +88,9 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
   
     xaxis: {
       categories: seriesdata?.map((obj) => timestampToShortDate(obj.createdAt)),
+      labels: {
+        show: seriesdata.length > 10 ? false : true,// This disables only the x-axis labels
+    }
     },
     yaxis: {
         min: 0,
@@ -148,7 +151,7 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
           <ReactApexChart
             options={options}
             series={data}
-            type="bar"
+            type={seriesdata.length > 10 ? "line": "bar"}
             height={350}
             width={"100%"}
           />
