@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <DefaultLayout>
-      <FullSpeakingPage />
+      <FullSpeakingPage isFullTest={false} setCollectAnswer={null} setNextTest={null} savedQuestion={null} savedAnswer={null}/>
     </DefaultLayout>
   );
 };
