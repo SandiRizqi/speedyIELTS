@@ -126,8 +126,7 @@ const AllSkillChart: React.FC = () => {
         <div className="flex w-full flex-wrap gap-3 sm:gap-5">
           <div className="flex min-w-47.5">
             <div className="w-full">
-              <p className="font-semibold text-secondary">Full Skill Scores</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-black dark:text-white">Full Skill Scores</p>
             </div>
           </div>
         </div>

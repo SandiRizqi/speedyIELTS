@@ -5,21 +5,51 @@ import { useState, useEffect } from "react";
 import { FirebaseFunction } from "@/service/firebase";
 import AllSkillChart from "../Charts/AllSkillChart";
 import OneSkillChart from "../Charts/OneSkillChart";
-import ChatCard from "../Chat/ChatCard";
-import TableOne from "../Tables/TableOne";
 import CardDataStats from "../CardDataStats";
 import withUser from "@/hooks/withUser";
 import { useUser } from "@/service/user";
 import { httpsCallable } from "firebase/functions";
 
 
-const MapOne = dynamic(() => import("@/components/Maps/MapOne"), {
-  ssr: false,
-});
 
-const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
-  ssr: false,
-});
+const SkeletonCard: React.FC = () => {
+  return (
+    <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4 animate-pulse">
+      <div className="flex justify-between items-center mt-4">
+        <div className="h-6 bg-slate-200 rounded w-1/3"></div>
+        <div className="h-8 w-8 bg-slate-200 rounded-full"></div>
+      </div>
+      <div className="h-48 bg-slate-200 rounded"></div>
+      <div className="h-48 bg-slate-200 rounded"></div>
+    </div>
+  );
+};
+
+const SkeletonBarChart: React.FC = () => {
+  return (
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
+      <div className="flex justify-between items-center mt-4">
+        <div className="h-6 bg-slate-200 rounded w-1/3"></div>
+        <div className="h-8 w-8 bg-slate-200 rounded-full"></div>
+      </div>
+      <div className="h-48 bg-slate-200 rounded"></div>
+      <div className="h-48 bg-slate-200 rounded"></div>
+    </div>
+  );
+};
+
+const DashboardSkeleton: React.FC = () => {
+  return (
+    <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+      <SkeletonCard />
+      <SkeletonCard />
+      <SkeletonCard />
+      <SkeletonCard />
+      <SkeletonBarChart />
+    </div>
+  );
+};
+
 
 const MyDashboard: React.FC = () => {
   const user = useUser();
@@ -64,7 +94,7 @@ const MyDashboard: React.FC = () => {
         </CardDataStats>
       </div>
 
-      {chartData && (
+      {chartData ? (
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
           <OneSkillChart seriesdata={chartData['writing']} title="Listening Scores" />
           <OneSkillChart seriesdata={chartData['writing']} title="Reading Scores" />
@@ -72,7 +102,7 @@ const MyDashboard: React.FC = () => {
           <OneSkillChart seriesdata={chartData['writing']} title="Speaking Scores" />
           <AllSkillChart />
         </div>
-      )}
+      ): (<DashboardSkeleton />)}
     </>
   );
 };

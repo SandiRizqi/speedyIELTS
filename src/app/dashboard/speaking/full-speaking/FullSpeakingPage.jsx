@@ -12,7 +12,8 @@ import VoiceAssistant from './VoiceAssistant';
 import StartInstruction from './StartInstruction';
 import { useSpeechRecognition } from 'react-speech-recognition';
 import PartTwo from './PartTwo';
-
+import LoadingScore from '../LoadingScore';
+import ScoreDisplay from '../ScoreDisplay';
 
 
 const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) => {
@@ -23,6 +24,8 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
   const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
   const [indexStep, setIndexStep] = useState(0)
   const [messages, setMessages] = useState(savedAnswer || []);
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState(null);
   const messagesEndRef = useRef(null);
   const {
     browserSupportsSpeechRecognition
@@ -37,11 +40,27 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
     });
   };
 
-  const handleSubmitAnswer = () => {
+  const getSpeakingScore = async (values) => {
+    setLoading(true)
+    const getData = httpsCallable(functions, 'getSpeakingScore');
+    try {
+      const res = await getData(values);
+      const respon = res.data;
+      setFeedback(respon["result"]);
+      setLoading(false)
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      setLoading(false)
+    }
+
+  };
+
+  const handleSubmitAnswer = async () => {
     if (isFullTest) {
       setCollectAnswer(prev => ({...prev, reading: {...prev['speaking'], answer: messages}}));
     };
     console.log(messages);
+    await getSpeakingScore({dialogue: messages, useId: "123", testType: "FullSpeaking"})
   }
 
   function handleNext() {
@@ -96,8 +115,8 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
         <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
           <header className="w-full">
             <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
-              <div className="sm:flex sm:items-center sm:justify-between">
-                <div className="text-center sm:text-left ">
+              <div className="sm:flex sm:items-center sm:justify-between mb-4">
+                <div className="text-center sm:text-left">
                   <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Full-Speaking</h1>
                   <div className='flex flex-col mt-4'>
                     <span className="mt-1 inline-flex items-center">
@@ -117,10 +136,13 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                 </div>
               </div>
+              {feedback && !loading && (<ScoreDisplay result={feedback} />)}
+              {loading && (<LoadingScore />)}
             </div>
           </header>
+          
 
-          <div className='w-full'>
+          <div className='w-full mt-4'>
           <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
             <div className="flex flex-col md:flex-row h-full">
               {/* Assistant Column */}
@@ -157,8 +179,8 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                     <button
                       onClick={() => setStatusTest(!statusTest)}
-                      disabled={statusTest}
-                      className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={statusTest || feedback}
+                      className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       Start Conversation
@@ -166,13 +188,12 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                     <button
                       onClick={() => handleSubmitAnswer()}
-                      disabled={statusTest}
-                      className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={statusTest || feedback}
+                      className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
-                      Submit
+                      {!loading ? 'Submit': 'Loading'}
                     </button>
-
 
                   </div>
                 </div>
