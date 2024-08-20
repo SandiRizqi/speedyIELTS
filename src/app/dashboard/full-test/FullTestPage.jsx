@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import AcademicListeningPage from "../listening/academic-listening/AcademicListeningPage";
 import AcademicReadingPage from "../reading/academic-reading/AcademicReadingPage";
 import WritingFullPage from "../writing/writing-full/WritingFullPage";
+import FullSpeakingPage from "../speaking/full-speaking/FullSpeakingPage";
 import StartInstruction from "./StartInstruction";
 import { useAnswer } from "./hook/useAnswerCollection";
 
@@ -66,6 +67,7 @@ const FullTestPage = () => {
             {activeTab === 'listening' && (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['listening']?.question} savedAudio={globalState['listening']?.audio} savedAnswer={globalState['listening']?.answer}/></div>)}
             {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['reading']?.question} savedAnswer={globalState['reading']?.answer}/>)}
             {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer}/>)}
+            {activeTab === 'speaking' && (<FullSpeakingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer}/>)}
         </div>
         </>
     )

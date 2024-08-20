@@ -145,7 +145,10 @@ const menuGroups = [
 
         ),
         label: "Full test",
-        route: "/dashboard/full-test",
+        route: "#",
+        children: [
+          { label: "Academic Test", route: "/dashboard/full-test" },
+          { label: "General Test", route: "#", soonBadge: true }]
       },
     ]
   },

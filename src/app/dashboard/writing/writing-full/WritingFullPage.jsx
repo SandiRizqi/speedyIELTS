@@ -83,7 +83,8 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
 
   const handleSubmit = async () => {
     if (isFullTest) {
-      return setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], answer: answer } }));
+      setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], answer: answer } }));
+      return setNextTest('speaking')
     }
 
     setIsLoading(true);

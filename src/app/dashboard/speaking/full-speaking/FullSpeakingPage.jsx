@@ -87,6 +87,32 @@ const FullSpeakingPage = () => {
       <AuthStateChangeProvider>
         <Breadcrumb pageName='Full Speaking'/>
         <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
+        <header className="w-full">
+            <div className="mx-auto max-w-screen-xl py-14 px-4 sm:px-6 sm:py-12 lg:px-8">
+              <div className="sm:flex sm:items-center sm:justify-between">
+                <div className="text-center sm:text-left ">
+                  <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Full-Speaking</h1>
+                  <div className='flex flex-col mt-4'>
+                    <span className="mt-1 inline-flex items-center gap-1.5">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                      <p className="mt-1.5 text-sm text-gray-500">Please start to speak when recording sign is showing.</p>
+                    </span>
+
+                    <span className="mt-1 inline-flex items-center gap-1.5">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                      <p className="mt-1.5 text-sm text-gray-500">The test will be automatically submitted after it finishes.</p>
+                    </span>
+
+                    <span className="mt-1 inline-flex items-center gap-1.5">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                      <p className="mt-1.5 text-sm text-gray-500">The result will be generated instantly after the test is finished.</p>
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </header>
           
         <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
         <div className="flex flex-col md:flex-row h-full">
