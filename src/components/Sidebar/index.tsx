@@ -75,7 +75,7 @@ const menuGroups = [
         label: "Dashboard",
         route: "/dashboard",
       },
-      
+
     ],
   },
   {
@@ -84,7 +84,7 @@ const menuGroups = [
       {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-            <path d="M12 3C7.03 3 3 7.03 3 12v7c0 1.1.9 2 2 2h1v-9H5v-1c0-3.86 3.14-7 7-7s7 3.14 7 7v1h-1v9h1c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9zm-3 11v7H8v-7h1zm8 7v-7h1v7h-1z"/>
+            <path d="M12 3C7.03 3 3 7.03 3 12v7c0 1.1.9 2 2 2h1v-9H5v-1c0-3.86 3.14-7 7-7s7 3.14 7 7v1h-1v9h1c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9zm-3 11v7H8v-7h1zm8 7v-7h1v7h-1z" />
           </svg>
 
         ),
@@ -92,26 +92,26 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "Academic Listening", route: "/dashboard/listening/academic-listening" },
-          { label: "General Listening", route: "#" },],
+          { label: "General Listening", route: "#", soonBadge: true },],
       },
       {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-  <path d="M17 3H7c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5c0-1.1-.9-2-2-2zm0 16H7V5h10v14z"/>
-</svg>
+            <path d="M17 3H7c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5c0-1.1-.9-2-2-2zm0 16H7V5h10v14z" />
+          </svg>
 
         ),
         label: "Reading",
         route: "#",
         children: [
           { label: "Academic Reading", route: "/dashboard/reading/academic-reading" },
-          { label: "General Reading", route: "#" },],
+          { label: "General Reading", route: "#", soonBadge: true },],
       },
       {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-  <path d="M14 2l-4 4 8 8 4-4-8-8zm-9 14v5h5l12-12-5-5-12 12zm2-3l3-3 2 2-3 3-2-2zm-1 6v-3h3l2 2h-5z"/>
-</svg>
+            <path d="M14 2l-4 4 8 8 4-4-8-8zm-9 14v5h5l12-12-5-5-12 12zm2-3l3-3 2 2-3 3-2-2zm-1 6v-3h3l2 2h-5z" />
+          </svg>
 
 
         ),
@@ -125,8 +125,8 @@ const menuGroups = [
       {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-  <path d="M12 2C10.35 2 9 3.35 9 5v6c0 1.65 1.35 3 3 3s3-1.35 3-3V5c0-1.65-1.35-3-3-3zm0 12c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2s2 .9 2 2v7c0 1.1-.9 2-2 2zm-7-5v2c0 3.87 3.13 7 7 7s7-3.13 7-7v-2h2v2c0 4.41-3.59 8-8 8s-8-3.59-8-8v-2h2zm7 10h-2v-2h2v2z"/>
-</svg>
+            <path d="M12 2C10.35 2 9 3.35 9 5v6c0 1.65 1.35 3 3 3s3-1.35 3-3V5c0-1.65-1.35-3-3-3zm0 12c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2s2 .9 2 2v7c0 1.1-.9 2-2 2zm-7-5v2c0 3.87 3.13 7 7 7s7-3.13 7-7v-2h2v2c0 4.41-3.59 8-8 8s-8-3.59-8-8v-2h2zm7 10h-2v-2h2v2z" />
+          </svg>
 
 
 
@@ -134,14 +134,14 @@ const menuGroups = [
         label: "Speaking",
         route: "#",
         children: [
-          { label: "Mini Speaking", route: "/dashboard/speaking/mini-speaking" },
+          { label: "Mini Speaking", route: "#", soonBadge: true },
           { label: "Full Speaking", route: "/dashboard/speaking/full-speaking" },],
       },
       {
         icon: (
-<svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-  <path d="M16 1H8C6.9 1 6 .9 6 2h12c0-1.1-.9-2-2-2zM7 2C7 .9 6.1 0 5 0S3 .9 3 2v16c0 2.21 1.79 4 4 4h10c2.21 0 4-1.79 4-4V2H7zm6 12h-4v-2h4v2zm4-4H7V8h10v2z"/>
-</svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
+            <path d="M16 1H8C6.9 1 6 .9 6 2h12c0-1.1-.9-2-2-2zM7 2C7 .9 6.1 0 5 0S3 .9 3 2v16c0 2.21 1.79 4 4 4h10c2.21 0 4-1.79 4-4V2H7zm6 12h-4v-2h4v2zm4-4H7V8h10v2z" />
+          </svg>
 
         ),
         label: "Full test",
@@ -194,9 +194,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
-        className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark  ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark  ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* <!-- SIDEBAR HEADER --> */}
         <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">

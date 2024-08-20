@@ -32,11 +32,18 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
         >
           {item.icon}
           {item.label}
+          <div className="flex items-center space-x-2">
+            {item.soonBadge && (
+              <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-yellow-400 rounded-full">
+                Soon
+              </span>
+            )}
+
+          </div>
           {item.children && (
             <svg
-              className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                pageName === item.label.toLowerCase() && "rotate-180"
-              }`}
+              className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${pageName === item.label.toLowerCase() && "rotate-180"
+                }`}
               width="20"
               height="20"
               viewBox="0 0 20 20"
@@ -55,9 +62,8 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
 
         {item.children && (
           <div
-            className={`translate transform overflow-hidden ${
-              pageName !== item.label.toLowerCase() && "hidden"
-            }`}
+            className={`translate transform overflow-hidden ${pageName !== item.label.toLowerCase() && "hidden"
+              }`}
           >
             <SidebarDropdown item={item.children} />
           </div>
