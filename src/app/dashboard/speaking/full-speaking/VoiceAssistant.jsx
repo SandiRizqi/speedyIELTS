@@ -5,7 +5,7 @@ import { Mic, Play, Pause } from 'lucide-react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 
-const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }) => {
+const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currectSection, start }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [volume, setVolume] = useState(0);
   const [recordingStatus, setRecordingStatus] = useState('inactive');
@@ -54,9 +54,14 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }
       }
 
       utterance.onend = () => {
+        setMessages(prevMessages => [...prevMessages, { sender: 'assistant', text: intro }]);
         handleNextPart();
       };
       return synth.current.speak(utterance);
+    };
+
+    if (currectSection === 'part2') {
+      return ;
     };
 
     setIsStart(true);
@@ -262,7 +267,8 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }
           </div>
 
           {/* Waveform */}
-          <div className="w-full h-24 bg-white bg-opacity-30 rounded-2xl overflow-hidden relative">
+          {currectSection !== 'part2' && (
+            <div className="w-full h-24 bg-white bg-opacity-30 rounded-2xl overflow-hidden relative">
             <div className="absolute inset-0 flex items-center justify-around p-2">
               {[...Array(20)].map((_, index) => (
                 <div
@@ -276,6 +282,7 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, start }
               ))}
             </div>
           </div>
+          )}
         </div>
         <div className="flex justify-center space-x-4">
          

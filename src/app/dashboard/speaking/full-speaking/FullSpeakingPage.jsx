@@ -150,7 +150,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
               {/* Assistant Column */}
               <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
                 {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3' || order[indexStep] === 'closing') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
-                {(order[indexStep] === 'part1' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
+                {(order[indexStep] === 'part1' || order[indexStep] === 'part2' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
 
               </div>
 
@@ -172,8 +172,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                       </div>
                     </div>
-                  )) : null}
-                  {order[indexStep] === 'part2' && <PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />}
+                  )) :  (<PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="p-4 border-t mt-auto">
@@ -181,8 +180,8 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                     <button
                       onClick={() => setStatusTest(!statusTest)}
-                      disabled={statusTest || feedback}
-                      className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={messages.length > 0}
+                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       Start Conversation
@@ -191,7 +190,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
                     <button
                       onClick={() => handleSubmitAnswer()}
                       disabled={statusTest || feedback}
-                      className={`flex items-center justify-center py-2 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       {!loading ? 'Submit': 'Loading'}

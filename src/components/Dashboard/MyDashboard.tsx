@@ -15,7 +15,7 @@ import { httpsCallable } from "firebase/functions";
 const SkeletonCard: React.FC = () => {
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4 animate-pulse">
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center mt-4 mb-4">
         <div className="h-6 bg-slate-200 rounded w-1/3"></div>
         <div className="h-8 w-8 bg-slate-200 rounded-full"></div>
       </div>
@@ -28,7 +28,7 @@ const SkeletonCard: React.FC = () => {
 const SkeletonBarChart: React.FC = () => {
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center mt-4 mb-4">
         <div className="h-6 bg-slate-200 rounded w-1/3"></div>
         <div className="h-8 w-8 bg-slate-200 rounded-full"></div>
       </div>
