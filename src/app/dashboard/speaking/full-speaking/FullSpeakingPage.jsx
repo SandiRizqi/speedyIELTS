@@ -14,6 +14,7 @@ import { useSpeechRecognition } from 'react-speech-recognition';
 import PartTwo from './PartTwo';
 import LoadingScore from '../LoadingScore';
 import ScoreDisplay from '../ScoreDisplay';
+import { useSearchParams } from 'next/navigation';
 
 
 const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) => {
@@ -27,6 +28,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const messagesEndRef = useRef(null);
+  const params = useSearchParams()
   const {
     browserSupportsSpeechRecognition
   } = useSpeechRecognition();
@@ -35,7 +37,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
-    await getData({ type: "speaking-questions" }).then((result) => {
+    await getData({ type: "speaking-questions", id: params.get("id") }).then((result) => {
       setQuestion(result.data['questions']);
     });
   };

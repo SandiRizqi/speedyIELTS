@@ -11,6 +11,7 @@ import { httpsCallable } from 'firebase/functions';
 import { FirebaseFunction } from '@/service/firebase';
 import { SuccessMessage } from '../../_components/Alert';
 import LoadingScore from '../LoadingScore';
+import { useSearchParams } from 'next/navigation';
 
 const Timer = ({ minutes, seconds }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -52,6 +53,7 @@ const WritingTwoPage = () => {
   });
   const [feedback, setFeedback] = useState(null);
   const textareaRef = useRef(null);
+  const params = useSearchParams();
 
 
 
@@ -77,7 +79,7 @@ const WritingTwoPage = () => {
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      await getData({ type: "writing2-questions"}).then((result) => {
+      await getData({ type: "writing2-questions", id: params.get("id")}).then((result) => {
         const quest = result.data;
         setQuestion(quest);
     });

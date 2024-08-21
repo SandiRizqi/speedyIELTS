@@ -13,7 +13,7 @@ import { httpsCallable } from 'firebase/functions';
 import ScoreDisplay from '../ScoreDisplay';
 import LoadingScore from '../LoadingScore';
 import Loader from '@/components/common/Loader';
-
+import { useSearchParams } from 'next/navigation';
 
 
 const Timer = ({ minutes, seconds }) => {
@@ -56,6 +56,7 @@ const WritingOnePage = () => {
   });
   const [feedback, setFeedback] = useState(null);
   const textareaRef = useRef(null);
+  const params = useSearchParams();
 
 
 
@@ -82,7 +83,7 @@ const WritingOnePage = () => {
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      await getData({ type: "writing1-questions" }).then((result) => {
+      await getData({ type: "writing1-questions", id: params.get("id") }).then((result) => {
         const quest = result.data;
         setQuestion(quest);
       });
