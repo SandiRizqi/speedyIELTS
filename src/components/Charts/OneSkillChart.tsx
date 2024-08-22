@@ -27,8 +27,8 @@ function timestampToShortDate(timestamp:any) {
 interface OneSkillChartState {
     title: string;
     seriesdata: {
-        createdAt: number[];
-        overall: number[];
+        createdAt: number;
+        overall: number;
     }[];
 }
 
@@ -43,6 +43,35 @@ interface CircularProps {
   score: number;
   size: string;
 }
+
+
+function roundScore(score:number) {
+  const integerPart = Math.floor(score);
+  const fractionalPart = score - integerPart;
+
+  if (fractionalPart < 0.25) {
+      return integerPart;
+  } else if (fractionalPart >= 0.25 && fractionalPart < 0.75) {
+      return integerPart + 0.5;
+  } else {
+      return integerPart + 1;
+  }
+};
+
+function calculateAverage(numbers: number[]): number {
+  // Ensure the array is not empty
+  if (numbers.length === 0) return 0;
+
+  // Sum all numbers in the array
+  const sum: number = numbers.reduce((acc: number, curr: number) => acc + curr, 0);
+
+  // Calculate the average
+  const average: number = sum / numbers.length;
+
+  return average;
+}
+  
+
 
 const CircularScore: React.FC<CircularProps> = ({ score, size = 'small' }) => {
   const radius = size === 'large' ? 40 : size === 'medium' ? 20 : 16;
@@ -183,6 +212,10 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
     },
   };
 
+  const ListScore:number[] = seriesdata.map((obj) => obj.overall);
+  const Avg:number = calculateAverage(ListScore);
+  const AverageScore = roundScore(Avg)
+
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
       <div className="mb-2 justify-between gap-4 sm:flex">
@@ -193,7 +226,7 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
         </div>
         <div>
           <div className="relative">
-            <ScoreDisplay title="average" score={5} size="medium"/>
+            <ScoreDisplay title="average" score={AverageScore} size="medium"/>
           </div>
         </div>
       </div>
