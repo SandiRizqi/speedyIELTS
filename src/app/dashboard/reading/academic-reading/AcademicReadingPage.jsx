@@ -307,7 +307,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
             let score;
             setLoading(true);
             const getData = httpsCallable(functions, 'getQuestionAnswers');
-            await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid }).then((result) => {
+            await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid, testType: "ReadingAcademic" }).then((result) => {
                 data = result.data;
                 score = data['result']
                 SuccessMessage({ score: score["overall"] })

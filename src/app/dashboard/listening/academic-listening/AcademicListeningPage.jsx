@@ -257,7 +257,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, saved
         let score;
         setLoading(true);
         const getData = httpsCallable(functions, 'getQuestionAnswers');
-        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid }).then((result) => {
+        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid, testType: "ListeningAcademic" }).then((result) => {
             data = result.data;  
             score = data['result']
             setLoading(false);
