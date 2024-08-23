@@ -14,32 +14,25 @@ const SignUp: React.FC = () => {
   return (
   
     <div className="flex flex-1 w-screen h-screen items-center justify-center">
+       <header className="fixed w-screen top-0">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-4">
+            
+          </div>
+        </div>
+      </header>
       <div className="border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark h-screen w-screen">
         <div className="flex flex-wrap items-center h-full">
-          <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="px-26 py-17.5 text-center h-full items-center flex justify-center">
-              <Link className="mb-5.5 inline-block" href="#">
-                <Image
-                  className="hidden dark:block"
-                  src={"/images/logo/type/logo_round.png"}
-                  alt="Logo"
-                  width={300}
-                  height={300}
-                />
-                <Image
-                  className="dark:hidden"
-                  src={"/images/logo/type/logo_round.png"}
-                  alt="Logo"
-                  width={300}
-                  height={300}
-                />
-              </Link>
-    
-            </div>
+          <div className="hidden w-full xl:block xl:w-2/3">
+          <img
+            src="/images/SHUTTERSTOCK_2180414785_2500.png"
+            alt="Background"
+            className="object-cover w-full h-screen"
+          />
           </div>
 
-          <div className="flex justify-center w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
-            <div className="max-w-screen-sm p-4 sm:p-12.5 xl:p-17.5">
+          <div className="flex justify-center w-full  xl:w-1/3">
+            <div className="max-w-screen-sm p-4 sm:p-12.5 xl:p-8 shadow-xl rounded-xl">
               <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Sign Up to SpeedyIELTS
@@ -54,10 +47,10 @@ const SignUp: React.FC = () => {
                     <input
                       type="text"
                       placeholder="Enter your full name"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
-                    <span className="absolute right-4 top-4">
+                    <span className="absolute right-4 top-2">
                       <svg
                         className="fill-current"
                         width="22"
@@ -89,10 +82,10 @@ const SignUp: React.FC = () => {
                     <input
                       type="email"
                       placeholder="Enter your email"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
-                    <span className="absolute right-4 top-4">
+                    <span className="absolute right-4 top-2">
                       <svg
                         className="fill-current"
                         width="22"
@@ -120,10 +113,10 @@ const SignUp: React.FC = () => {
                     <input
                       type="password"
                       placeholder="Enter your password"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
-                    <span className="absolute right-4 top-4">
+                    <span className="absolute right-4 top-2">
                       <svg
                         className="fill-current"
                         width="22"
@@ -155,10 +148,10 @@ const SignUp: React.FC = () => {
                     <input
                       type="password"
                       placeholder="Re-enter your password"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-2 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
-                    <span className="absolute right-4 top-4">
+                    <span className="absolute right-4 top-2">
                       <svg
                         className="fill-current"
                         width="22"
@@ -186,11 +179,11 @@ const SignUp: React.FC = () => {
                   <input
                     type="submit"
                     value="Create account"
-                    className="w-full cursor-pointer rounded-lg border border-blue-600 bg-blue-600 p-4 text-white transition hover:bg-opacity-90"
+                    className="w-full cursor-pointer rounded-lg border border-blue-600 bg-blue-600 p-2 text-white transition hover:bg-opacity-90"
                   />
                 </div>
 
-                <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-2 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                   <span>
                     <svg
                       width="20"
