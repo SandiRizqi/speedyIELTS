@@ -20,6 +20,7 @@ import { useSearchParams } from 'next/navigation';
 const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) => {
   const functions = FirebaseFunction();
   const [question, setQuestion] = useState(savedQuestion || null);
+  const [questionId, setQuestionId] = useState('')
   const [start, setStart] = useState(false);
   const [finished, setFinished] = useState(false);
   const [statusTest, setStatusTest] = useState(false);
@@ -40,6 +41,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
     const getData = httpsCallable(functions, 'getQuestion');
     await getData({ type: "speaking-questions", id: params.get("id") }).then((result) => {
       setQuestion(result.data['questions']);
+      setQuestionId(result.data['questionId'])
     });
   };
 
@@ -60,10 +62,9 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
   const handleSubmitAnswer = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({...prev, reading: {...prev['speaking'], answer: messages}}));
+      setCollectAnswer(prev => ({...prev, reading: {...prev['speaking'], dialogue: messages, userId: "123", testType: "FullSpeaking", questionId: questionId}}));
     };
-    console.log(messages);
-    await getSpeakingScore({dialogue: messages, useId: "123", testType: "FullSpeaking"})
+    await getSpeakingScore({dialogue: messages, userId: "123", testType: "FullSpeaking", questionId: questionId})
   }
 
   function handleNext() {
