@@ -135,7 +135,7 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
 
     
      
-      SpeechRecognition.stopListening()
+      SpeechRecognition.stopListening();
       
 
       if (currentQuestionIndex < questions.length - 1) {

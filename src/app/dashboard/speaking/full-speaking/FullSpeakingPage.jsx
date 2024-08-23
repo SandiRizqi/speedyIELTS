@@ -2,8 +2,6 @@
 import 'regenerator-runtime/runtime';
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { UserProvider } from '@/service/user';
-import AuthStateChangeProvider from '@/service/auth';
 import { FirebaseFunction } from '@/service/firebase';
 import { httpsCallable } from 'firebase/functions';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
@@ -15,10 +13,13 @@ import PartTwo from './PartTwo';
 import LoadingScore from '../LoadingScore';
 import ScoreDisplay from '../ScoreDisplay';
 import { useSearchParams } from 'next/navigation';
+import { useUser } from '@/service/user';
 
 
-const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) => {
+
+const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) => {
   const functions = FirebaseFunction();
+  const user = useUser();
   const [question, setQuestion] = useState(savedQuestion || null);
   const [questionId, setQuestionId] = useState('')
   const [start, setStart] = useState(false);
@@ -62,9 +63,9 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
   const handleSubmitAnswer = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({...prev, reading: {...prev['speaking'], dialogue: messages, userId: "123", testType: "FullSpeaking", questionId: questionId}}));
+      setCollectAnswer(prev => ({ ...prev, reading: { ...prev['speaking'], dialogue: messages, userId: "123", testType: "FullSpeaking", questionId: questionId } }));
     };
-    await getSpeakingScore({dialogue: messages, userId: "123", testType: "FullSpeaking", questionId: questionId})
+    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "FullSpeaking", questionId: questionId })
   }
 
   function handleNext() {
@@ -75,7 +76,6 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
       setFinished(true);
     }
   }
-
 
   useEffect(() => {
     let isMounted = true;
@@ -114,40 +114,39 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
   }
 
   return (
-    <UserProvider>
-      <AuthStateChangeProvider>
-        <Breadcrumb pageName='Full Speaking' />
-        <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
-          <header className="w-full">
-            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
-              <div className="sm:flex sm:items-center sm:justify-between mb-4">
-                <div className="text-center sm:text-left">
-                  <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Full-Speaking</h1>
-                  <div className='flex flex-col mt-4'>
-                    <span className="mt-1 inline-flex items-center">
-                      <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500 mx-1"></span>Please start to speak when recording sign is showing.</p>
-                    </span>
+    <>
+      <Breadcrumb pageName='Full Speaking' />
+      <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
+        <header className="w-full">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
+            <div className="sm:flex sm:items-center sm:justify-between mb-4">
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Full-Speaking</h1>
+                <div className='flex flex-col mt-4'>
+                  <span className="mt-1 inline-flex items-center">
+                    <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500 mx-1"></span>Please start to speak when recording sign is showing.</p>
+                  </span>
 
-                    <span className="mt-1 inline-flex items-center">
+                  <span className="mt-1 inline-flex items-center">
 
-                      <p className="mt-1.5 text-sm text-gray-500 gap-2"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500 mx-1"></span>The test will be automatically submitted after it finishes.</p>
-                    </span>
+                    <p className="mt-1.5 text-sm text-gray-500 gap-2"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500 mx-1"></span>The test will be automatically submitted after it finishes.</p>
+                  </span>
 
-                    <span className="mt-1 inline-flex items-center">
+                  <span className="mt-1 inline-flex items-center">
 
-                      <p className="mt-1.5 text-sm text-gray-500 gap-2"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500 mx-1"></span>The result will be generated instantly after the test is finished.</p>
-                    </span>
-                  </div>
-
+                    <p className="mt-1.5 text-sm text-gray-500 gap-2"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500 mx-1"></span>The result will be generated instantly after the test is finished.</p>
+                  </span>
                 </div>
-              </div>
-              {feedback && !loading && (<ScoreDisplay result={feedback} />)}
-              {loading && (<LoadingScore />)}
-            </div>
-          </header>
-          
 
-          <div className='w-full mt-4'>
+              </div>
+            </div>
+            {feedback && !loading && (<ScoreDisplay result={feedback} />)}
+            {loading && (<LoadingScore />)}
+          </div>
+        </header>
+
+
+        <div className='w-full mt-4'>
           <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
             <div className="flex flex-col md:flex-row h-full">
               {/* Assistant Column */}
@@ -175,7 +174,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                       </div>
                     </div>
-                  )) :  (<PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
+                  )) : (<PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="p-4 border-t mt-auto">
@@ -196,7 +195,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
                       className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!finished ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
-                      {!loading ? 'Submit': 'Loading'}
+                      {!loading ? 'Submit' : 'Loading'}
                     </button>
 
                   </div>
@@ -204,13 +203,9 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
               </div>
             </div>
           </div>
-
-          </div>
-
-
         </div>
-      </AuthStateChangeProvider>
-    </UserProvider>
+      </div>
+    </>
   );
 }
 

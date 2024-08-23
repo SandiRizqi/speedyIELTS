@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import FullSpeakingPage from "./FullSpeakingPage";
+import Container from "./Container";
 
 
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <DefaultLayout>
-      <FullSpeakingPage isFullTest={false} setCollectAnswer={null} setNextTest={null} savedQuestion={null} savedAnswer={null}/>
+      <Container />
     </DefaultLayout>
   );
 };
