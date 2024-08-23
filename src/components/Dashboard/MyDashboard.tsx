@@ -76,7 +76,7 @@ const MyDashboard: React.FC = () => {
 
   return (
     <>
-      {chartData && (
+      {chartData ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Highest Listening" total={getHighest(chartData['listening'])} rate="0.43%" levelUp>
           <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px" className="fill-primary dark:fill-white">
@@ -99,7 +99,17 @@ const MyDashboard: React.FC = () => {
           </svg>
         </CardDataStats>
       </div>
-      )}
+      ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} >
+                <div className="rounded-sm border border-stroke bg-white px-5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+                <div className="h-8 w-8 bg-slate-200 rounded-full mb-2"></div>
+                <div className="h-10 bg-slate-200 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>)}
 
       {chartData ? (
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
@@ -107,7 +117,7 @@ const MyDashboard: React.FC = () => {
           <OneSkillChart seriesdata={chartData['reading']} title="Reading Scores" />
           <OneSkillChart seriesdata={chartData['writing']} title="Writing Scores" />
           <OneSkillChart seriesdata={chartData['speaking']} title="Speaking Scores" />
-          <AllSkillChart />
+          <AllSkillChart seriesdata={chartData['full']}/>
         </div>
       ): (<DashboardSkeleton />)}
     </>

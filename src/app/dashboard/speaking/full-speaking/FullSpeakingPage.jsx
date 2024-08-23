@@ -21,6 +21,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
   const functions = FirebaseFunction();
   const [question, setQuestion] = useState(savedQuestion || null);
   const [start, setStart] = useState(false);
+  const [finished, setFinished] = useState(false);
   const [statusTest, setStatusTest] = useState(false);
   const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
   const [indexStep, setIndexStep] = useState(0)
@@ -70,6 +71,7 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
       setIndexStep(prev => prev + 1);
     } else {
       setStatusTest(false);
+      setFinished(true);
     }
   }
 
@@ -180,8 +182,8 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                     <button
                       onClick={() => setStatusTest(!statusTest)}
-                      disabled={messages.length > 0}
-                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={finished}
+                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${finished ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       Start Conversation
@@ -189,8 +191,8 @@ const FullSpeakingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuest
 
                     <button
                       onClick={() => handleSubmitAnswer()}
-                      disabled={statusTest || feedback}
-                      className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={!finished}
+                      className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!finished ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       {!loading ? 'Submit': 'Loading'}

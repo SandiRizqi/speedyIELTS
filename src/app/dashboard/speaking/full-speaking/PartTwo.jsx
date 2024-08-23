@@ -61,7 +61,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
 
 
   const VOLUME_THRESHOLD = 5;
-  const QUESTION_WAIT_TIME = 20000; 
+  const QUESTION_WAIT_TIME = 120000; 
 
 
   const startRecording = async () => {
@@ -173,7 +173,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
 
   return (
     <div className="flex flex-col w-full">
-      {status === 'waiting' && (<Timer minutes={0} seconds={10} status={status} setStatus={setStatus}/>)}
+      {status === 'waiting' && (<Timer minutes={0} seconds={60} status={status} setStatus={setStatus}/>)}
       {status === 'listening' && (<Timer minutes={0} seconds={QUESTION_WAIT_TIME / 1000} status={status} setStatus={setStatus}/>)}
       <div
         className="mt-2 p-2 w-full h-full rounded"
