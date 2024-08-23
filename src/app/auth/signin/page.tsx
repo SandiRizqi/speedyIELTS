@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import SignIn from "./SignIn";
+import Login from "./Login"
 
 export const metadata: Metadata = {
   title: "SpeedyIELTS | Sign In",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const SignInPage: React.FC = () => {
   return (
-  <SignIn />
+  <Login />
   );
 };
 
