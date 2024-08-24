@@ -9,7 +9,6 @@ import Loader from '@/components/common/Loader';
 import VoiceAssistant from './VoiceAssistant';
 import StartInstruction from './StartInstruction';
 import { useSpeechRecognition } from 'react-speech-recognition';
-import PartTwo from './PartTwo';
 import LoadingScore from '../LoadingScore';
 import ScoreDisplay from '../ScoreDisplay';
 import { useSearchParams } from 'next/navigation';
@@ -17,7 +16,7 @@ import { useUser } from '@/service/user';
 
 
 
-const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) => {
+const FullSpeakingPage = () => {
   const functions = FirebaseFunction();
   const user = useUser();
   const [question, setQuestion] = useState(savedQuestion || null);
@@ -25,7 +24,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
   const [start, setStart] = useState(false);
   const [finished, setFinished] = useState(false);
   const [statusTest, setStatusTest] = useState(false);
-  const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
+  const order = ["intro1", "part1", "closing"];
   const [indexStep, setIndexStep] = useState(0)
   const [messages, setMessages] = useState(savedAnswer || []);
   const [loading, setLoading] = useState(false);
@@ -62,9 +61,6 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
   };
 
   const handleSubmitAnswer = async () => {
-    if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, reading: { ...prev['speaking'], dialogue: messages, userId: "123", testType: "SpeakingAcademic", questionId: questionId } }));
-    };
     await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingAcademic", questionId: questionId })
   }
 
@@ -115,13 +111,13 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
   return (
     <>
-      <Breadcrumb pageName='Full Speaking' />
+      <Breadcrumb pageName='Mini Speaking' />
       <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
             <div className="sm:flex sm:items-center sm:justify-between mb-4">
               <div className="text-center sm:text-left">
-                <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Full-Speaking</h1>
+                <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Mini-Speaking</h1>
                 <div className='flex flex-col mt-4'>
                   <span className="mt-1 inline-flex items-center">
                     <p className="mt-1.5 text-sm text-gray-500"><span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500 mx-1"></span>Please start to speak when recording sign is showing.</p>
@@ -174,7 +170,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
                       </div>
                     </div>
-                  )) : (<PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
+                  )) : (<></>)}
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="p-4 border-t mt-auto">
@@ -191,8 +187,8 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
                     <button
                       onClick={() => handleSubmitAnswer()}
-                      disabled={!finished}
-                      className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!finished ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={!finished || feedback}
+                      className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!finished || feedback? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       {!loading ? 'Submit' : 'Loading'}

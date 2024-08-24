@@ -134,7 +134,7 @@ const menuGroups = [
         label: "Speaking",
         route: "#",
         children: [
-          { label: "Mini Speaking", route: "#", soonBadge: true },
+          { label: "Mini Speaking", route: "/dashboard/speaking/mini-speaking" },
           { label: "Full Speaking", route: "/dashboard/speaking/full-speaking" },],
       },
       {
