@@ -58,12 +58,12 @@ const LoginPage = () => {
                 </div>
             </header>
             <section className="hidden sm:flex flex-row h-screen fixed inset-0">
-                <div className="sm:w-8/12 bg-cover bg-center bg-[url('/images/woman-english.jpg')] h-full">
+                <div className="sm:w-8/12 bg-cover bg-center bg-[url('/images/woman-english-1000.png')] h-full">
                 </div>
                 <div className="absolute inset-0 bg-black opacity-50"></div>
             </section>
             <section className="relative z-20 sm:h-screen">
-                <div className="sm:hidden h-[400px] flex flex-col justify-end bg-cover bg-center bg-[url('/images/woman-english.jpg')] pt-20 shadow-2xl">
+                <div className="sm:hidden h-[400px] flex flex-col justify-end bg-cover bg-center bg-[url('/images/woman-english-1000.png')] pt-20 shadow-2xl">
                     <div className="container mx-auto">
                         <div className="pb-20 space-y-1 px-8">
                             <h1 className="font-bold text-xl text-white">Boost your IELTS Band score and Unlock Your Future</h1>
@@ -90,7 +90,7 @@ const LoginPage = () => {
                                         <input type="password" placeholder="Masukkan password kamu" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" />
                                     </div>
                                     <button type="submit" className="bg-primary rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full">
-                                        <span>Login</span>
+                                        <span>Sign In</span>
                                     </button>
                                 </form>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}
@@ -102,7 +102,7 @@ const LoginPage = () => {
                                 <button type="button" className="bg-[#F1F2F4] w-full px-6 py-3 rounded-md"  onClick={handleSignInGoogle}>
                                     <div className="flex flex-row items-center justify-center gap-3">
                                         <img src="/images/icon/google-icon.svg" />
-                                        <span className="font-semibold text-sm text-primary-black">Login dengan Google</span>
+                                        <span className="font-semibold text-sm text-primary-black">Sign in with Google</span>
                                     </div>
                                 </button>
                                 <div className="font-normal text-sm text-neutral-black text-center mt-5">
