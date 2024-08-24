@@ -69,9 +69,14 @@ const MyDashboard: React.FC = () => {
     getChartData();
   }, [])
 
-  function getHighest(numbers: number[]): string {
+  type Score = {
+    overall: number;
+    // other properties...
+};
+  function getHighest(numbers: Score[]): string {
+    const ListScore:number[] = numbers.map((obj) => obj['overall']) || [];
     if (numbers.length === 0) return `Band 0`;
-    return `Band ${Math.max(...numbers)}`;
+    return `Band ${Math.max(...ListScore)}`;
   }
 
   return (

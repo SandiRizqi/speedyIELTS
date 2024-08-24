@@ -1,13 +1,29 @@
 'use client'
 import React from 'react';
 import { SignInWithPassword, SignInWithGoogle } from "@/service/firebase";
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import withUnProtected from "@/hooks/withUnProtected";
 import getErrorMessage from "./getErrorMessage";
 
 
 const LoginPage = () => {
     const [errors, setErrors] = useState(null);
+    const form = useRef();
+
+
+    async function handleSubmit (e){
+        e.preventDefault()
+        const email = e.target.elements.email.value
+        const pass = e.target.elements.password.value
+        try {
+            const [_, err ] = await SignInWithPassword(email, pass);
+            if (err) {
+                setErrors(getErrorMessage(err))
+            };
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
   async function handleSignInGoogle() {
     const [_, err ] = await SignInWithGoogle();
@@ -64,10 +80,10 @@ const LoginPage = () => {
                         <div className="flex-1 flex flex-col justify-center mx-auto">
                             <div className="p-6 sm:p-8 shadow-lg bg-white w-full max-w-md relative -top-12 sm:top-0 sm:left-0 rounded-2xl">
                                 <h3 className="font-bold text-primary-black text-2xl mb-10">Login SpeedyIELTS</h3>
-                                <form action="javascript:throw new Error('A React form was unexpectedly submitted.')">
+                                <form onSubmit={handleSubmit} ref={form}>
                                     <div className="mb-4">
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Email</label>
-                                        <input autofocus="" type="text" placeholder="Masukkan email kamu" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="email" />
+                                        <input autoFocus="" type="text" placeholder="Masukkan email kamu" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="email" />
                                     </div>
                                     <div className="mb-4">
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Password</label>
@@ -77,6 +93,7 @@ const LoginPage = () => {
                                         <span>Login</span>
                                     </button>
                                 </form>
+                                {errors && (<span className='text-danger text-xs'>{errors}</span>)}
                                 <div className="flex flex-row items-center gap-4 my-6">
                                     <div className="h-0.5 bg-primary-light-slate flex-1"></div>
                                     <label className="font-normal text-xs text-black block">atau login dengan</label>
