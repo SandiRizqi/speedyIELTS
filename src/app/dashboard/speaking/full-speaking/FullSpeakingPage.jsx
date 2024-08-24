@@ -63,7 +63,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
   const handleSubmitAnswer = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, reading: { ...prev['speaking'], dialogue: messages, userId: "123", testType: "SpeakingAcademic", questionId: questionId } }));
+      setCollectAnswer(prev => ({ ...prev, reading: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingAcademic", questionId: questionId } }));
     };
     await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingAcademic", questionId: questionId })
   }
