@@ -19,14 +19,14 @@ import { useUser } from '@/service/user';
 const FullSpeakingPage = () => {
   const functions = FirebaseFunction();
   const user = useUser();
-  const [question, setQuestion] = useState(savedQuestion || null);
+  const [question, setQuestion] = useState(null);
   const [questionId, setQuestionId] = useState('')
   const [start, setStart] = useState(false);
   const [finished, setFinished] = useState(false);
   const [statusTest, setStatusTest] = useState(false);
   const order = ["intro1", "part1", "closing"];
   const [indexStep, setIndexStep] = useState(0)
-  const [messages, setMessages] = useState(savedAnswer || []);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const messagesEndRef = useRef(null);
