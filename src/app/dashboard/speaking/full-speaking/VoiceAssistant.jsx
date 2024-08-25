@@ -77,8 +77,8 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
   const askQuestion = (index) => {
     SpeechRecognition.stopListening()
     setAssistantSpeaking(true);
-    const utterance = new SpeechSynthesisUtterance(questions[index]);
     setMessages(prevMessages => [...prevMessages, { sender: 'assistant', text: questions[index] }]);
+    const utterance = new SpeechSynthesisUtterance(questions[index]);
     utterance.onend = () => {
       setAssistantSpeaking(false);
       startRecording();
@@ -123,20 +123,14 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
   };
 
   const stopRecording = () => {
+    SpeechRecognition.stopListening();
     if (microphone.current) {
       microphone.current.disconnect();
-      if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
-        mediaRecorder.current.stop();
-      }
+      mediaRecorder.current.stop();
       setIsRecording(false);
       setRecordingStatus('inactive');
       setVolume(0);
       clearTimeout(silenceTimer.current);
-
-    
-     
-      SpeechRecognition.stopListening();
-      
 
       if (currentQuestionIndex < questions.length - 1) {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);

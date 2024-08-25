@@ -83,6 +83,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
         const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
         const audioUrl = URL.createObjectURL(audioBlob);
         audioRef.current.src = audioUrl;
+        setMessages(prevMessages => [...prevMessages, { sender: 'user', text: transcript, audioUrl: audioRef.current.src }])
       };
       resetSilenceDetection();
       SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
@@ -97,15 +98,14 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
   const stopRecording = () => {
     if (microphone.current) {
       microphone.current.disconnect();
-      if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
-        mediaRecorder.current.stop();
-      }
+      mediaRecorder.current.stop();
       clearTimeout(silenceTimer.current);
-      SpeechRecognition.stopListening()
     }
+    SpeechRecognition.stopListening()
     setStatus('inactive');
     resetSilenceDetection();
   };
+  
 
   const resetSilenceDetection = () => {
     silenceStart.current = null;
@@ -158,7 +158,6 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
     if (status === 'listening') {
       startRecording();;
     } else if (status === 'inactive') {
-      setMessages(prevMessages => [...prevMessages, { sender: 'user', text: transcript, audioUrl: audioRef.current.src }])
       resetTranscript();
       handleNextPart();
     }
