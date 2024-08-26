@@ -9,7 +9,9 @@ import Loader from '@/components/common/Loader';
 import { httpsCallable } from 'firebase/functions';
 import { FirebaseFunction } from '@/service/firebase';
 import { SuccessMessage, ErrorMessage } from '../../_components/Alert';
-import axios from 'axios';
+import { useUser } from '@/service/user';
+
+
 
 const Timer = ({ minutes, seconds, setFinish }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -42,6 +44,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
 };
 
 export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) {
+  const user = useUser();
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,6 +54,7 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
       questionId: '',
       testType: 'WritingTask1',
       answer: '',
+      userId: user.uid,
     },
     task2:
     {
@@ -58,6 +62,7 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
       questionId: '',
       testType: 'WritingTask2',
       answer: '',
+      userId: user.uid,
     }
   });
   const [feedback, setFeedback] = useState(null);
@@ -67,19 +72,7 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
 
 
 
-  const getWritingScore = async (values) => {
-    const getData = httpsCallable(functions, 'getWritingScore');
-    try {
-      const res = await getData(values);
-      const respon = res.data;
-      const result = respon["result"];
-      return result; // Return the result here
-    } catch (error) {
-      console.error("Error fetching questions:", error);
-      return undefined; // Return undefined explicitly in case of an error
-    }
 
-  };
 
   const handleSubmit = async () => {
     if (isFullTest) {
@@ -89,19 +82,12 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
 
     setIsLoading(true);
     try {
-      const [feedback1, feedback2] = await Promise.all([
-        getWritingScore(answer['task1']),
-        getWritingScore(answer['task2']),
-      ]);
-
+      const getData = httpsCallable(functions, 'getWritingFullScore');
+      const res = await getData({...answer, userId: user.uid, testType: "WritingFullAcademic"});
+      const data = res["data"]["result"];
+      setFeedback({ feedback1: data["task1"]["result"], feedback2: data["task2"]["result"] });
       setIsLoading(false);
-
-      if (!feedback1 || !feedback2) {
-        throw new Error('Failed to fetch data');
-      };
-
-      setFeedback({ feedback1: feedback1, feedback2: feedback2 });
-      //SuccessMessage({score: null})
+      SuccessMessage({score: data["overall"]})
 
 
     } catch (e) {

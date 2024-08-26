@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import WritingFullPage from "./WritingFullPage";
+import Container from "./Container";
 
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <DefaultLayout>
-        <WritingFullPage isFullTest={false} setCollectAnswer={null} setNextTest={null} savedQuestion={null} savedAnswer={null}/>
+        <Container />
       </DefaultLayout>
     </>
   );
