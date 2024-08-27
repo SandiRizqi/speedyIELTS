@@ -78,53 +78,30 @@ const IELTSTestOptionsGrid = () => {
 
   const testOptions =  [
       {
-        title: "GENERAL TASK 1",
-        isSoon: true,
+        title: "MINI SPEAKING",
+        Url: "/dashboard/speaking/mini-speaking",
         options: [
-          "General IELTS part 1 letter writing",
+          "3 - 5 minutes long",
           "Instant result",
           "Comprehensive feedback",
-          "33% of your total IELTS writing score",
-          "The latest writing topics and questions",
-          "Graded on all four IELTS parameters: Grammar, Coherence & Cohesion, Lexical Resource, and Task Response"
+          "Only contains IELTS speaking part 1",
+          "Good for quick revision before the exam",
+          "The Latest speaking topics and questions",
+          "Graded on all four IELTS parameters: Grammar, Lexical Resources, Pronunciation and Fluency"
         ],
       },
       {
-        title: "ACADEMIC TASK 1",
-        Url: "/dashboard/writing/writing-one",
-        options: [
-          "Academic IELTS Task 1 writing",
-          "Instant result",
-          "Comprehensive feedback",
-          "33% of your total IELTS writing score",
-          "The latest writing topics and questions",
-          "Graded on all four IELTS parameters: Grammar, Coherence & Cohesion, Lexical Resource, and Task Response"
-        ],
-      },
-      {
-        title: "ACADEMIC ESSAY WRITING",
+        title: "FULL SPEAKING",
         isPremium: true,
-        Url: "/dashboard/writing/writing-two",
+        Url: "/dashboard/speaking/full-speaking",
         options: [
-          "IELTS Task 2 essay writing",
+          "10 - 15 minutes long",
           "Instant result",
           "Comprehensive feedback",
-          "66% of your total IELTS writing score",
-          "The latest writing topics and questions",
-          "Graded on all four IELTS parameters: Grammar, Coherence & Cohesion, Lexical Resource, and Task Response"
-        ],
-      },
-      {
-        title: "ACADEMIC FULL WRITING",
-        isPremium: true,
-        Url: "/dashboard/writing/writing-full",
-        options: [
-          "IELTS Writing Academic full test",
-          "Instant result",
-          "Comprehensive feedback",
-          "100% of your total IELTS writing score",
-          "The latest writing topics and questions",
-          "Graded on all four IELTS parameters: Grammar, Coherence & Cohesion, Lexical Resource, and Task Response"
+          "Contains all the IELTS speaking parts",
+          "Good for complete practice before the exam",
+          "The Latest speaking topics and questions",
+          "Graded on all four IELTS parameters: Grammar, Lexical Resources, Pronunciation and Fluency"
         ],
       },
     ]
@@ -133,11 +110,11 @@ const IELTSTestOptionsGrid = () => {
     <div className="container mx-auto p-4">
       <div className='flex flex-row justify-between border-b border-slate-300 mb-6 gap-4'>
         <div className='text-black dark:text-slate-400'>
-          <h2 className="text-2xl font-bold mb-2">Choose a Writing Test to begin.</h2>
-          <p className="text-gray-600 mb-2">The only resource you will ever need for your IELTS Writing preparation.</p>
+          <h2 className="text-2xl font-bold mb-2">Choose an IELTS Speaking Test to begin.</h2>
+          <p className="text-gray-600 mb-2">The only resource you will ever need for your IELTS speaking preparation.</p>
         </div>
         <div className='relative'>
-          <Score title="Estimated Score" score={chartData['writing']} size={"medium"}/>
+          <Score title="Estimated Score" score={chartData['speaking']} size={"medium"}/>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2  gap-6">

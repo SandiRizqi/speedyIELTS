@@ -10,6 +10,7 @@ import { httpsCallable } from 'firebase/functions';
 import { FirebaseFunction } from '@/service/firebase';
 import { SuccessMessage, ErrorMessage } from '../../_components/Alert';
 import { useUser } from '@/service/user';
+import withSubscription from '@/hooks/withSubscribtion';
 
 
 
@@ -43,7 +44,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
   );
 };
 
-export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) {
+const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) => {
   const user = useUser();
   const [start, setStart] = useState(false);
   const [finish, setFinish] = useState(false);
@@ -210,3 +211,6 @@ export default function WritingFullPage({ isFullTest, setCollectAnswer, setNextT
     </>
   );
 }
+
+
+export default withSubscription(WritingFullPage); 

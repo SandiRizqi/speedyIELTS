@@ -19,7 +19,7 @@ const TestOption = ({ title, options, isPremium, isSoon, Url }) => (
         </span>
       )}
       {isPremium && (
-        <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold py-1 px-2 rounded mb-2 shadow-lg">
+        <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold py-1 px-2 rounded mb-2 shadow-lg h-full">
           PREMIUM
         </span>
       )}
@@ -97,7 +97,7 @@ const IELTSTestOptionsGrid = () => {
         Url: "#",
         options: [
           "2.5 to 3 hours long",
-          "Suitable for complete IELTS Academic practice",
+          "Suitable for complete IELTS General practice",
           "It contains all four sections: Speaking, Writing, Listening, and Reading",
           "Instant result within minutes",
           "Comprehensive feedback",

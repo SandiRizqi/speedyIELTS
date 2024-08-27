@@ -1,9 +1,10 @@
 'use client'
 import React from "react"
 import FullTestPage from "./FullTestPage"
-import { AnswerProvider } from "../hook/useAnswerCollection"
+import { AnswerProvider } from "../hook/useAnswerCollection";
+import withSubscription from "@/hooks/withSubscribtion";
 
-export default function Container () {
+const Container =  () => {
     return (
         <>
         <AnswerProvider>
@@ -12,3 +13,5 @@ export default function Container () {
         </>
     )
 }
+
+export default withSubscription(Container);

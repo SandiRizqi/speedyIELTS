@@ -14,6 +14,7 @@ import LoadingScore from '../LoadingScore';
 import ScoreDisplay from '../ScoreDisplay';
 import { useSearchParams } from 'next/navigation';
 import { useUser } from '@/service/user';
+import withSubscription from '@/hooks/withSubscribtion';
 
 
 
@@ -210,4 +211,4 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 }
 
 
-export default FullSpeakingPage;
+export default withSubscription(FullSpeakingPage);
