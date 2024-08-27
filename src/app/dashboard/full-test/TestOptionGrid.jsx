@@ -9,7 +9,7 @@ import Score from "./Score";
 import Loader from '@/components/common/Loader';
 
 
-const TestOption = ({ title, options, isPremium, isSoon, Url }) => (
+const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion }) => (
   <div className="bg-white p-4 pb-0 shadow-lg dark:bg-slate-600 dark:text-white">
     <div className='flex flex-row justify-between border-b border-slate-300 mb-4'>
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
@@ -18,7 +18,7 @@ const TestOption = ({ title, options, isPremium, isSoon, Url }) => (
           COMMING SOON
         </span>
       )}
-      {isPremium && (
+      {isPremium && subscribtion !== "PREMIUM" && (
         <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold py-1 px-2 rounded mb-2 shadow-lg h-full">
           PREMIUM
         </span>
@@ -34,21 +34,21 @@ const TestOption = ({ title, options, isPremium, isSoon, Url }) => (
         </li>
       ))}
     </ul>
-    {!isSoon && (<a href={Url} className='flex justify-center'><button className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-3 px-8  transition-colors duration-300 mb-4">START TEST</button></a>)}
-    {isPremium && (
+    {!isSoon && (<a href={Url} className='flex justify-center'><button className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-3 px-8  transition-colors duration-300 mb-4" >START TEST</button></a>)}
+    {isPremium && subscribtion !== "PREMIUM" &&(
       <div className="flex flex-col items-center space-x-8">
-      <div className="relative">
-        <a href="/dashboard/payment">
-          <button className="bg-slate-300 hover:bg-teal-400 text-black hover:text-white px-4 py-1 rounded-t-xl flex items-center space-x-2 shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 11V7a4 4 0 10-8 0v4m16 0V7a4 4 0 00-8 0v4m12 0h-4m-4 0h4m4 0a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8z" />
-            </svg>
-            <span>Unlock unlimited tests</span>
-          </button>
-        </a>
-       
+        <div className="relative">
+          <a href="/dashboard/payment">
+            <button className="bg-slate-300 hover:bg-teal-400 text-black hover:text-white px-4 py-1 rounded-t-xl flex items-center space-x-2 shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 11V7a4 4 0 10-8 0v4m16 0V7a4 4 0 00-8 0v4m12 0h-4m-4 0h4m4 0a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8z" />
+              </svg>
+              <span>Unlock unlimited tests</span>
+            </button>
+          </a>
+
+        </div>
       </div>
-    </div>
     )}
   </div>
 );
@@ -74,6 +74,8 @@ const IELTSTestOptionsGrid = () => {
   if (!chartData) {
     return <Loader />
   }
+
+
 
 
   const testOptions =  [
@@ -120,7 +122,7 @@ const IELTSTestOptionsGrid = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
         {testOptions.map((option, index) => (
-          <TestOption key={index} {...option} />
+          <TestOption key={index} {...option} subscribtion={user?.subscribtion} />
         ))}
       </div>
     </div>

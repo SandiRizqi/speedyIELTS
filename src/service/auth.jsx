@@ -1,6 +1,8 @@
+"use client"
 import { Authenticaion } from "./firebase";
 import { useEffect, useState } from "react";
 import { useUser, InitUserState } from "./user";
+
 
 
 
@@ -23,6 +25,10 @@ const AuthStateChangeProvider = ({children}) => {
     useEffect(() => {
         InitAuthStateChange();
     }, [])
+
+
+
+
     if(isLoading){
         return ;
     }
