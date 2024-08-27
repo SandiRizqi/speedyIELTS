@@ -116,11 +116,7 @@ const menuGroups = [
 
         ),
         label: "Writing",
-        route: "#",
-        children: [
-          { label: "Writing Task 1", route: "/dashboard/writing/writing-one" },
-          { label: "Writing Task 2", route: "/dashboard/writing/writing-two" },
-          { label: "Writing Full", route: "/dashboard/writing/writing-full" }],
+        route: "/dashboard/writing",
       },
       {
         icon: (
