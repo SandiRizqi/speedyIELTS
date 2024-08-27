@@ -1,12 +1,12 @@
 'use client'
 import React from "react";
 import { useEffect, useState, useCallback } from "react";
-import AcademicListeningPage from "../listening/academic-listening/AcademicListeningPage";
-import AcademicReadingPage from "../reading/academic-reading/AcademicReadingPage";
-import WritingFullPage from "../writing/writing-full/WritingFullPage";
-import FullSpeakingPage from "../speaking/full-speaking/FullSpeakingPage";
+import AcademicListeningPage from "../../listening/academic-listening/AcademicListeningPage";
+import AcademicReadingPage from "../../reading/academic-reading/AcademicReadingPage";
+import WritingFullPage from "../../writing/writing-full/WritingFullPage";
+import FullSpeakingPage from "../../speaking/full-speaking/FullSpeakingPage";
 import StartInstruction from "./StartInstruction";
-import { useAnswer } from "./hook/useAnswerCollection";
+import { useAnswer } from "../hook/useAnswerCollection";
 
 
 const FullTestPage = () => {

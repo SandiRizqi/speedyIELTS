@@ -1,20 +1,20 @@
-
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import Container from "./Container";
+import TestOptionGrid from "./TestOptionGrid";
+
 
 export const metadata: Metadata = {
-  title: "SpeedyIELTS | Full Test",
-  description:
-    "Boost your IELTS band with Speedy IELTS test platform",
-};
-
-const Page = () => {
+    title: "Speedy IELTS | Full Test",
+    description:
+      "Boost your IELTS band with Speedy IELTS test platform",
+  };
+  
+export default function Home() {
   return (
-    <DefaultLayout>
-      <Container />
-    </DefaultLayout>
+    <>
+      <DefaultLayout>
+        <TestOptionGrid />
+      </DefaultLayout>
+    </>
   );
-};
-
-export default Page;
+}

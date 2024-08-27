@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <DefaultLayout>
-        <TestOptionGrid testType={"writing"}/>
+        <TestOptionGrid />
       </DefaultLayout>
     </>
   );
