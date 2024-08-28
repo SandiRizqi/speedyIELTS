@@ -19,7 +19,7 @@ const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion }) =>
 
 
   return (
-    <div className="bg-white p-4 pb-4 shadow-lg dark:bg-slate-600 dark:text-white">
+    <div className="bg-white p-4 pb-0 shadow-lg dark:bg-slate-600 dark:text-white">
       <div className='flex flex-row justify-between border-b border-slate-300 mb-4'>
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
         {isSoon && (
@@ -43,7 +43,7 @@ const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion }) =>
           </li>
         ))}
       </ul>
-      <div className='flex space-x-2 justify-center mb-2'>
+      <div className='flex space-x-2 justify-center mb-4'>
         {!isSoon && (<button onClick={() => handleStart()} disabled={subscribtion !== "PREMIUM" && isPremium}
           className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${subscribtion !== "PREMIUM" && isPremium ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
             }`} >START TEST</button>)}

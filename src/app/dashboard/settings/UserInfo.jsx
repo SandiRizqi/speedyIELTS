@@ -299,9 +299,17 @@ const UserInfo = () => {
                         </h3>
                     </div>
                     <div className="p-4 px-7 inline-block">
-                        <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-md font-bold py-1 px-2 rounded mb-2 shadow-lg h-full">
-                            {user?.subscribtion}
-                        </span>
+                        {user.subscribtion === "PREMIUM" ? (
+                            <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-md font-bold py-1 px-2 rounded mb-2 shadow-lg h-full">
+                                {user.subscribtion}
+                            </span>
+
+                        ) : (
+                            <span className="bg-yellow-500 text-white text-md font-bold py-1 px-2 rounded mb-2 inline-block">
+                                {user.subscribtion}
+                            </span>)}
+
+
                     </div>
                 </div>
             </div>
