@@ -166,7 +166,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Payment",
-        route: "#",
+        route: "/dashboard/payment",
       },
     ],
   }
