@@ -19,7 +19,7 @@ const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion }) =>
 
 
   return (
-    <div className="bg-white p-4 pb-0 shadow-lg dark:bg-slate-600 dark:text-white">
+    <div className="bg-white p-4 pb-4 shadow-lg dark:bg-slate-600 dark:text-white">
       <div className='flex flex-row justify-between border-b border-slate-300 mb-4'>
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
         {isSoon && (

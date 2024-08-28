@@ -291,6 +291,20 @@ const UserInfo = () => {
                     </div>
                 </div>
             </div>
+            <div className="col-span-5 xl:col-span-3">
+                <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                    <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
+                        <h3 className="font-medium text-black dark:text-white">
+                            Subscribtion
+                        </h3>
+                    </div>
+                    <div className="p-4 px-7 inline-block">
+                        <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-md font-bold py-1 px-2 rounded mb-2 shadow-lg h-full">
+                            {user?.subscribtion}
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
