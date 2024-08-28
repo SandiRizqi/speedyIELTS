@@ -7,6 +7,9 @@ import Image from "next/image";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import UpgradeCard from "./UpgradeCard";
+import AppVersion from "./AppVersion";
+import { useUser } from "@/service/user";
 
 
 type ColorVariant = 'blue' | 'green' | 'red' | 'yellow';
@@ -79,7 +82,7 @@ const menuGroups = [
     ],
   },
   {
-    name: "PRACTICE TEST",
+    name: "PRACTICE MODULES",
     menuItems: [
       {
         icon: (
@@ -89,30 +92,40 @@ const menuGroups = [
 
         ),
         label: "Listening",
-        route: "#",
-        children: [
-          { label: "Academic Listening", route: "/dashboard/listening/academic-listening" },
-          { label: "General Listening", route: "#", soonBadge: true },],
+        route: "/dashboard/listening",
       },
       {
         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-            <path d="M17 3H7c-1.1 0-2 .9-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5c0-1.1-.9-2-2-2zm0 16H7V5h10v14z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M19 2H9C7.897 2 7 2.897 7 4V18C7 19.103 7.897 20 9 20H19C20.103 20 21 19.103 21 18V4C21 2.897 20.103 2 19 2ZM19 18H9V4H19V18Z"
+            />
+            <path
+              d="M5 4H4C2.897 4 2 4.897 2 6V20C2 21.103 2.897 22 4 22H14C15.103 22 16 21.103 16 20V19H6C4.897 19 4 18.103 4 17V6C4 4.897 4.897 4 6 4H5V4Z"
+            />
           </svg>
 
         ),
         label: "Reading",
-        route: "#",
-        children: [
-          { label: "Academic Reading", route: "/dashboard/reading/academic-reading" },
-          { label: "General Reading", route: "#", soonBadge: true },],
+        route: "/dashboard/reading",
       },
       {
         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-            <path d="M14 2l-4 4 8 8 4-4-8-8zm-9 14v5h5l12-12-5-5-12 12zm2-3l3-3 2 2-3 3-2-2zm-1 6v-3h3l2 2h-5z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M21 4.85l-1.17-1.17a2.5 2.5 0 00-3.54 0L3.5 16.5V20h3.5L20.85 7.35a2.5 2.5 0 000-3.54L21 4.85zM9 18H6v-3L17.85 3.15l3 3L9 18z"
+            />
           </svg>
-
 
         ),
         label: "Writing",
@@ -132,15 +145,53 @@ const menuGroups = [
       },
       {
         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px">
-            <path d="M16 1H8C6.9 1 6 .9 6 2h12c0-1.1-.9-2-2-2zM7 2C7 .9 6.1 0 5 0S3 .9 3 2v16c0 2.21 1.79 4 4 4h10c2.21 0 4-1.79 4-4V2H7zm6 12h-4v-2h4v2zm4-4H7V8h10v2z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2h-5v2h2v2H7v-2h2v-2H4a2 2 0 01-2-2V7a2 2 0 012-2zm0 2v10h16V7H4z"
+            />
           </svg>
 
         ),
-        label: "Full test",
-        route: "/dashboard/full-test",
+        label: "Complete test",
+        route: "/dashboard/complete-test",
       },
     ]
+  },
+  {
+    name: "LEARN",
+    menuItems: [
+      {
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="12" cy="10" r="1.5" fill="currentColor" />
+          </svg>
+        ),
+        label: "Learning Plans",
+        soonBadge: true,
+        route: "#",
+      },
+      {
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5">
+            <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="4" cy="4" r="2" fill="currentColor" />
+            <circle cx="20" cy="20" r="2" fill="currentColor" />
+            <circle cx="4" cy="20" r="2" fill="currentColor" />
+            <circle cx="20" cy="4" r="2" fill="currentColor" />
+          </svg>
+        ),
+        label: "Exercises",
+        soonBadge: true,
+        route: "#",
+      }
+    ],
   },
   {
     name: "OTHERS",
@@ -148,31 +199,43 @@ const menuGroups = [
       {
         icon: (
           <svg
-            className="fill-current"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
           >
             <path
-              d="M9.0002 7.79065C11.0814 7.79065 12.7689 6.1594 12.7689 4.1344C12.7689 2.1094 11.0814 0.478149 9.0002 0.478149C6.91895 0.478149 5.23145 2.1094 5.23145 4.1344C5.23145 6.1594 6.91895 7.79065 9.0002 7.79065ZM9.0002 1.7719C10.3783 1.7719 11.5033 2.84065 11.5033 4.16252C11.5033 5.4844 10.3783 6.55315 9.0002 6.55315C7.62207 6.55315 6.49707 5.4844 6.49707 4.16252C6.49707 2.84065 7.62207 1.7719 9.0002 1.7719Z"
-              fill=""
-            />
-            <path
-              d="M10.8283 9.05627H7.17207C4.16269 9.05627 1.71582 11.5313 1.71582 14.5406V16.875C1.71582 17.2125 1.99707 17.5219 2.3627 17.5219C2.72832 17.5219 3.00957 17.2407 3.00957 16.875V14.5406C3.00957 12.2344 4.89394 10.3219 7.22832 10.3219H10.8564C13.1627 10.3219 15.0752 12.2063 15.0752 14.5406V16.875C15.0752 17.2125 15.3564 17.5219 15.7221 17.5219C16.0877 17.5219 16.3689 17.2407 16.3689 16.875V14.5406C16.2846 11.5313 13.8377 9.05627 10.8283 9.05627Z"
-              fill=""
+              d="M3 4h18c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v2h18V6H3zm0 4v8h18v-8H3z"
             />
           </svg>
         ),
         label: "Payment",
         route: "/dashboard/payment",
       },
+      {
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H5.414a1 1 0 00-.707.293l-2.707 2.707A1 1 0 010 19V5a2 2 0 012-2zm4 5a1 1 0 100-2 1 1 0 000 2zm3-1a1 1 0 100-2 1 1 0 000 2zm3 1a1 1 0 100-2 1 1 0 000 2z"
+              clipRule="evenodd"
+            />
+          </svg>
+        ),
+        label: "Feedback",
+        route: "#",
+      }
     ],
   }
 ];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  const user = useUser();
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
   const audioRef = useRef(new Audio());
@@ -248,6 +311,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             ))}
           </nav>
           {/* <!-- Sidebar Menu --> */}
+          <div className="flex flex-col justify-between mx-auto gap-2 w-full">
+            {user.subscribtion !== "PREMIUM" && (<UpgradeCard />)}
+            <AppVersion />
+          </div>
+
         </div>
       </aside>
     </ClickOutside>

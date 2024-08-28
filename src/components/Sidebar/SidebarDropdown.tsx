@@ -18,7 +18,7 @@ const SidebarDropdown = ({ item }: any) => {
               {item.label}
               <div className="flex items-center space-x-2">
                 {item.soonBadge && (
-                  <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-yellow-400 rounded-full">
+                  <span className="px-2 py-1 text-xs font-semibold text-black bg-yellow-400 rounded-full">
                     Soon
                   </span>
                 )}

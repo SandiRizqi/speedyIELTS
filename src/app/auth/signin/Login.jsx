@@ -89,17 +89,17 @@ const LoginPage = () => {
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Password</label>
                                         <input type="password" placeholder="Masukkan password kamu" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" />
                                     </div>
-                                    <button type="submit" className="bg-primary rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full">
+                                    <button type="submit" className="bg-primary rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full transition-all duration-300 transform hover:scale-105">
                                         <span>Sign In</span>
                                     </button>
                                 </form>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}
                                 <div className="flex flex-row items-center gap-4 my-6">
                                     <div className="h-0.5 bg-primary-light-slate flex-1"></div>
-                                    <label className="font-normal text-xs text-black block">atau login dengan</label>
+                                    <label className="font-normal text-xs text-black block">or</label>
                                     <div className="h-0.5 bg-primary-light-slate flex-1"></div>
                                 </div>
-                                <button type="button" className="bg-[#F1F2F4] w-full px-6 py-3 rounded-md"  onClick={handleSignInGoogle}>
+                                <button type="button" className="bg-[#F1F2F4] w-full px-6 py-3 rounded-md transition-all duration-300 transform hover:scale-105"  onClick={handleSignInGoogle}>
                                     <div className="flex flex-row items-center justify-center gap-3">
                                         <img src="/images/icon/google-icon.svg" />
                                         <span className="font-semibold text-sm text-primary-black">Sign in with Google</span>

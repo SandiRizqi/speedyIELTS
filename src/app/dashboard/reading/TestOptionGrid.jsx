@@ -94,31 +94,28 @@ const IELTSTestOptionsGrid = () => {
 
   const testOptions =  [
       {
-        title: "ACADEMIC IELTS TEST",
-        isPremium: true,
-        Url: "/dashboard/full-test/academic",
+        title: "ACADEMIC READING TEST",
+        Url: "/dashboard/reading/academic-reading",
         options: [
-          "2.5 to 3 hours long",
-          "Suitable for complete IELTS Academic practice",
-          "It contains all four sections: Speaking, Writing, Listening, and Reading",
-          "Instant result within minutes",
+          "IELTS academic reading test",
+          "60 minutes long",
+          "Instant result",
           "Comprehensive feedback",
-          "Contains latest IELTS topics and questions",
-          "The testing interface is exactly like the real tes"
+          "All explained answers",
+          "Testing interface is exactly like the official test",
         ],
       },
       {
-        title: "GENERAL IELTS TEST",
+        title: "GENERAL READING TEST",
         isSoon: true,
         Url: "#",
         options: [
-          "2.5 to 3 hours long",
-          "Suitable for complete IELTS General practice",
-          "It contains all four sections: Speaking, Writing, Listening, and Reading",
-          "Instant result within minutes",
+          "IELTS general reading test",
+          "60 minutes long",
+          "Instant result",
           "Comprehensive feedback",
-          "Contains latest IELTS topics and questions",
-          "The testing interface is exactly like the real tes"
+          "All explained answers",
+          "Testing interface is exactly like the official test",
         ],
       },
     ]
@@ -127,8 +124,8 @@ const IELTSTestOptionsGrid = () => {
     <div className="container mx-auto p-4">
       <div className='flex flex-row justify-between border-b border-slate-300 mb-6 gap-4'>
         <div className='text-black dark:text-slate-400'>
-          <h2 className="text-2xl font-bold mb-2">Choose an IELTS Full Skill Test to begin.</h2>
-          <p className="text-gray-600 mb-2">Choose a test to begin, and get your results in just a few minutes by AI.</p>
+          <h2 className="text-2xl font-bold mb-2">Choose an IELTS Reading Test to begin.</h2>
+          <p className="text-gray-600 mb-2">Only resource you will ever need for IELTS Reading preparation</p>
         </div>
         <div className='relative'>
           <Score title="Estimated Score" score={chartData['full']} size={"medium"}/>
