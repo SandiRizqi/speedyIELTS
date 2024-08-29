@@ -146,7 +146,7 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
   ];
 
   const options: ApexOptions = {
-    colors: ["#3C50E0", "#80CAEE"],
+    colors: ["#1264df", "#eab308"],
     chart: {
       fontFamily: "Satoshi, sans-serif",
       type: seriesdata.length > 10 ? "area": "bar",
