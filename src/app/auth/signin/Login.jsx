@@ -58,16 +58,16 @@ const LoginPage = () => {
                 </div>
             </header>
             <section className="hidden sm:flex flex-row h-screen fixed inset-0">
-                <div className="sm:w-8/12 bg-cover bg-center bg-[url('/images/woman-english-1000.png')] h-full">
+                <div className="sm:w-8/12 bg-cover bg-center bg-[url('/images/model-1.png')] h-full">
                 </div>
-                <div className="absolute inset-0 bg-black opacity-50"></div>
+                <div className="absolute inset-0 bg-black opacity-30"></div>
             </section>
             <section className="relative z-20 sm:h-screen">
-                <div className="sm:hidden h-[400px] flex flex-col justify-end bg-cover bg-center bg-[url('/images/woman-english-1000.png')] pt-20 shadow-2xl">
+                <div className="sm:hidden h-[400px] flex flex-col justify-end bg-cover bg-center bg-[url('/images/model-1.png')] pt-20 shadow-2xl">
                     <div className="container mx-auto">
                         <div className="pb-20 space-y-1 px-8">
                             <h1 className="font-bold text-xl text-white">Boost your IELTS Band score and Unlock Your Future</h1>
-                            <span className="font-light text-white text-sm block">Daftarkan dirimu segera di SpeedyIELTS untuk mendapatkan harga spesial ini.</span>
+                            <span className="font-light text-white text-sm block">Enhance your learning experience with cutting-edge AI technology designed to support your educational journey at every step.</span>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@ const LoginPage = () => {
                     <div className="sm:flex flex-row h-full">
                         <div className="hidden sm:flex sm:flex-col sm:justify-end sm:pb-36 sm:w-7/12 px-8">
                             <h1 className="font-bold text-4xl text-white mb-1 leading-tight">Boost your IELTS Band score and Unlock Your Future</h1>
-                            <span className="font-light text-white text-sm">Daftarkan dirimu segera di SpeedyIELTS untuk mendapatkan harga spesial ini.</span>
+                            <span className="font-light text-white text-lg">Enhance your learning experience with cutting-edge AI technology designed to support your educational journey at every step.</span>
                         </div>
                         <div className="flex-1 flex flex-col justify-center mx-auto">
                             <div className="p-6 sm:p-8 shadow-lg bg-white w-full max-w-md relative -top-12 sm:top-0 sm:left-0 rounded-2xl">
@@ -83,20 +83,20 @@ const LoginPage = () => {
                                 <form onSubmit={handleSubmit} ref={form}>
                                     <div className="mb-4">
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Email</label>
-                                        <input autoFocus="" type="text" placeholder="Masukkan email kamu" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="email" />
+                                        <input autoFocus="" type="text" placeholder="Use your email" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="email" />
                                     </div>
                                     <div className="mb-4">
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Password</label>
-                                        <input type="password" placeholder="Masukkan password kamu" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" />
+                                        <input type="password" placeholder="Insert your password" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" />
                                     </div>
-                                    <button type="submit" className="bg-primary rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full transition-all duration-300 transform hover:scale-105">
+                                    <button type="submit" className="bg-blue-600 rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full transition-all duration-300 transform hover:scale-105">
                                         <span>Sign In</span>
                                     </button>
                                 </form>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}
                                 <div className="flex flex-row items-center gap-4 my-6">
                                     <div className="h-0.5 bg-primary-light-slate flex-1"></div>
-                                    <label className="font-normal text-xs text-black block">or</label>
+                                    <label className="font-normal text-xs text-black block">or Sign In</label>
                                     <div className="h-0.5 bg-primary-light-slate flex-1"></div>
                                 </div>
                                 <button type="button" className="bg-[#F1F2F4] w-full px-6 py-3 rounded-md transition-all duration-300 transform hover:scale-105"  onClick={handleSignInGoogle}>
@@ -106,7 +106,7 @@ const LoginPage = () => {
                                     </div>
                                 </button>
                                 <div className="font-normal text-sm text-neutral-black text-center mt-5">
-                                    Belum punya akun? <a href="#" className="font-semibold text-sm text-primary-color">Daftar disini</a>
+                                    Don't have account? <a href="#" className="font-semibold text-sm text-primary-color">SignUp</a>
                                 </div>
                             </div>
                         </div>
