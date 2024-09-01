@@ -18,12 +18,12 @@ import withSubscription from '@/hooks/withSubscribtion';
 
 
 
-const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) => {
+const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer} ) => {
   const functions = FirebaseFunction();
   const user = useUser();
-  const [question, setQuestion] = useState(savedQuestion || null);
-  const [questionId, setQuestionId] = useState('')
-  const [start, setStart] = useState(false);
+  const [question, setQuestion] = useState(savedQuestion?.questions || null);
+  const [questionId, setQuestionId] = useState(savedQuestion?.questionId || '')
+  const [start, setStart] = useState(savedQuestion?.questions ? true : false);
   const [finished, setFinished] = useState(false);
   const [statusTest, setStatusTest] = useState(false);
   const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
@@ -44,6 +44,9 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
     await getData({ type: "speaking-questions", id: params.get("id") }).then((result) => {
       setQuestion(result.data['questions']);
       setQuestionId(result.data['questionId'])
+      if (isFullTest) {
+        setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], question: { questions: result.data['questions'], questionId: result.data['questionId'] } } }));
+      }
     });
   };
 
@@ -64,9 +67,9 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
   const handleSubmitAnswer = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, reading: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingAcademic", questionId: questionId } }));
+      setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: questionId } }));
     };
-    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingAcademic", questionId: questionId })
+    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: questionId })
   }
 
   function handleNext() {

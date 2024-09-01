@@ -46,7 +46,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
 
 const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) => {
   const user = useUser();
-  const [start, setStart] = useState(false);
+  const [start, setStart] = useState(savedQuestion ? true: false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [answer, setAnswer] = useState(savedAnswer || {
@@ -67,7 +67,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
     }
   });
   const [feedback, setFeedback] = useState(null);
-  const [question, setQuestion] = useState(savedQuestion);
+  const [question, setQuestion] = useState(savedQuestion || null);
   const functions = FirebaseFunction();
   const [activeTab, setActiveTab] = useState(1);
 
@@ -172,9 +172,11 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
       };
     };
 
-    fetchData();
+    if(!question) {
+      fetchData();
+    }
 
-  }, [])
+  }, [question])
 
   if (!question) {
     return <Loader />
@@ -189,7 +191,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
     <>
       <Breadcrumb pageName='Writing' />
       <div className='flex flex-1 justify-center'>
-        <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-20 inline-block gap-4 z-50'>
+        <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
           {start && !feedback && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>

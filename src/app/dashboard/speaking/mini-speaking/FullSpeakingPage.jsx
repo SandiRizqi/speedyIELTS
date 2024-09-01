@@ -61,7 +61,7 @@ const FullSpeakingPage = () => {
   };
 
   const handleSubmitAnswer = async () => {
-    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingAcademic", questionId: questionId })
+    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingMiniAcademic", questionId: questionId })
   }
 
   function handleNext() {
