@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
 export const InitState = {listening: {}, reading: {}, writing: {}, speaking: {}};
+export const InitFeedback = {listening: null , reading: null, writing: null, speaking: null};
 
 
 
@@ -12,16 +13,22 @@ export const useAnswer = () => {
 
 export const AnswerProvider = (props) => {
     const [globalState, setGlobalState] = useState(InitState);
+    const [globalFeedback, setGlobalFeedback] = useState(InitFeedback)
 
     const addAnswer = (data) => {
         setGlobalState(data);
-        console.log(globalState);
     };
+
+    const addFeedback  = (data) => {
+        setGlobalFeedback(data)
+    }
 
 
     const values = {
         globalState,
+        globalFeedback,
         addAnswer,
+        addFeedback
     }
 
     return ( <AnswerCollectionContext.Provider value={values}> 

@@ -12,6 +12,7 @@ import { httpsCallable } from "firebase/functions";
 import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
 import {SuccessMessage} from "@/app/dashboard/_components/Alert";
+import { type } from "os";
 
 
 
@@ -276,7 +277,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, saved
 
     const handleCollect =  (e) => {
         e.preventDefault();
-        setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], answer: answer}}));
+        setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], userAnswer: answer, done: true, type: "listening-questions", id: questions["questionId"], userId: user.uid, testType: "ListeningAcademic"}}));
         setNextTest('reading');
     };
 
@@ -291,7 +292,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, saved
                 setAudioPath(paths);
                 setQuestion(quest);
                 if (isFullTest) {
-                    setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], question: quest, audio: paths}}));
+                    setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], questions: result.data['questions'], questionId: result.data['questionId'], audio: paths}}));
                 }
             });
         };

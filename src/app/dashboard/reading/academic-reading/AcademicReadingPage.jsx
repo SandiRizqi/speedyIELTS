@@ -338,7 +338,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
 
     const handleCollect =  (e) => {
         e.preventDefault();
-        setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], answer: answer}}));
+        setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], userAnswer: answer, done: true, type: "reading-questions", id: questions["questionId"], userId: user.uid, testType: "ReadingAcademic"}}));
         setNextTest('writing')
     };
 
@@ -350,7 +350,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
             await getData({ type: "reading-questions", id: params.get("id") }).then((result) => {
                 setQuestion(result.data);
                 if (isFullTest) {
-                    setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], question: result.data}}));
+                    setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], questions: result.data['questions'], questionId: result.data['questionId']}}));
                 }
             });
         };

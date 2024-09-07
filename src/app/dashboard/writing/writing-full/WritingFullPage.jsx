@@ -44,7 +44,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
   );
 };
 
-const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer }) => {
+const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer, Feedback }) => {
   const user = useUser();
   const [start, setStart] = useState(savedQuestion ? true: false);
   const [finish, setFinish] = useState(false);
@@ -66,7 +66,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
       userId: user.uid,
     }
   });
-  const [feedback, setFeedback] = useState(null);
+  const [feedback, setFeedback] = useState(Feedback || null);
   const [question, setQuestion] = useState(savedQuestion || null);
   const functions = FirebaseFunction();
   const [activeTab, setActiveTab] = useState(1);
@@ -77,7 +77,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
 
   const handleSubmit = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], answer: answer } }));
+      setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], ...answer, done: true, userId: user.uid, testType: "WritingFullAcademic" } }));
       return setNextTest('speaking')
     }
 

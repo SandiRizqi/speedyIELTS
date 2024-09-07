@@ -18,7 +18,7 @@ import withSubscription from '@/hooks/withSubscribtion';
 
 
 
-const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer} ) => {
+const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer , Feedback} ) => {
   const functions = FirebaseFunction();
   const user = useUser();
   const [question, setQuestion] = useState(savedQuestion?.questions || null);
@@ -26,11 +26,11 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
   const [start, setStart] = useState(savedQuestion?.questions ? true : false);
   const [finished, setFinished] = useState(false);
   const [statusTest, setStatusTest] = useState(false);
-  const order = ["intro1", "part1", "intro2", "part2", "intro3", "part3", "closing"];
+  const order = [ "part3", "closing"];
   const [indexStep, setIndexStep] = useState(0)
   const [messages, setMessages] = useState(savedAnswer || []);
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState(null);
+  const [feedback, setFeedback] = useState(Feedback || null);
   const messagesEndRef = useRef(null);
   const params = useSearchParams()
   const {
@@ -67,7 +67,8 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
   const handleSubmitAnswer = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: questionId } }));
+      setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: questionId, zone: true } }));
+      return setNextTest('submit')
     };
     await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: questionId })
   }
