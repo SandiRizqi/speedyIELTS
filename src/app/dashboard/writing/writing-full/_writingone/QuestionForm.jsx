@@ -4,11 +4,15 @@ import { ref, getDownloadURL } from 'firebase/storage';
 
 
 
+const countWords = (text) => {
+    return text.trim().split(/\s+/).filter(word => word).length;
+};
 
 export default function QuestionForm({ answer, setAnswer, feedback, question, loading}) {
     const drive = FirebaseStorge();
     const [questions, setQuestion] = useState(question);
     const [text, setText] = useState(answer['answer'] || '');
+    const count = countWords(text);
     const [highlightedText, setHighlightedText] = useState("");
     
 
@@ -30,9 +34,6 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
 
 
 
-    const countWords = (text) => {
-        return text.trim().split(/\s+/).filter(word => word).length;
-    };
 
     useEffect(() => {
         if(feedback){
@@ -65,56 +66,57 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
 
 
 
-    }, []);
+    }, [question]);
 
 
 
 
 
     return (
-        <div className='mt-4 border border-gray-200 rounded-md p-4'>
-
-            <div className="text-left bg-gray-100 rounded-md p-4">
-                <p className="max-w-full mb-4 text-md font-bold text-gray-500">
-                    {questions.questions}
-                </p>
-            </div>
-            <div className='w-full items-center justify-center flex mt-4'>
-                <img src={questions.pictureURL} alt="img"  className='max-h-400 object-contain'/>
-            </div>
-
-
-            <div
-                className="overflow-hidden rounded-lg border border-gray-200 mt-4 shadow-sm"
-            >
-
-                
-                {!feedback && (
-                    <textarea
-                        id="OrderNotes"
-                        className="w-full resize-none p-4 border-none align-top  sm:text-sm"
-                        rows="8"
-                        onChange={handleAnswerChange}
-                        value={answer['answer']}
-                        disabled={loading}
-                        placeholder="Enter your answer here... ."
-                    ></textarea>
-                )}
-
-                {feedback && (
-                    <div
-                        className="mt-2 p-2 rounded"
-                        dangerouslySetInnerHTML={{ __html: `<span >${highlightedText}</span>` }}
-                    />
-                )}
-
-                <div className="flex items-center justify-end gap-2 bg-white p-3">
-                    <p className='text-sm text-gray-500'>
-                        Words: {countWords(answer['answer'])}
+        <div className={`border border-gray-200 rounded-md p-4 md:mt-0 ${!feedback ? 'grid grid-cols-2 gap-4' : ''}`}>
+            {/* Left side: question and image */}
+            <div className={`${!feedback ? 'col-span-1' : ''}`}>
+                <div className="text-left bg-gray-100 rounded-md p-4">
+                    <p className="max-w-full mb-4 text-xs font-bold text-gray-500">
+                        {questions.questions}
                     </p>
                 </div>
+                <div className='w-full items-center justify-center flex mt-4'>
+                    <img src={questions.pictureURL} alt="img" className='max-h-[400px] object-contain' />
+                </div>
+            </div>
 
-                
+            {/* Right side: textarea and submit button */}
+            <div className={`${!feedback ? 'col-span-1 flex flex-col justify-between' : ''}`}>
+                <div className="overflow-hidden rounded-lg border border-gray-200 mt-4 shadow-sm">
+                    {!feedback && (
+                        <textarea
+                            id="OrderNotes"
+                            className="w-full bg-gray-100 p-4 border-none align-top focus:ring-0 sm:text-sm"
+                            rows="8"
+                            onChange={handleAnswerChange}
+                            value={text}
+                            disabled={feedback ? true: false}
+                            placeholder="Enter your answer here..."
+                        ></textarea>
+                    )}
+
+                    {feedback && (
+                        <div
+                            className="mt-2 p-2 rounded"
+                            dangerouslySetInnerHTML={{ __html: `<span>${highlightedText}</span>` }}
+                        />
+                    )}
+                </div>
+
+                {!feedback && (
+                    <div className="flex items-center justify-end gap-2 bg-white p-3">
+                        <p className='text-sm text-gray-500'>
+                            Words: {count}
+                        </p>
+                        
+                    </div>
+                )}
             </div>
         </div>
 

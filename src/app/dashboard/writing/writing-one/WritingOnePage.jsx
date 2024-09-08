@@ -16,7 +16,7 @@ import Loader from '@/components/common/Loader';
 import { useSearchParams } from 'next/navigation';
 
 
-const Timer = ({ minutes, seconds }) => {
+const Timer = ({ minutes, seconds, setFinish }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
 
   useEffect(() => {
@@ -31,6 +31,12 @@ const Timer = ({ minutes, seconds }) => {
     }, 1000);
 
     return () => clearInterval(interval);
+  }, [timeLeft]);
+
+  useEffect(() => {
+    if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
+      setFinish(true);
+    }
   }, [timeLeft]);
 
   return (
@@ -61,6 +67,7 @@ const WritingOnePage = () => {
 
 
   const getWritingScore = async () => {
+    setFinish(true)
     setLoading(true);
     const getData = httpsCallable(functions, 'getWritingScore');
     try {
@@ -111,6 +118,13 @@ const WritingOnePage = () => {
     getQuestion();
   }, [])
 
+  useEffect(() => {
+    if (finish) {
+       getWritingScore();
+    }
+
+}, [finish])
+
   if (!question) {
     return <Loader />
   }
@@ -131,7 +145,7 @@ const WritingOnePage = () => {
         <Breadcrumb pageName='Writing Task 1' />
         <div className='flex flex-1 justify-center'>
           <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1  top-20 inline-block gap-4 z-50'>
-            {start && !feedback && (<Timer minutes={20} seconds={0} />)}
+            {start && !finish && (<Timer minutes={20} seconds={0} setFinish={setFinish} />)}
           </div>
 
           <section className="bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400">
@@ -167,37 +181,50 @@ const WritingOnePage = () => {
               {feedback && (<ScoreDisplay result={feedback} />)}
               {!feedback && loading && (<LoadingScore />)}
 
-              <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <div className="lg:order-1 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
-                  <QuestionForm quest={question} answer={answer} setAnswer={setAnswer} handleSubmit={getWritingScore} start={start} loading={loading} finish={finish} feedback={feedback} />
-                  {feedback && (
-                    <div className='mt-4'>
-                      <span className='font-bold'>Evaluation: </span>
-                      <textarea
-                        ref={textareaRef}
-                        className="w-full p-4 resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
-                        rows={1}
-                        disabled
-                        value={feedback.evaluation}
-                        style={{ overflow: 'hidden', resize: 'none' }}
-                      ></textarea>
+              <div className={`mt-8 grid gap-4 ${feedback || loading ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
+                  {/* Feedback Section */}
+                  <div className={`flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4 ${feedback || loading ? 'lg:col-span-1' : ''}`}>
+                    <div className="text-left">
+                      <p className="max-w-full text-md text-gray-900 dark:text-slate-300">Feedback :</p>
                     </div>
-                  )}
-                </div>
-
-                <div className='lg:order-1 lg:col-span-1 flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
-                  <div className="text-left">
-                    <p className="max-w-full text-md text-gray-900 dark:text-slate-300">
-                      Feedback :
-                    </p>
+                    {!feedback && !loading && (
+                      <span className="inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700">
+                        Submit your answer to get feedback and score!
+                      </span>
+                    )}
+                    <Feedback feedback={feedback} loading={loading} />
                   </div>
-                  {!feedback && !loading && (<span className='inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700'>Submit your answer to get feedback and score!</span>)}
-                  <Feedback feedback={feedback} loading={loading} />
+
+                  {/* Question Form */}
+                  <div className={`w-full ${feedback || loading ? 'lg:col-span-2' : ''}`}>
+                    <QuestionForm
+                      quest={question}
+                      answer={answer}
+                      setAnswer={setAnswer}
+                      handleSubmit={() => setFinish(true)}
+                      start={start}
+                      loading={loading}
+                      finish={finish}
+                      feedback={feedback}
+                    />
+                    {feedback && (
+                      <div className="mt-4">
+                        <span className="font-bold">Evaluation: </span>
+                        <textarea
+                          ref={textareaRef}
+                          className="w-full p-4 resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
+                          rows={1}
+                          disabled
+                          value={feedback.evaluation}
+                          style={{ overflow: 'hidden', resize: 'none' }}
+                        ></textarea>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
 
 
-              </div>
             </div>
 
           </section>

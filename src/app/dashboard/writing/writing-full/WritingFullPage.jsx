@@ -46,7 +46,7 @@ const Timer = ({ minutes, seconds, setFinish }) => {
 
 const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer, Feedback }) => {
   const user = useUser();
-  const [start, setStart] = useState(savedQuestion ? true: false);
+  const [start, setStart] = useState(savedQuestion ? true : false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [answer, setAnswer] = useState(savedAnswer || {
@@ -76,6 +76,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
 
 
   const handleSubmit = async () => {
+
     if (isFullTest) {
       setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], ...answer, done: true, userId: user.uid, testType: "WritingFullAcademic" } }));
       return setNextTest('speaking')
@@ -84,11 +85,11 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
     setIsLoading(true);
     try {
       const getData = httpsCallable(functions, 'getWritingFullScore');
-      const res = await getData({...answer, userId: user.uid, testType: "WritingFullAcademic"});
+      const res = await getData({ ...answer, userId: user.uid, testType: "WritingFullAcademic" });
       const data = res["data"]["result"];
       setFeedback({ feedback1: data["task1"]["result"], feedback2: data["task2"]["result"] });
       setIsLoading(false);
-      SuccessMessage({score: data["overall"]})
+      SuccessMessage({ score: data["overall"] })
 
 
     } catch (e) {
@@ -155,7 +156,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
       try {
         const [question1, question2] = await Promise.all([
           getQuestion("writing1-questions"),
-           getQuestion("writing2-questions"),
+          getQuestion("writing2-questions"),
         ]);
 
         if (!question1 || !question2) {
@@ -172,11 +173,24 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
       };
     };
 
-    if(!question) {
+    if (!question) {
       fetchData();
-    }
+    };
+
+
+
 
   }, [question])
+
+
+  useEffect(() => {
+    if (finish) {
+      handleSubmit();
+    }
+
+  }, [finish])
+
+
 
   if (!question) {
     return <Loader />
@@ -192,7 +206,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
       <Breadcrumb pageName='Writing' />
       <div className='flex flex-1 justify-center'>
         <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
-          {start && !feedback && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
+          {start && !finish && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>
           {activeTab === 1 ? <WritingOne question={question} answer={answer['task1']} setAnswer={setAnswer} feedback={feedback?.feedback1} isLoading={isLoading} /> : <WritingTwo question={question} answer={answer['task2']} setAnswer={setAnswer} feedback={feedback?.feedback2} isLoading={isLoading} />}
@@ -202,7 +216,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
             {!feedback && (
               <button
                 className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                onClick={() => handleSubmit()}
+                onClick={() => setFinish(true)}
               >
                 {isLoading ? "Loading..." : "Submit"}
               </button>

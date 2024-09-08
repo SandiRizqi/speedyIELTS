@@ -7,7 +7,7 @@ import ScoreDisplay from '../../ScoreDisplay';
 import LoadingScore from '../../LoadingScore';
 
 
-const WritingTwo = ({question, answer, setAnswer, feedback, isLoading}) => {
+const WritingTwo = ({ question, answer, setAnswer, feedback, isLoading }) => {
   const textareaRef = useRef(null);
 
   const adjustHeight = () => {
@@ -50,20 +50,34 @@ const WritingTwo = ({question, answer, setAnswer, feedback, isLoading}) => {
 
               </div>
 
-            
+
             </div>
           </div>
         </header>
-        {feedback && (<ScoreDisplay result={feedback}/>)}
+        {feedback && (<ScoreDisplay result={feedback} />)}
         {isLoading && <LoadingScore />}
 
 
-        <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="lg:order-1 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1">
-            <QuestionForm answer={answer} setAnswer={setAnswer} loading={isLoading} feedback={feedback} question={question['question2']} />
+        <div className={`mt-8 grid gap-4 ${feedback || isLoading ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
+          {/* Feedback Section */}
+          <div className={`flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4 ${feedback || isLoading ? 'lg:col-span-1' : ''}`}>
+            <div className="text-left">
+              <p className="max-w-full text-md text-gray-900 dark:text-slate-300">Feedback :</p>
+            </div>
+            {!feedback && !isLoading && (
+              <span className="inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700">
+                Submit your answer to get feedback and score!
+              </span>
+            )}
+            <Feedback feedback={feedback} loading={isLoading} />
+          </div>
+
+          {/* Question Form */}
+          <div className={`w-full ${feedback || isLoading ? 'lg:col-span-2' : ''}`}>
+          <QuestionForm answer={answer} setAnswer={setAnswer} loading={isLoading} feedback={feedback} question={question['question2']} />
             {feedback && (
-              <div className='mt-4'>
-                <span className='font-bold'>Evaluation: </span>
+              <div className="mt-4">
+                <span className="font-bold">Evaluation: </span>
                 <textarea
                   ref={textareaRef}
                   className="w-full p-4 resize-none border border-gray-300 rounded-md align-top focus:ring-0 sm:text-sm"
@@ -74,18 +88,6 @@ const WritingTwo = ({question, answer, setAnswer, feedback, isLoading}) => {
                 ></textarea>
               </div>
             )}
-          </div>
-
-          <div className='lg:order-1 lg:col-span-1 flex flex-col min-h-full dark:bg-slate-700 rounded-md p-4'>
-            <div className='flex flex-col min-h-full'>
-              <div className="text-left">
-                <p className="max-w-full text-md text-gray-500">
-                  Feedback :
-                </p>
-              </div>
-              {!feedback && !isLoading && (<span className='inline-flex mt-4 items-center justify-center rounded-md bg-amber-100 px-2.5 py-0.5 text-amber-700'>Submit your answer to get feedback and score!</span>)}
-              <Feedback feedback={feedback} loading={isLoading} />
-            </div>
           </div>
         </div>
 

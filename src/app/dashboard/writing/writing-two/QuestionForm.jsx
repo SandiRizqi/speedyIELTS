@@ -59,7 +59,7 @@ export default function QuestionForm({ start, quest, answer, setAnswer, handleSu
     return (
         <div className='mt-4 border border-gray-200 rounded-md p-4 md:mt-0'>
             <div className="text-left bg-gray-100 rounded-md p-4">
-                <p className="max-w-full mb-4 text-md font-bold text-gray-500">
+                <p className="max-w-full mb-4 text-sm font-bold text-gray-500">
                     {question.questions}
                 </p>
             </div>

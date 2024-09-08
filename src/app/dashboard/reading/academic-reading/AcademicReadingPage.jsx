@@ -20,33 +20,33 @@ import ScoreComponent from "./ScoreComponent";
 
 const Timer = ({ minutes, seconds, setFinish }) => {
     const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
-  
+
     useEffect(() => {
-      const interval = setInterval(() => {
-        if (timeLeft.seconds > 0) {
-          setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
-        } else if (timeLeft.minutes > 0) {
-          setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
-        } else {
-          clearInterval(interval);
+        const interval = setInterval(() => {
+            if (timeLeft.seconds > 0) {
+                setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
+            } else if (timeLeft.minutes > 0) {
+                setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
+            } else {
+                clearInterval(interval);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [timeLeft]);
+
+    useEffect(() => {
+        if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
+            setFinish(true);
         }
-      }, 1000);
-  
-      return () => clearInterval(interval);
     }, [timeLeft]);
-  
-    useEffect(() => {
-      if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-        setFinish(true);
-      }
-    }, [timeLeft]);
-  
+
     return (
-      <div className='block text-center bg-slate-800 rounded-md p-1'>
-        <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
-      </div>
+        <div className='block text-center bg-slate-800 rounded-md p-1'>
+            <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
+        </div>
     );
-  };
+};
 
 
 const PassageWrapper = ({ children }) => {
@@ -110,24 +110,44 @@ const PassageWrapper = ({ children }) => {
 }
 
 
-const ControlledInput = ({ value, onChange, ...props }) => {
-    const [localValue, setLocalValue] = useState(value);
-
-    const handleChange = (e) => {
-        setLocalValue(e.target.value);
-        // onChange(e.target.value);
-    };
-
-    const handleBlur = () => {
-        //console.log(localValue)
-        onChange(localValue);
-    }
 
 
-    return <input {...props} value={localValue} onChange={handleChange} onBlur={handleBlur} />;
-};
+function TabNavigation({ activeTab, setActiveTab }) {
+    const tabs = [1, 2, 3];
 
-const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer}) => {
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === 'ArrowRight') {
+            setActiveTab((prev) => (prev + 1) % tabs.length);
+        } else if (e.key === 'ArrowLeft') {
+            setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
+        }
+    }, [tabs.length]);
+
+    return (
+        <div className="flex w-full justify-end">
+            <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
+                {tabs.map((tab, index) => (
+                    <button
+                        key={index}
+                        role="tab"
+                        aria-selected={activeTab === tab}
+                        tabIndex={activeTab === tab ? 0 : -1}
+                        className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
+                            ? 'border-b-2 border-blue-500 text-blue-500'
+                            : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                        onClick={() => setActiveTab(tab)}
+                    >
+                        SECTION-{tab}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+
+const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer, Feedback }) => {
     const user = useUser();
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [finish, setFinish] = useState(false);
@@ -135,9 +155,47 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
     const [questions, setQuestion] = useState(savedQuestion || null);
     const [testResult, setTestResult] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [start, setStart] = useState(savedQuestion ? true: false);
+    const [start, setStart] = useState(savedQuestion ? true : false);
+    const [feedback, setFeedback] = useState(Feedback || null)
     const functions = FirebaseFunction();
     const params = useSearchParams();
+
+
+    const ControlledInput = ({ value, onChange, ...props }) => {
+        const [localValue, setLocalValue] = useState(value);
+
+        const handleChange = (e) => {
+            setLocalValue(e.target.value);
+            // onChange(e.target.value);
+        };
+
+        const handleBlur = () => {
+            //console.log(localValue)
+            onChange(localValue);
+        }
+
+
+        return <div>
+            {/* Input Field */}
+            <input
+                {...props}
+                value={localValue}
+                onChange={handleChange}
+                onBlur={handleBlur}
+            />
+            {/* Feedback Text Below the Input */}
+            <div className="mt-1 text-sm text-black-600">
+                {props.feedback?.map((item, index) => (
+                    <span
+                        key={index}
+                        className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[props.number].includes(answer[props.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
+                    >
+                        {item}
+                    </span>
+                ))}
+            </div>
+        </div>;
+    };
 
 
 
@@ -146,53 +204,24 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
     }
 
 
-    function TabNavigation() {
-        const tabs = [1, 2, 3];
-
-        const handleKeyDown = useCallback((e) => {
-            if (e.key === 'ArrowRight') {
-                setActiveTab((prev) => (prev + 1) % tabs.length);
-            } else if (e.key === 'ArrowLeft') {
-                setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
-            }
-        }, [tabs.length]);
-
-        return (
-            <div className="flex w-full justify-end">
-                <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
-                    {tabs.map((tab, index) => (
-                        <button
-                            key={index}
-                            role="tab"
-                            aria-selected={activeTab === tab}
-                            tabIndex={activeTab === tab ? 0 : -1}
-                            className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
-                                    ? 'border-b-2 border-blue-500 text-blue-500'
-                                    : 'text-gray-500 hover:text-gray-700'
-                                }`}
-                            onClick={() => setActiveTab(tab)}
-                        >
-                            SECTION-{tab}
-                        </button>
-                    ))}
-                </div>
-            </div>
-        );
-    }
 
     const options = {
         replace(domNode) {
             if (domNode.attribs && domNode.name === 'input') {
                 const props = attributesToProps(domNode.attribs);
-                return <ControlledInput
-                    type="text"
-                    name={`question-${props.name}`}
-                    value={answer[props.name] || ""}
-                    disable={testResult}
-                    onChange={(value) => handleAnswer(props.name, value)}
-                    className="w-md my-1 px-2 border border-gray-300 rounded"
-                    placeholder={props.name}
-                />;
+
+                return <>
+                    <ControlledInput
+                        type="text"
+                        number={props.name}
+                        name={`question-${props.name}`}
+                        value={answer[props.name] || ""}
+                        onChange={(value) => handleAnswer(props.name, value)}
+                        className="w-md my-1 px-2 border border-gray-300 rounded"
+                        placeholder={props.name}
+                        feedback={feedback ? feedback[props.name] : null}
+                    />
+                </>
             }
         },
     };
@@ -201,7 +230,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
     const RenderQuestion = ({ part }) => {
         const QuestionWrapper = ({ children }) => (
             <div
-                className="flex flex-col max-w-screen justify-center bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
+                className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
             >
                 <h3 className="text-lg text-gray-700 mb-4">{part?.instruction}</h3>
                 {part?.image && (<img src={part.image} alt="image" className="" />)}
@@ -211,9 +240,8 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
 
 
 
-
-
         switch (part.type) {
+
             case "gap_filling":
                 return (
                     <QuestionWrapper>
@@ -226,31 +254,43 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number] || ""}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-md my-1 px-2 border border-gray-300 rounded overflow-x-auto max-w-md"
+                                    className="w-md my-1 px-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
                                 />
                             </div>
                         ))}
+
                     </QuestionWrapper>
                 )
             case "matching":
             case "matching_headings":
                 return (
                     <QuestionWrapper>
+                        {part.html && (parse(part.html, options))}
                         {part.questions?.map((obj, idx) => (
                             <div key={idx} className="space-x-4">
                                 <span className="font-medium">{obj.number}.{obj.question}</span>
                                 <select
-                                    className="flex-grow my-1 px-2 border border-gray-300 rounded overflow-x-auto max-w-md"
+                                    className="flex-grow my-1 px-2 border border-gray-300 rounded"
                                     name={`question-${obj.number}`}
                                     onChange={(e) => handleAnswer(obj.number, e.target.value)}
                                     value={answer[obj.number]}
                                 >
-                                    <option value="" >Select</option>
+                                    <option value="">Select</option>
                                     {Object.keys(part.options).map((key, index) => (
                                         <option key={index} value={key}>{key}. {part.options[key]}</option>
                                     ))}
                                 </select>
+                                <div className="mt-1 text-sm text-black-600">
+                                    {feedback ? feedback[obj.number].map((item, index) => (
+                                        <span
+                                            key={index}
+                                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[obj.number].includes(answer[obj.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
+                                        >
+                                            {item}
+                                        </span>
+                                    )) : null}
+                                </div>
                             </div>
                         ))}
                     </QuestionWrapper>
@@ -258,7 +298,8 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
             case "multiple_choice":
                 return (
                     <QuestionWrapper>
-                        {part.questions.map((question, idx) => (
+                        {part.html && (parse(part.html, options))}
+                        {part.questions?.map((question, idx) => (
                             <div className="space-y-2" key={idx}>
                                 <p className="font-medium">{question.number}.{question.question}</p>
                                 {question.options.map((option, index) => (
@@ -267,7 +308,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
                                         <input
                                             type="radio"
                                             name={`question-${question.number}`}
-                                            value={option.split(".")[0]}
+                                            value={option.split(".")[0] || ""}
                                             onChange={(e) => handleAnswer(question.number, e.target.value)}
                                             checked={answer[question.number] === option.split(".")[0]}
                                             className="form-radio text-blue-600"
@@ -276,6 +317,15 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
                                     </label>
 
                                 ))}
+                                {feedback && (
+                                    <div className="mt-1 text-sm text-black-600">
+                                        <span
+                                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[question.number].includes(answer[question.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
+                                        >
+                                            {feedback[question.number]}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                         ))}
@@ -286,19 +336,29 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
             case "yes_no_not_given":
                 return (
                     <QuestionWrapper>
-                        {part.html && (parse(part.html, options))}
                         {part.questions.map((obj, idx) => (
                             <div key={idx} >
                                 <p className="font-medium">{obj.number}. {obj.question}</p>
                                 <ControlledInput
                                     type="text"
                                     name={`question-${obj.number}`}
-                                    value={answer[obj.number]}
+                                    value={answer[obj.number] || ""}
                                     onChange={(value) => handleAnswer(obj.number, value)}
                                     className="w-md my-1 px-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
                                 />
+                                {feedback && (
+                                    <div className="mt-1 text-sm text-black-600">
+                                        <span
+                                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[obj.number].includes(answer[obj.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
+                                        >
+                                            {feedback[obj.number]}
+                                        </span>
+                                    </div>
+
+                                )}
                             </div>
+
                         ))}
                     </QuestionWrapper>
                 )
@@ -306,7 +366,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
                 return null;
         }
 
-    }
+    };
 
     const getAnswers = async (userAnswer) => {
         try {
@@ -316,7 +376,8 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
             const getData = httpsCallable(functions, 'getQuestionAnswers');
             await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid, testType: "ReadingAcademic" }).then((result) => {
                 data = result.data;
-                score = data['result']
+                score = data['result'];
+                setFeedback(data['corrections'])
                 SuccessMessage({ score: score["overall"] })
                 setLoading(false);
             });
@@ -326,19 +387,19 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        //e.preventDefault();
         const [answerData, score] = await getAnswers(answer);
         const result = { ...answerData, result: score }
         setTestResult(result);
     };
 
 
-    
 
-    const handleCollect =  (e) => {
-        e.preventDefault();
-        setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], userAnswer: answer, done: true, type: "reading-questions", id: questions["questionId"], userId: user.uid, testType: "ReadingAcademic"}}));
+
+    const handleCollect = () => {
+        //e.preventDefault();
+        setCollectAnswer(prev => ({ ...prev, reading: { ...prev['reading'], userAnswer: answer, done: true, type: "reading-questions", id: questions["questionId"], userId: user.uid, testType: "ReadingAcademic" } }));
         setNextTest('writing')
     };
 
@@ -350,15 +411,27 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
             await getData({ type: "reading-questions", id: params.get("id") }).then((result) => {
                 setQuestion(result.data);
                 if (isFullTest) {
-                    setCollectAnswer(prev => ({...prev, reading: {...prev['reading'], questions: result.data['questions'], questionId: result.data['questionId']}}));
+                    setCollectAnswer(prev => ({ ...prev, reading: { ...prev['reading'], questions: result.data['questions'], questionId: result.data['questionId'] } }));
                 }
             });
         };
 
-        if(!questions) {
+        if (!questions) {
             getQuestionID();
         }
     }, []);
+
+
+    useEffect(() => {
+        if (finish) {
+            if (isFullTest) {
+                handleCollect();
+            } else {
+                handleSubmit();
+            }
+        }
+
+    }, [finish])
 
 
     if (!questions) {
@@ -373,13 +446,13 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
         <>
             <Breadcrumb pageName="Academic Reading" />
             <div className="flex flex-1 justify-center">
-            <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
-            {start && !testResult && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
-            </div>
+                <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
+                    {start && !finish && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
+                </div>
                 <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
                     {testResult && (<ScoreComponent score={testResult['result']} />)}
                     {questions && (
-                        <form  className="min-h-screen" >
+                        <form className="min-h-screen" >
                             <div className="min-h-screen space-y-6">
                                 {questions["questions"].map((question, index) => {
                                     if (question.section === activeTab) {
@@ -402,20 +475,21 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, savedQu
                                     }
                                 })}
                             </div>
-                            <div className="mt-8 flex justify-end gap-4">
-                                <TabNavigation />
-                                {!testResult && (
-                                    <button
-                                        className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                                        type="button"
-                                        onClick={!isFullTest ? handleSubmit: handleCollect}
-                                    >
-                                        {!loading ? 'Submit' : 'Loading...'}
-                                    </button>
-                                )}
-                            </div>
+
                         </form>
                     )}
+                    <div className="mt-8 flex justify-end gap-4">
+                        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+                        {!testResult && (
+                            <button
+                                className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+                                type="button"
+                                onClick={!isFullTest ? () => setFinish(true) : handleCollect}
+                            >
+                                {!loading ? 'Submit' : 'Loading...'}
+                            </button>
+                        )}
+                    </div>
                 </main>
             </div>
 
