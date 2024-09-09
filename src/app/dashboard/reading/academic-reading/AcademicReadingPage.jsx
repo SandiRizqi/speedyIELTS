@@ -147,15 +147,15 @@ function TabNavigation({ activeTab, setActiveTab }) {
 }
 
 
-const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer, Feedback }) => {
+const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result }) => {
     const user = useUser();
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [finish, setFinish] = useState(false);
     const [activeTab, setActiveTab] = useState(1);
-    const [questions, setQuestion] = useState(savedQuestion || null);
-    const [testResult, setTestResult] = useState(null);
+    const [questions, setQuestion] = useState(null);
+    const [testResult, setTestResult] = useState(Result || null);
     const [loading, setLoading] = useState(false);
-    const [start, setStart] = useState(savedQuestion ? true : false);
+    const [start, setStart] = useState(questionId ? true : false);
     const [feedback, setFeedback] = useState(Feedback || null)
     const functions = FirebaseFunction();
     const params = useSearchParams();
@@ -251,6 +251,8 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQ
                                 <p className="font-medium">{obj?.number}. {obj?.question}</p>
                                 <ControlledInput
                                     type="text"
+                                    feedback={feedback ? feedback[obj.number] :  null}
+                                    number={obj.number}
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number] || ""}
                                     onChange={(value) => handleAnswer(obj.number, value)}
@@ -408,7 +410,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQ
         //getQuestions();
         const getQuestionID = async () => {
             const getData = httpsCallable(functions, 'getQuestion');
-            await getData({ type: "reading-questions", id: params.get("id") }).then((result) => {
+            await getData({ type: "reading-questions", id: params.get("id") || questionId }).then((result) => {
                 setQuestion(result.data);
                 if (isFullTest) {
                     setCollectAnswer(prev => ({ ...prev, reading: { ...prev['reading'], questions: result.data['questions'], questionId: result.data['questionId'] } }));
@@ -447,7 +449,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQ
             <Breadcrumb pageName="Academic Reading" />
             <div className="flex flex-1 justify-center">
                 <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
-                    {start && !finish && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
+                    {start && !finish && !testResult && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
                 </div>
                 <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
                     {testResult && (<ScoreComponent score={testResult['result']} />)}

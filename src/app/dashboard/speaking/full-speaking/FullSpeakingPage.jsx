@@ -18,12 +18,11 @@ import withSubscription from '@/hooks/withSubscribtion';
 
 
 
-const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer , Feedback} ) => {
+const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer , Feedback} ) => {
   const functions = FirebaseFunction();
   const user = useUser();
-  const [question, setQuestion] = useState(savedQuestion?.questions || null);
-  const [questionId, setQuestionId] = useState(savedQuestion?.questionId || '')
-  const [start, setStart] = useState(savedQuestion?.questions ? true : false);
+  const [question, setQuestion] = useState(null);
+  const [start, setStart] = useState(questionId ? true : false);
   const [finished, setFinished] = useState(false);
   const [statusTest, setStatusTest] = useState(false);
   const order = [ "intro1", "part1", "intro2", "part2","intro3" ,"part3", "closing"];
@@ -41,9 +40,8 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
-    await getData({ type: "speaking-questions", id: params.get("id") }).then((result) => {
-      setQuestion(result.data['questions']);
-      setQuestionId(result.data['questionId'])
+    await getData({ type: "speaking-questions", id: params.get("id") || questionId }).then((result) => {
+      setQuestion({questions: result.data['questions'], questionId: result.data['questionId']});
       if (isFullTest) {
         setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], question: { questions: result.data['questions'], questionId: result.data['questionId'] } } }));
       }
@@ -67,10 +65,10 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
   const handleSubmitAnswer = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: questionId, zone: true } }));
+      setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: question.questionId, zone: true } }));
       return setNextTest('submit')
     };
-    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: questionId })
+    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: question.questionId })
   }
 
   function handleNext() {
@@ -110,7 +108,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
 
 
-  if (!start && question) {
+  if (!start && question && !Feedback) {
     return <StartInstruction setStart={setStart} />
   }
 
@@ -187,8 +185,8 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQues
 
                     <button
                       onClick={() => setStatusTest(!statusTest)}
-                      disabled={finished}
-                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${finished ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={finished || feedback}
+                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${finished || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       Start Conversation

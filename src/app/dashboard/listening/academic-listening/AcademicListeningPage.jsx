@@ -56,19 +56,21 @@ function TabNavigation({activeTab, setActiveTab}) {
   }
 
 
-const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAudio, savedAnswer, Feedback}) => {
+const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result}) => {
     const user = useUser();
     const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [activeTab, setActiveTab] = useState(1);
-    const [testResult, setTestResult] = useState(null);
-    const [questions, setQuestion] = useState(savedQuestion || null);
-    const [audioPath, setAudioPath ] = useState(savedAudio);
-    const [start, setStart] = useState(savedQuestion ? true: false);
+    const [testResult, setTestResult] = useState(Result || null);
+    const [questions, setQuestion] = useState(null);
+    const [audioPath, setAudioPath ] = useState(null);
+    const [start, setStart] = useState(questionId ? true: false);
     const [feedback, setFeedback] = useState(Feedback || null)
     const functions = FirebaseFunction();
     const formRef = useRef(null);
     const params = useSearchParams();
+
+    
 
     const ControlledInput = ({ value, onChange, ...props }) => {
         const [localValue, setLocalValue] = useState(value);
@@ -164,6 +166,8 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, saved
                                     onChange={(value) => handleAnswer(obj.number, value)}
                                     className="w-md my-1 px-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
+                                    feedback={feedback ? feedback[obj.name] :  null}
+                                    number={obj.number}
                                 />
                             </div>
                         ))}
@@ -316,7 +320,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, saved
     useEffect(() => {
         const getQuestionID = async () => {
             const getData = httpsCallable(functions, 'getQuestion');
-            getData({ type: "listening-questions", id: params.get("id") }).then((result) => {
+            getData({ type: "listening-questions", id: params.get("id") || questionId }).then((result) => {
                 const quest = result.data;
                 const paths = quest["questions"].map(obj => obj.audio);
                 setAudioPath(paths);
@@ -337,7 +341,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, saved
         return <Loader />
     };
 
-    if (questions && !start) {
+    if (questions && !start || !Feedback) {
         return <StartInstruction setStart={setStart}/>
     }
 

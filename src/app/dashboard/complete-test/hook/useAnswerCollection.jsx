@@ -17,7 +17,6 @@ export const AnswerProvider = (props) => {
 
     const addAnswer = (data) => {
         setGlobalState(data);
-        console.log(globalState);
     };
 
     const addFeedback  = (data) => {

@@ -11,11 +11,14 @@ import { FaHeadphones, FaBook, FaPen, FaMicrophone } from "react-icons/fa"; // I
 import { FirebaseFunction } from "@/service/firebase";
 import { useUser } from "@/service/user";
 import withUser from "@/hooks/withUser";
+import Loader from "@/components/common/Loader";
 import { httpsCallable } from "firebase/functions";
 import { useSearchParams } from "next/navigation";
+import IELTSScoreDisplay from "./IELTSScoreDisplay";
 
 
-const TestSubmissionPage = ({globalAnswer, addFeedback}) => {
+
+const TestSubmissionPage = ({globalAnswer, addFeedback, globalFeedback}) => {
   const user = useUser();
   const functions = FirebaseFunction();
   const [loading, setLoading] = useState(false);
@@ -35,6 +38,18 @@ const TestSubmissionPage = ({globalAnswer, addFeedback}) => {
     }
 
   };
+
+  if (globalFeedback?.overall) {
+    return <IELTSScoreDisplay 
+    overallScore={globalFeedback.overall}
+      listeningScore={globalFeedback.listening.result.overall}
+      readingScore={globalFeedback.reading.result.overall}
+      writingScore={globalFeedback.writing.result.overall}
+      speakingScore={globalFeedback.speaking.result.overall}
+      timestamp={globalFeedback.speaking.createdAt} 
+    
+    />
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
@@ -88,9 +103,10 @@ const TestSubmissionPage = ({globalAnswer, addFeedback}) => {
 
 const FullTestPage = () => {
   const tabs = ['listening', 'reading', 'writing', 'speaking', 'submit'];
-  const [activeTab, setActiveTab] = useState(tabs[0]);
   const [start, setStart] = useState(false);
   const { globalState,  globalFeedback, addAnswer, addFeedback } = useAnswer();
+  const [activeTab, setActiveTab] = useState(globalFeedback?.overall ? 'submit' : 'listening');
+  const [loading, setLoading] = useState(true); 
   const functions = FirebaseFunction()
 
   const params = useSearchParams();
@@ -98,15 +114,22 @@ const FullTestPage = () => {
   useEffect(() => {
     const getResultID = async () => {
       const getData = httpsCallable(functions, 'getResultByID');
-      getData({ type: "test-taken", id: params.get("result") }).then((result) => {
-        addFeedback(result.data["result"])
-        console.log(result.data)
-      });
+      try {
+        const result = await getData({ type: "test-taken", id: params.get("result") });
+        addFeedback(result.data["result"]);
+      } catch (error) {
+        console.error("Error fetching result:", error);
+      } finally {
+        setLoading(false); // Set loading to false after the data is fetched
+      }
     };
+
     if (params.get("result")) {
-      getResultID()
+      getResultID();
+    } else {
+      setLoading(false); // If there's no result parameter, we stop loading
     }
-  }, []);
+  }, [params]);
 
 
   function TabNavigation() {
@@ -150,6 +173,10 @@ const FullTestPage = () => {
     );
   }
 
+  if (loading) {
+    return <Loader />
+  }
+
 
   if (!start && !params.get("result")) {
     return <StartInstruction setStart={setStart} />
@@ -161,11 +188,11 @@ const FullTestPage = () => {
     <>
       <TabNavigation />
       <div className={activeTab !== 'reading' ? "mx-auto max-w-screen-2xl" : "mx-auto max-w-full"}>
-        {activeTab === 'listening' && (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['listening'].questions ? globalState['listening'] :  null} savedAudio={globalState['listening']?.audio} savedAnswer={globalState['listening']?.answer} /></div>)}
-        {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['reading'].questions ? globalState['reading'] : null} savedAnswer={globalState['reading']?.answer} />)}
-        {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['writing']?.question} savedAnswer={globalState['writing']?.answer} Feedback={globalFeedback.writing}/>)}
-        {activeTab === 'speaking' && (<FullSpeakingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} savedQuestion={globalState['speaking']?.question} savedAnswer={globalState['speaking']?.dialogue} Feedback={globalFeedback.speaking}/>)}
-        {activeTab === 'submit' && (<TestSubmissionPage globalAnswer={globalState} addFeedback={addFeedback}/>)}
+        {activeTab === 'listening' && (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.listening?.questionId} savedAnswer={globalFeedback.listening?.answer} Feedback={globalFeedback.listening?.corrections} Result={globalFeedback.listening}/></div>)}
+        {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.reading?.questionId} savedAnswer={globalFeedback.reading?.answer} Feedback={globalFeedback.reading?.corrections} Result={globalFeedback.reading} />)}
+        {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={[globalFeedback.writing?.result["task1"]["questionId"], globalFeedback.writing?.result["task2"]["questionId"]]} savedAnswer={globalFeedback.writing?.result} Feedback={{feedback1: globalFeedback.writing?.result.task1.result, feedback2:globalFeedback.writing?.result.task2.result }}/>)}
+        {activeTab === 'speaking' && (<FullSpeakingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.speaking?.questionId} savedAnswer={globalFeedback.speaking?.answer} Feedback={globalFeedback.speaking?.result}/>)}
+        {activeTab === 'submit' && (<TestSubmissionPage globalAnswer={globalState} addFeedback={addFeedback} globalFeedback={globalFeedback}/>)}
       </div>
     </>
   )

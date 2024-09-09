@@ -44,9 +44,9 @@ const Timer = ({ minutes, seconds, setFinish }) => {
   );
 };
 
-const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuestion, savedAnswer, Feedback }) => {
+const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback }) => {
   const user = useUser();
-  const [start, setStart] = useState(savedQuestion ? true : false);
+  const [start, setStart] = useState(questionId ? true : false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [answer, setAnswer] = useState(savedAnswer || {
@@ -67,7 +67,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
     }
   });
   const [feedback, setFeedback] = useState(Feedback || null);
-  const [question, setQuestion] = useState(savedQuestion || null);
+  const [question, setQuestion] = useState(null);
   const functions = FirebaseFunction();
   const [activeTab, setActiveTab] = useState(1);
 
@@ -134,11 +134,11 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
     );
   };
 
-  const getQuestion = async (typequest) => {
+  const getQuestion = async (typequest, id) => {
     const getData = httpsCallable(functions, 'getQuestion');
     let quest;
     try {
-      await getData({ type: typequest }).then((result) => {
+      await getData({ type: typequest, id: id }).then((result) => {
         quest = result.data;
 
       });
@@ -155,8 +155,8 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
     const fetchData = async () => {
       try {
         const [question1, question2] = await Promise.all([
-          getQuestion("writing1-questions"),
-          getQuestion("writing2-questions"),
+          getQuestion("writing1-questions", questionId[0]),
+          getQuestion("writing2-questions", questionId[1]),
         ]);
 
         if (!question1 || !question2) {
@@ -206,7 +206,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, savedQuest
       <Breadcrumb pageName='Writing' />
       <div className='flex flex-1 justify-center'>
         <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
-          {start && !finish && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
+          {start && !finish && !feedback && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
         </div>
         <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>
           {activeTab === 1 ? <WritingOne question={question} answer={answer['task1']} setAnswer={setAnswer} feedback={feedback?.feedback1} isLoading={isLoading} /> : <WritingTwo question={question} answer={answer['task2']} setAnswer={setAnswer} feedback={feedback?.feedback2} isLoading={isLoading} />}
