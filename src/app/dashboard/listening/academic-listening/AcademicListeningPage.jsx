@@ -341,7 +341,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
         return <Loader />
     };
 
-    if (questions && !start || !Feedback) {
+    if (questions && !start ) {
         return <StartInstruction setStart={setStart}/>
     }
 
