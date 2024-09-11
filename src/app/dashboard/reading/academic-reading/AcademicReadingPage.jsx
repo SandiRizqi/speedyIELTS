@@ -161,7 +161,14 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
     const [feedback, setFeedback] = useState(Feedback || null)
     const functions = FirebaseFunction();
     const params = useSearchParams();
-    const [width, setWidth] = useState(50);
+    const [leftWidth, setLeftWidth] = useState(50); // Initial width of left column (percentage)
+
+    const handleDrag = (e) => {
+        const newWidth = (e.clientX / window.innerWidth) * 100;
+        if (newWidth > 20 && newWidth < 80) { // Set limits to prevent too much resizing
+            setLeftWidth(newWidth);
+        }
+    };
 
 
     const ControlledInput = ({ value, onChange, ...props }) => {
@@ -213,7 +220,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
         replace(domNode) {
             if (domNode.attribs && domNode.name === 'input') {
                 const props = attributesToProps(domNode.attribs);
-               
+
                 return <>
                     <ControlledInput
                         type="text"
@@ -439,7 +446,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
         }
 
     }, [finish])
-  
+
 
 
     if (!questions) {
@@ -467,10 +474,31 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                                         if (question.section === activeTab) {
                                             return (
                                                 <div className="flex flex-col md:flex-row min-h-screen" key={index}>
-                                                    <div className="flex flex-col w-full md:w-1/2 relative overflow-y-auto max-h-screen">
-                                                        {question.html && (<PassageWrapper>{parse(question.html, options)}</PassageWrapper>)}
+                                                    {/* Left column */}
+                                                    <div
+                                                        className="relative overflow-y-auto max-h-screen"
+                                                        style={{ width: `${leftWidth}%` }} // Dynamic width
+                                                    >
+                                                        {question.html && <PassageWrapper>{parse(question.html)}</PassageWrapper>}
                                                     </div>
-                                                    <div className="w-full md:w-1/2 p-4 flex flex-col overflow-y-auto max-h-screen">
+
+                                                    {/* Resizable handle */}
+                                                    <div
+                                                        className="w-2 bg-gray-300 cursor-col-resize"
+                                                        onMouseDown={(e) => {
+                                                            e.preventDefault();
+                                                            document.addEventListener('mousemove', handleDrag);
+                                                            document.addEventListener('mouseup', () => {
+                                                                document.removeEventListener('mousemove', handleDrag);
+                                                            }, { once: true });
+                                                        }}
+                                                    />
+
+                                                    {/* Right column */}
+                                                    <div
+                                                        className="p-4 flex flex-col overflow-y-auto max-h-screen"
+                                                        style={{ width: `${100 - leftWidth}%` }} // Remaining width for right column
+                                                    >
                                                         {question.parts.map((obj, idx) => (
                                                             <div key={idx}>
                                                                 <RenderQuestion part={obj} />

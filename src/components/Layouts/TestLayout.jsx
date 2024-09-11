@@ -11,6 +11,22 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   const path = usePathname();
   const router = useRouter();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleCancelClick = () => {
+    setShowConfirm(true);
+  };
+
+  const handleConfirmCancel = () => {
+    setShowConfirm(false);
+    handleGoBack();
+  };
+
+  const handleClosePopup = () => {
+    setShowConfirm(false);
+  };
+
+
 
   const toggleFullscreen = () => {
     const elem = document.getElementById("testlayouter"); // Target the element by its id
@@ -114,13 +130,36 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
           <button className="p-2 text-slate-500 hover:text-slate-700" onClick={toggleFullscreen}>
             <Maximize size={24} />
           </button>
-          <button className="px-4 py-2 bg-yellow-600 text-white  hover:bg-yellow-700 transition-colors" onClick={handleGoBack}>
+          <button className="px-4 py-2 bg-yellow-600 text-white  hover:bg-yellow-700 transition-colors" onClick={handleCancelClick}>
             Cancel
           </button>
           <button className="px-4 py-2 bg-green-600 text-white  hover:bg-green-700 transition-colors" onClick={() => onSubmit()} disabled={loading}>
             {loading ? "loading... ." : "Submit"}
           </button>
         </div>
+
+        {showConfirm && (
+        <div className="fixed inset-0 bg-slate-900 bg-opacity-30 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-xl max-w-sm w-full">
+            <h2 className="text-lg font-semibold mb-4">Confirm Cancellation</h2>
+            <p>Are you sure you want to cancel?</p>
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                className="px-4 py-2 bg-slate-300 text-black hover:bg-slate-400"
+                onClick={handleClosePopup}
+              >
+                No
+              </button>
+              <button
+                className="px-4 py-2 bg-danger text-white hover:bg-danger"
+                onClick={handleConfirmCancel}
+              >
+                Yes, Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </header>
 
       <div className="flex flex-col overflow-scroll p-6">
