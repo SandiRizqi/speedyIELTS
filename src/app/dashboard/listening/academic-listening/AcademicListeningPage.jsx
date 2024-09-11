@@ -353,7 +353,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
     return (
         <>
             <Breadcrumb pageName="Academic Listening" />
-            <main className='bg-white text-black rounded-sm h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main" >
+            <main className='bg-white text-black rounded-sm py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main" >
                 {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
                 {testResult && (<ScoreComponent score={testResult['result']}/>)}
                 {questions && (

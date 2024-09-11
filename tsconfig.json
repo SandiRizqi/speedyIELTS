@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.jsx", "uploader/sample1.js", "TXx9UIizmorxstpgYcz0.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.jsx", "uploader/sample1.js", "TXx9UIizmorxstpgYcz0.js", "src/app/dashboard/complete-test/academic/TabNavigation.jsx"],
   "exclude": ["node_modules"]
 }
