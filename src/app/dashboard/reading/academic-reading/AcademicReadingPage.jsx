@@ -338,6 +338,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questio
             case "yes_no_not_given":
                 return (
                     <QuestionWrapper>
+                        {part.html && (parse(part.html, options))}
                         {part.questions.map((obj, idx) => (
                             <div key={idx} >
                                 <p className="font-medium">{obj.number}. {obj.question}</p>
