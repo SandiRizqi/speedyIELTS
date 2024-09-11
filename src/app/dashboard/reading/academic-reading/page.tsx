@@ -1,7 +1,5 @@
 
 import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import TestLayout from "@/components/Layouts/TestLayout";
 import AcademicReadingPage from "./AcademicReadingPage";
 
 export const metadata: Metadata = {
@@ -11,10 +9,11 @@ export const metadata: Metadata = {
 };
 
 const Page = () => {
+
   return (
-    <TestLayout>
+    <>
       <AcademicReadingPage />
-    </TestLayout>
+    </>
   );
 };
 

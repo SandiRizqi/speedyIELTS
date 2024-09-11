@@ -3,6 +3,7 @@ import withUser from "@/hooks/withUser";
 import { useRef } from "react";
 import { useState, useCallback, useEffect } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import TestLayout from "@/components/Layouts/TestLayout";
 import { useUser } from "@/service/user";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
@@ -12,41 +13,42 @@ import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
 import { SuccessMessage, ErrorMessage } from "@/app/dashboard/_components/Alert";
 import ScoreComponent from "./ScoreComponent";
+
 //import { sample2  } from "./TXx9UIizmorxstpgYcz0";
 
 
 
 
 
-const Timer = ({ minutes, seconds, setFinish }) => {
-    const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
+// const Timer = ({ minutes, seconds, setFinish }) => {
+//     const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (timeLeft.seconds > 0) {
-                setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
-            } else if (timeLeft.minutes > 0) {
-                setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
-            } else {
-                clearInterval(interval);
-            }
-        }, 1000);
+//     useEffect(() => {
+//         const interval = setInterval(() => {
+//             if (timeLeft.seconds > 0) {
+//                 setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
+//             } else if (timeLeft.minutes > 0) {
+//                 setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
+//             } else {
+//                 clearInterval(interval);
+//             }
+//         }, 1000);
 
-        return () => clearInterval(interval);
-    }, [timeLeft]);
+//         return () => clearInterval(interval);
+//     }, [timeLeft]);
 
-    useEffect(() => {
-        if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-            setFinish(true);
-        }
-    }, [timeLeft]);
+//     useEffect(() => {
+//         if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
+//             setFinish(true);
+//         }
+//     }, [timeLeft]);
 
-    return (
-        <div className='block text-center bg-slate-800 rounded-md p-1'>
-            <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
-        </div>
-    );
-};
+//     return (
+//         <div className='block text-center bg-slate-800 rounded-md p-1'>
+//             <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
+//         </div>
+//     );
+// };
 
 
 const PassageWrapper = ({ children }) => {
@@ -112,46 +114,46 @@ const PassageWrapper = ({ children }) => {
 
 
 
-function TabNavigation({ activeTab, setActiveTab }) {
-    const tabs = [1, 2, 3];
+// function TabNavigation({ activeTab, setActiveTab }) {
+//     const tabs = [1, 2, 3];
 
-    const handleKeyDown = useCallback((e) => {
-        if (e.key === 'ArrowRight') {
-            setActiveTab((prev) => (prev + 1) % tabs.length);
-        } else if (e.key === 'ArrowLeft') {
-            setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
-        }
-    }, [tabs.length]);
+//     const handleKeyDown = useCallback((e) => {
+//         if (e.key === 'ArrowRight') {
+//             setActiveTab((prev) => (prev + 1) % tabs.length);
+//         } else if (e.key === 'ArrowLeft') {
+//             setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
+//         }
+//     }, [tabs.length]);
 
-    return (
-        <div className="flex w-full justify-end">
-            <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
-                {tabs.map((tab, index) => (
-                    <button
-                        key={index}
-                        role="tab"
-                        aria-selected={activeTab === tab}
-                        tabIndex={activeTab === tab ? 0 : -1}
-                        className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
-                            ? 'border-b-2 border-blue-500 text-blue-500'
-                            : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                        onClick={() => setActiveTab(tab)}
-                    >
-                        SECTION-{tab}
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
-}
+//     return (
+//         <div className="flex w-full justify-end">
+//             <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
+//                 {tabs.map((tab, index) => (
+//                     <button
+//                         key={index}
+//                         role="tab"
+//                         aria-selected={activeTab === tab}
+//                         tabIndex={activeTab === tab ? 0 : -1}
+//                         className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
+//                             ? 'border-b-2 border-blue-500 text-blue-500'
+//                             : 'text-gray-500 hover:text-gray-700'
+//                             }`}
+//                         onClick={() => setActiveTab(tab)}
+//                     >
+//                         SECTION-{tab}
+//                     </button>
+//                 ))}
+//             </div>
+//         </div>
+//     );
+// }
 
 
-const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result }) => {
+const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result, Tab }) => {
     const user = useUser();
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [finish, setFinish] = useState(false);
-    const [activeTab, setActiveTab] = useState(1);
+    const [activeTab, setActiveTab] = useState(Tab || 1);
     const [questions, setQuestion] = useState(null);
     const [testResult, setTestResult] = useState(Result || null);
     const [loading, setLoading] = useState(false);
@@ -159,10 +161,12 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questio
     const [feedback, setFeedback] = useState(Feedback || null)
     const functions = FirebaseFunction();
     const params = useSearchParams();
+    const [width, setWidth] = useState(50);
 
 
     const ControlledInput = ({ value, onChange, ...props }) => {
         const [localValue, setLocalValue] = useState(value);
+
 
         const handleChange = (e) => {
             setLocalValue(e.target.value);
@@ -209,7 +213,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questio
         replace(domNode) {
             if (domNode.attribs && domNode.name === 'input') {
                 const props = attributesToProps(domNode.attribs);
-
+               
                 return <>
                     <ControlledInput
                         type="text"
@@ -251,7 +255,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questio
                                 <p className="font-medium">{obj?.number}. {obj?.question}</p>
                                 <ControlledInput
                                     type="text"
-                                    feedback={feedback ? feedback[obj.number] :  null}
+                                    feedback={feedback ? feedback[obj.number] : null}
                                     number={obj.number}
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number] || ""}
@@ -435,6 +439,7 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questio
         }
 
     }, [finish])
+  
 
 
     if (!questions) {
@@ -446,57 +451,59 @@ const AcademicReadingPage = ({isFullTest, setCollectAnswer, setNextTest, questio
     }
 
     return (
-        <>
-            <Breadcrumb pageName="Academic Reading" />
-            <div className="flex flex-1 justify-center">
-                <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
-                    {start && !finish && !testResult && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
-                </div>
-                <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
-                    {testResult && (<ScoreComponent score={testResult['result']} />)}
-                    {questions && (
-                        <form className="min-h-screen" >
-                            <div className="min-h-screen space-y-6">
-                                {questions["questions"].map((question, index) => {
-                                    if (question.section === activeTab) {
-                                        return (
-                                            <div className="flex flex-col md:flex-row min-h-screen" key={index}>
-                                                <div className="flex flex-col w-full md:w-1/2 relative overflow-y-auto max-h-screen">
-                                                    {question.html && (<PassageWrapper>{parse(question.html, options)}</PassageWrapper>)}
-                                                </div>
-                                                <div className="w-full md:w-1/2 p-4 flex flex-col overflow-y-auto max-h-screen">
-                                                    {question.parts.map((obj, idx) => (
-                                                        <div key={idx}>
-                                                            <RenderQuestion part={obj} />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )
-                                    } else {
-                                        return null;
-                                    }
-                                })}
-                            </div>
+        <TestLayout onSubmit={!isFullTest ? () => setFinish(true) : handleCollect} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3]} time={60} loading={loading}>
 
-                        </form>
-                    )}
-                    <div className="mt-8 flex justify-end gap-4">
-                        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
-                        {!testResult && (
-                            <button
-                                className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                                type="button"
-                                onClick={!isFullTest ? () => setFinish(true) : handleCollect}
-                            >
-                                {!loading ? 'Submit' : 'Loading...'}
-                            </button>
+            <>
+                <div className="flex flex-1 justify-center">
+                    {/* <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
+                        {start && !finish && !testResult && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
+                    </div> */}
+                    <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
+                        {testResult && (<ScoreComponent score={testResult['result']} />)}
+                        {questions && (
+                            <form className="min-h-screen" >
+                                <div className="min-h-screen space-y-6">
+                                    {questions["questions"].map((question, index) => {
+                                        if (question.section === activeTab) {
+                                            return (
+                                                <div className="flex flex-col md:flex-row min-h-screen" key={index}>
+                                                    <div className="flex flex-col w-full md:w-1/2 relative overflow-y-auto max-h-screen">
+                                                        {question.html && (<PassageWrapper>{parse(question.html, options)}</PassageWrapper>)}
+                                                    </div>
+                                                    <div className="w-full md:w-1/2 p-4 flex flex-col overflow-y-auto max-h-screen">
+                                                        {question.parts.map((obj, idx) => (
+                                                            <div key={idx}>
+                                                                <RenderQuestion part={obj} />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
+                                </div>
+
+                            </form>
                         )}
-                    </div>
-                </main>
-            </div>
+                        {/* <div className="mt-8 flex justify-end gap-4">
+                            <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+                            {!testResult && (
+                                <button
+                                    className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+                                    type="button"
+                                    onClick={!isFullTest ? () => setFinish(true) : handleCollect}
+                                >
+                                    {!loading ? 'Submit' : 'Loading...'}
+                                </button>
+                            )}
+                        </div> */}
+                    </main>
+                </div>
 
-        </>
+            </>
+        </TestLayout>
     )
 };
 

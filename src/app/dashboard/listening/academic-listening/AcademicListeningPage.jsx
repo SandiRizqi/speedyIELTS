@@ -11,7 +11,8 @@ import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
 import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
-import {SuccessMessage} from "@/app/dashboard/_components/Alert";
+import { SuccessMessage } from "@/app/dashboard/_components/Alert";
+import TestLayout from "@/components/Layouts/TestLayout";
 
 
 
@@ -19,67 +20,65 @@ import {SuccessMessage} from "@/app/dashboard/_components/Alert";
 
 
 
-
-function TabNavigation({activeTab, setActiveTab}) {
+function TabNavigation({ activeTab, setActiveTab }) {
     const tabs = [1, 2, 3, 4];
-  
+
     const handleKeyDown = useCallback((e) => {
-      if (e.key === 'ArrowRight') {
-        setActiveTab((prev) => (prev + 1) % tabs.length);
-      } else if (e.key === 'ArrowLeft') {
-        setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
-      }
+        if (e.key === 'ArrowRight') {
+            setActiveTab((prev) => (prev + 1) % tabs.length);
+        } else if (e.key === 'ArrowLeft') {
+            setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
+        }
     }, [tabs.length]);
-  
+
     return (
-      <div className="flex w-full justify-end">
-        <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
-          {tabs.map((tab, index) => (
-            <button
-              key={index}
-              role="tab"
-              aria-selected={activeTab === tab}
-              tabIndex={activeTab === tab ? 0 : -1}
-              className={`py-2 px-4 font-medium text-sm focus:outline-none ${
-                activeTab === tab
-                  ? 'border-b-2 border-blue-500 text-blue-500'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-              onClick={() => setActiveTab(tab)}
-            >
-              PART-{tab}
-            </button>
-          ))}
+        <div className="flex w-full justify-end">
+            <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
+                {tabs.map((tab, index) => (
+                    <button
+                        key={index}
+                        role="tab"
+                        aria-selected={activeTab === tab}
+                        tabIndex={activeTab === tab ? 0 : -1}
+                        className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
+                                ? 'border-b-2 border-blue-500 text-blue-500'
+                                : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                        onClick={() => setActiveTab(tab)}
+                    >
+                        PART-{tab}
+                    </button>
+                ))}
+            </div>
         </div>
-      </div>
     );
-  }
+}
 
 
-const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result}) => {
+const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result }) => {
     const user = useUser();
     const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [activeTab, setActiveTab] = useState(1);
     const [testResult, setTestResult] = useState(Result || null);
     const [questions, setQuestion] = useState(null);
-    const [audioPath, setAudioPath ] = useState(null);
-    const [start, setStart] = useState(questionId ? true: false);
+    const [audioPath, setAudioPath] = useState(null);
+    const [start, setStart] = useState(questionId ? true : false);
     const [feedback, setFeedback] = useState(Feedback || null)
     const functions = FirebaseFunction();
     const formRef = useRef(null);
     const params = useSearchParams();
 
-    
+
 
     const ControlledInput = ({ value, onChange, ...props }) => {
         const [localValue, setLocalValue] = useState(value);
-    
+
         const handleChange = (e) => {
             setLocalValue(e.target.value);
             // onChange(e.target.value);
         };
-    
+
         const handleBlur = () => {
             //console.log(localValue)
             onChange(localValue);
@@ -98,7 +97,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
                     {props.feedback?.map((item, index) => (
                         <span
                             key={index}
-                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[props.number].includes(answer[props.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger" }`}
+                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[props.number].includes(answer[props.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
                         >
                             {item}
                         </span>
@@ -108,7 +107,7 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
         );
     };
 
-  
+
 
 
 
@@ -117,8 +116,8 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
         setAnswer(prev => ({ ...prev, [questionId]: answer }));
     }
 
-    
-    const RenderQuestion = ({part}) => {
+
+    const RenderQuestion = ({ part }) => {
         const QuestionWrapper = ({ children }) => (
             <div
                 className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
@@ -131,27 +130,27 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
 
         const options = {
             replace(domNode) {
-              if (domNode.attribs && domNode.name === 'input') {
-                const props = attributesToProps(domNode.attribs);
+                if (domNode.attribs && domNode.name === 'input') {
+                    const props = attributesToProps(domNode.attribs);
 
-                return <>
-                <ControlledInput
-                type="text"
-                number={props.name}
-                name={`question-${props.name}`}
-                value={answer[props.name] || "" }
-                onChange={(value) => handleAnswer(props.name, value)}
-                className="w-md my-1 px-2 border border-gray-300 rounded"
-                placeholder={props.name}
-                feedback={feedback ? feedback[props.name] :  null}
-                />
-                </>
-              }
+                    return <>
+                        <ControlledInput
+                            type="text"
+                            number={props.name}
+                            name={`question-${props.name}`}
+                            value={answer[props.name] || ""}
+                            onChange={(value) => handleAnswer(props.name, value)}
+                            className="w-md my-1 px-2 border border-gray-300 rounded"
+                            placeholder={props.name}
+                            feedback={feedback ? feedback[props.name] : null}
+                        />
+                    </>
+                }
             },
-          };
+        };
 
         switch (part.type) {
-            
+
             case "gap_filling":
                 return (
                     <QuestionWrapper>
@@ -166,12 +165,12 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
                                     onChange={(value) => handleAnswer(obj.number, value)}
                                     className="w-md my-1 px-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
-                                    feedback={feedback ? feedback[obj.name] :  null}
+                                    feedback={feedback ? feedback[obj.name] : null}
                                     number={obj.number}
                                 />
                             </div>
                         ))}
-                        
+
                     </QuestionWrapper>
                 )
             case "matching":
@@ -194,10 +193,10 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
                                     ))}
                                 </select>
                                 <div className="mt-1 text-sm text-black-600">
-                                    {feedback? feedback[obj.number].map((item, index) => (
+                                    {feedback ? feedback[obj.number].map((item, index) => (
                                         <span
                                             key={index}
-                                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[obj.number].includes(answer[obj.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger" }`}
+                                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[obj.number].includes(answer[obj.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
                                         >
                                             {item}
                                         </span>
@@ -215,29 +214,29 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
                             <div className="space-y-2" key={idx}>
                                 <p className="font-medium">{question.number}.{question.question}</p>
                                 {question.options.map((option, index) => (
-                                    
-                                        <label key={index} className="flex items-center space-x-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name={`question-${question.number}`}
-                                                value={option.split(".")[0] || ""}
-                                                onChange={(e) => handleAnswer(question.number, e.target.value)}
-                                                checked={answer[question.number] === option.split(".")[0]}
-                                                className="form-radio text-blue-600"
-                                            />
-                                            <span>{option}</span>
-                                        </label>
-                                
+
+                                    <label key={index} className="flex items-center space-x-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name={`question-${question.number}`}
+                                            value={option.split(".")[0] || ""}
+                                            onChange={(e) => handleAnswer(question.number, e.target.value)}
+                                            checked={answer[question.number] === option.split(".")[0]}
+                                            className="form-radio text-blue-600"
+                                        />
+                                        <span>{option}</span>
+                                    </label>
+
                                 ))}
-                                 {feedback && (
+                                {feedback && (
                                     <div className="mt-1 text-sm text-black-600">
-                                    <span
-                                        className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[question.number].includes(answer[question.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger" }`}
-                                    >
-                                        {feedback[question.number]}
-                                    </span>
-                                 </div>
-                                 )}
+                                        <span
+                                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[question.number].includes(answer[question.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
+                                        >
+                                            {feedback[question.number]}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                         ))}
@@ -260,16 +259,16 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
                                     placeholder="Type your answer here"
                                 />
                                 {feedback && (
-                                <div className="mt-1 text-sm text-black-600">
-                                    <span
-                                        className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[obj.number].includes(answer[obj.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger" }`}
-                                    >
-                                        {feedback[obj.number]}
-                                    </span>
-                                 </div>
+                                    <div className="mt-1 text-sm text-black-600">
+                                        <span
+                                            className={`inline-block px-2 py-1 text-xs font-semibold text-white mr-1 ${feedback[obj.number].includes(answer[obj.number]?.toUpperCase()) ? "bg-green-600" : "bg-danger"}`}
+                                        >
+                                            {feedback[obj.number]}
+                                        </span>
+                                    </div>
 
-                               )}
-                               
+                                )}
+
                             </div>
                         ))}
                     </QuestionWrapper>
@@ -280,11 +279,11 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
 
     };
 
-      
 
-    
 
-    
+
+
+
 
     const getAnswers = async (userAnswer) => {
         let data;
@@ -292,26 +291,26 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
         setLoading(true);
         const getData = httpsCallable(functions, 'getQuestionAnswers');
         await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid, testType: "ListeningAcademic" }).then((result) => {
-            data = result.data;  
+            data = result.data;
             score = data['result']
             setFeedback(data['corrections'])
             setLoading(false);
             SuccessMessage({ score: score['overall'] });
         });
-        return [data, score];   
+        return [data, score];
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const [answerData, score] = await getAnswers(answer);
-        const result = {...answerData, result: score}
+        const result = { ...answerData, result: score }
         setTestResult(result);
     };
 
 
-    const handleCollect =  (e) => {
+    const handleCollect = (e) => {
         e.preventDefault();
-        setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], userAnswer: answer, done: true, type: "listening-questions", id: questions["questionId"], userId: user.uid, testType: "ListeningAcademic"}}));
+        setCollectAnswer(prev => ({ ...prev, listening: { ...prev['listening'], userAnswer: answer, done: true, type: "listening-questions", id: questions["questionId"], userId: user.uid, testType: "ListeningAcademic" } }));
         setNextTest('reading');
     };
 
@@ -326,73 +325,75 @@ const AcademicListeningPage = ({isFullTest, setCollectAnswer, setNextTest, quest
                 setAudioPath(paths);
                 setQuestion(quest);
                 if (isFullTest) {
-                    setCollectAnswer(prev => ({...prev, listening: {...prev['listening'], questions: result.data['questions'], questionId: result.data['questionId'], audio: paths}}));
+                    setCollectAnswer(prev => ({ ...prev, listening: { ...prev['listening'], questions: result.data['questions'], questionId: result.data['questionId'], audio: paths } }));
                 }
             });
         };
 
-        if(!questions) {
-            getQuestionID();   
+        if (!questions) {
+            getQuestionID();
         };
-        
-    },[])
+
+    }, [])
 
     if (!questions) {
         return <Loader />
     };
 
-    if (questions && !start ) {
-        return <StartInstruction setStart={setStart}/>
+    if (questions && !start) {
+        return <StartInstruction setStart={setStart} />
     }
 
 
-    
 
-    
+
+
 
     return (
-        <>
-            <Breadcrumb pageName="Academic Listening" />
-            <main className='bg-white text-black rounded-sm py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main" >
-                {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath}/>)}
-                {testResult && (<ScoreComponent score={testResult['result']}/>)}
-                {questions && (
-                    <form  className="min-h-screen"  ref={formRef} >
-                    <div className="min-h-screen space-y-6">
-                        {questions["questions"].map((question, index) => {
-                            if (question.section === activeTab) {
-                                return (
-                                    <div className="flex flex-col md:flex-row min-h-screen" key={index}>
-                                        <div className="w-full p-4 flex flex-col ">
-                                            {question.parts.map((obj, idx) => (
-                                                <div key={idx}>
-                                                    <RenderQuestion part={obj} />
+        <TestLayout onSubmit={!isFullTest ? () => setFinish(true) : handleCollect} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3, 4]} time={35} loading={loading}>
+            <>
+
+                <main className='bg-white text-black rounded-sm py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main" >
+                    {audioPath && !testResult && (<AudioPlayer audioUrls={audioPath} />)}
+                    {testResult && (<ScoreComponent score={testResult['result']} />)}
+                    {questions && (
+                        <form className="min-h-screen" ref={formRef} >
+                            <div className="min-h-screen space-y-6">
+                                {questions["questions"].map((question, index) => {
+                                    if (question.section === activeTab) {
+                                        return (
+                                            <div className="flex flex-col md:flex-row min-h-screen" key={index}>
+                                                <div className="w-full p-4 flex flex-col ">
+                                                    {question.parts.map((obj, idx) => (
+                                                        <div key={idx}>
+                                                            <RenderQuestion part={obj} />
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )
-                            } else {
-                                return null;
-                            }
-                        })}
-                    </div>
-                    
-                </form>
-                )}
-                <div className="mt-8 flex justify-end gap-4">
-                        <TabNavigation setActiveTab={setActiveTab} activeTab={activeTab}/>
-                        {!testResult && (
-                            <button
-                            className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                            onClick={!isFullTest ? handleSubmit: handleCollect}
-                        >
-                            {!loading ? 'Submit' : 'Loading...'}
-                        </button>
-                        )}
-                    </div>
-            </main>
-        </>
+                                            </div>
+                                        )
+                                    } else {
+                                        return null;
+                                    }
+                                })}
+                            </div>
+
+                        </form>
+                    )}
+                    {/* <div className="mt-8 flex justify-end gap-4">
+                     <TabNavigation setActiveTab={setActiveTab} activeTab={activeTab}/>
+                     {!testResult && (
+                         <button
+                         className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+                         onClick={!isFullTest ? handleSubmit: handleCollect}
+                     >
+                         {!loading ? 'Submit' : 'Loading...'}
+                     </button>
+                     )}
+                 </div> */}
+                </main>
+            </>
+        </TestLayout>
     )
 };
 
