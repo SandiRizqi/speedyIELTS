@@ -414,7 +414,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
     const handleCollect = () => {
         //e.preventDefault();
         setCollectAnswer(prev => ({ ...prev, reading: { ...prev['reading'], userAnswer: answer, done: true, type: "reading-questions", id: questions["questionId"], userId: user.uid, testType: "ReadingAcademic" } }));
-        setNextTest('writing')
+        setNextTest('navigation')
     };
 
 

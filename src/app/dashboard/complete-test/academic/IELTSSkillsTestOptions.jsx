@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Clock, Award } from 'lucide-react';
+import { useUser } from '@/service/user';
+import { usePathname, useRouter } from 'next/navigation';
 
 const getScoreColor = (score) => {
   if (score < 4) return 'text-red-500';
@@ -36,7 +38,61 @@ const CircularProgress = ({ percentage, children, scoreColor }) => (
   </div>
 );
 
+
+const SkillIcon = ({ name, size = 24, className = "" }) => {
+  const icons = {
+    Listening: (props) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px" {...props}>
+        <path d="M12 3C7.03 3 3 7.03 3 12v7c0 1.1.9 2 2 2h1v-9H5v-1c0-3.86 3.14-7 7-7s7 3.14 7 7v1h-1v9h1c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9zm-3 11v7H8v-7h1zm8 7v-7h1v7h-1z" fill="currentColor" />
+      </svg>
+    ),
+    Reading: (props) => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        {...props}
+      >
+        <path
+          d="M19 2H9C7.897 2 7 2.897 7 4V18C7 19.103 7.897 20 9 20H19C20.103 20 21 19.103 21 18V4C21 2.897 20.103 2 19 2ZM19 18H9V4H19V18Z"
+          fill="currentColor"
+        />
+        <path
+          d="M5 4H4C2.897 4 2 4.897 2 6V20C2 21.103 2.897 22 4 22H14C15.103 22 16 21.103 16 20V19H6C4.897 19 4 18.103 4 17V6C4 4.897 4.897 4 6 4H5V4Z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+    Writing: (props) => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        {...props}
+      >
+        <path
+          d="M21 4.85l-1.17-1.17a2.5 2.5 0 00-3.54 0L3.5 16.5V20h3.5L20.85 7.35a2.5 2.5 0 000-3.54L21 4.85zM9 18H6v-3L17.85 3.15l3 3L9 18z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+    Speaking: (props) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" width="24px" height="24px" {...props}>
+        <path d="M12 2C10.35 2 9 3.35 9 5v6c0 1.65 1.35 3 3 3s3-1.35 3-3V5c0-1.65-1.35-3-3-3zm0 12c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2s2 .9 2 2v7c0 1.1-.9 2-2 2zm-7-5v2c0 3.87 3.13 7 7 7s7-3.13 7-7v-2h2v2c0 4.41-3.59 8-8 8s-8-3.59-8-8v-2h2zm7 10h-2v-2h2v2z" fill="currentColor" />
+      </svg>
+    ),
+  };
+
+  const Icon = icons[name] || (() => null);
+
+  return <Icon width={size} height={size} className={className} />;
+};
+
 const ScoreModal = ({ skill, score }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const bandDescriptors = [
     "Non User", "Intermittent User", "Extremely Limited User", "Limited User",
     "Modest User", "Competent User", "Good User", "Very Good User", "Expert User"
@@ -48,82 +104,97 @@ const ScoreModal = ({ skill, score }) => {
 
   return (
     <div>
-      <button className="mt-2 w-full border border-slate-300 p-2 text-slate-700 rounded-lg hover:bg-slate-100">View Detailed Score</button>
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div className="bg-white rounded-lg p-6 w-full max-w-sm">
-          <h2 className="text-xl font-semibold mb-4">{skill} Score Breakdown</h2>
-          <div className="flex justify-center mb-4">
-            <CircularProgress percentage={(score / 9) * 100} scoreColor={scoreColor}>
-              {score}
-            </CircularProgress>
-          </div>
-          <div className="mb-4">
-            <div className="font-semibold">Band Score: {bandScore}</div>
-            <div>{bandDescriptors[bandScore - 1]}</div>
-          </div>
-          <div className="mb-4">
-            <div className="font-semibold">Progress to Next Band</div>
-            <div className="w-full bg-slate-200 rounded-full h-2.5">
-              <div className={`${scoreColor} h-2.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
+      <button
+        className="mt-2 w-full border border-slate-300 p-2 text-slate-700 rounded-lg hover:bg-slate-100"
+        onClick={() => setIsOpen(true)}
+      >
+        View Detailed Score
+      </button>
+
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setIsOpen(false)}
+            >
+              &times; {/* Close button */}
+            </button>
+            <h2 className="text-xl font-semibold mb-4">{skill} Score Breakdown</h2>
+            <div className="flex justify-center mb-4">
+              <CircularProgress percentage={(score / 9) * 100} scoreColor={scoreColor}>
+                {score}
+              </CircularProgress>
             </div>
-            <div className="text-sm text-right mt-1">{percentage}%</div>
-          </div>
-          <div className="text-sm text-slate-500">
-            This score is indicative of your performance in the {skill.toLowerCase()} section of the IELTS test.
+            <div className="mb-4">
+              <div className="font-semibold">Band Score: {bandScore}</div>
+              <div>{bandDescriptors[bandScore - 1]}</div>
+            </div>
+            <div className="mb-4">
+              <div className="font-semibold">Progress to Next Band</div>
+              <div className="w-full bg-slate-200 rounded-full h-2.5">
+                <div className={`${scoreColor} h-2.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
+              </div>
+              <div className="text-sm text-right mt-1">{percentage}%</div>
+            </div>
+            <div className="text-sm text-slate-500">
+              This score is indicative of your performance in the {skill.toLowerCase()} section of the IELTS test.
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
-const SkillIcon = ({ name, size = 24, className = "" }) => {
-  const icons = {
-    Listening: (props) => (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-        <path d="M12 1a9 9 0 0 1 9 9v7a3 3 0 0 1-3 3h-3a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3h4v-2a6 6 0 1 0-12 0v2h4a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-7a9 9 0 0 1 9-9z" fill="currentColor" />
-      </svg>
-    ),
-    Reading: (props) => (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-        <path d="M6.012 18h12.976c-.018 1.677-1.38 3-3.064 3H9.076c-1.684 0-3.046-1.323-3.064-3zM3 4v10a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V4a1 1 0 0 0-1-1h-3a5 5 0 0 0-10 0H4a1 1 0 0 0-1 1zm9-3a3 3 0 0 1 3 3H9a3 3 0 0 1 3-3z" fill="currentColor" />
-      </svg>
-    ),
-    Writing: (props) => (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-        <path d="M17.457 3L21 6.543V21H3V3h14.457zM12 13H8v2h4v-2zm4-4H8v2h8V9z" fill="currentColor" />
-      </svg>
-    ),
-    Speaking: (props) => (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
-        <path d="M12 3c.825 0 1.5.675 1.5 1.5v9c0 .825-.675 1.5-1.5 1.5s-1.5-.675-1.5-1.5v-9c0-.825.675-1.5 1.5-1.5zm5 7.5c0 2.823-2.022 5.188-4.7 5.688v2.362c4.095-.692 7.2-4.268 7.2-8.55 0-4.282-3.105-7.858-7.2-8.55v2.362c2.678.5 4.7 2.865 4.7 5.688zm-10 0c0-2.823 2.022-5.188 4.7-5.688V2.45c-4.095.692-7.2 4.268-7.2 8.55 0 4.282 3.105 7.858 7.2 8.55v-2.362C9.022 16.688 7 14.323 7 11.5z" fill="currentColor" />
-      </svg>
-    ),
-  };
-
-  const Icon = icons[name] || (() => null);
-
-  return <Icon width={size} height={size} className={className} />;
-};
-
-const IELTSSkillsTestOptions = () => {
+const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState}) => {
   const [completedSkills, setCompletedSkills] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [scores, setScores] = useState({});
   const [overallScore, setOverallScore] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const user = useUser();
   const [timeLeft, setTimeLeft] = useState(180); // 3 hours in minutes
+  const path = usePathname();
+  const router = useRouter();
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleCancelClick = () => {
+    setShowConfirm(true);
+  };
+
+  const handleConfirmCancel = () => {
+    setShowConfirm(false);
+    handleGoBack();
+  };
+
+  const handleClosePopup = () => {
+    setShowConfirm(false);
+  };
+
+
+
+
+
+  const handleGoBack = () => {
+    const currentPath = path; // Get the current path
+    const pathSegments = currentPath.split('/').filter(Boolean); // Split and remove empty segments
+    pathSegments.pop(); // Remove the last segment
+    const newPath = '/' + pathSegments.join('/'); // Join the remaining segments to form the new path
+
+    router.replace(newPath); // Navigate to the new path
+  };
 
   const skills = [
-    { name: 'Listening', time: 30 },
+    { name: 'Listening', time: 35 },
     { name: 'Reading', time: 60 },
     { name: 'Writing', time: 60 },
-    { name: 'Speaking', time: 11 },
+    { name: 'Speaking', time: 15 },
   ];
 
   const handleSkillClick = (skill) => {
     if (!submitted) {
       if (!completedSkills.includes(skill)) {
+        setActiveTab(skill.toLowerCase());
         setCompletedSkills([...completedSkills, skill]);
       }
     }
@@ -146,36 +217,38 @@ const IELTSSkillsTestOptions = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 p-8">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="min-h-screen  text-slate-800 p-8 flex justify-center items-center ">
+      <div className="w-full max-w-screen-lg mx-auto bg-white shadow-lg overflow-hidden">
         <div className="bg-blue-600 text-white p-6">
-          <h1 className="text-3xl font-bold text-center">IELTS Full Skills Test</h1>
-          <div className="flex justify-between items-center mt-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-center">IELTS Full Skills</h1>
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 space-y-4 md:space-y-0">
             <div className="flex items-center">
-              <Clock className="mr-2" />
-              <span>Time Remaining: {Math.floor(timeLeft / 60)}h {timeLeft % 60}m</span>
+              <Clock className="mr-2 w-5 h-5 md:w-6 md:h-6" />
+              <span className="text-sm md:text-lg">
+                Time Remaining: {Math.floor(timeLeft / 60)}h {timeLeft % 60}m
+              </span>
             </div>
-            <div>
-              Candidate ID: <span className="font-semibold">IELTS2024001</span>
+            <div className="text-sm md:text-md">
+              Candidate ID: <span className="font-semibold">{user.email?.toUpperCase()}</span>
             </div>
           </div>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-8">
             {skills.map((skill) => (
-              <div
+              <button
                 key={skill.name}
-                className={`border-2 p-4 rounded-lg transition-all duration-300 cursor-pointer
-                  ${
-                    completedSkills.includes(skill.name)
-                      ? 'bg-green-50 border-green-500'
-                      : 'bg-white border-slate-200 hover:border-blue-500'
+                disabled={globalState[skill.name.toLowerCase()]?.done}
+                className={`border-2 p-4  transition-all duration-300 cursor-pointer
+                  ${globalState[skill.name.toLowerCase()]?.done === true
+                    ? 'bg-green-50 border-green-500'
+                    : 'bg-white border-slate-200 hover:border-blue-500'
                   }
                 `}
                 onClick={() => handleSkillClick(skill.name)}
               >
                 <div className="flex flex-row items-center justify-between">
-                  <h2 className="text-xl font-semibold">{skill.name}</h2>
+                  <h2 className="text-lg md:text-xl font-semibold">{skill.name}</h2>
                   <SkillIcon name={skill.name} size={24} className="text-blue-600" />
                 </div>
                 <div className="mt-4">
@@ -193,21 +266,21 @@ const IELTSSkillsTestOptions = () => {
                         <ScoreModal skill={skill.name} score={parseFloat(scores[skill.name])} />
                       )}
                     </div>
-                  ) : completedSkills.includes(skill.name) ? (
+                  ) : globalState[skill.name.toLowerCase()]?.done === true ? (
                     <div className="flex items-center justify-center text-green-600">
                       <Award className="mr-2" />
                       Completed
                     </div>
                   ) : (
                     <div className="flex justify-between items-center">
-                      <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
+                      <button className="bg-blue-500 text-white px-4 py-2  hover:bg-blue-600 transition-colors duration-300">
                         Start
                       </button>
-                      <span className="text-slate-600">Time: {skill.time} min</span>
+                      <span className="text-slate-600 text-sm md:text-base">Time: {skill.time} min</span>
                     </div>
                   )}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
           {submitted && (
@@ -228,17 +301,46 @@ const IELTSSkillsTestOptions = () => {
               </div>
             </div>
           )}
-          <div className="text-center">
+          <div className="text-center flex space-x-4 justify-center">
+          <button
+              onClick={handleCancelClick}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 transition-colors duration-300"
+            >
+              Cencel
+            </button>
             <button
               onClick={handleSubmit}
               disabled={submitted || completedSkills.length === 0}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 transition-colors duration-300"
             >
               Submit Test
             </button>
           </div>
         </div>
       </div>
+
+      {showConfirm && (
+        <div className="fixed inset-0 bg-slate-900 bg-opacity-30 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-xl max-w-sm w-full">
+            <h2 className="text-lg font-semibold mb-4">Confirm Cancellation</h2>
+            <p>Are you sure you want to cancel?</p>
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                className="px-4 py-2 bg-slate-300 text-black hover:bg-slate-400"
+                onClick={handleClosePopup}
+              >
+                No
+              </button>
+              <button
+                className="px-4 py-2 bg-danger text-white hover:bg-danger"
+                onClick={handleConfirmCancel}
+              >
+                Yes, Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

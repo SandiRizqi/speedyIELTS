@@ -15,8 +15,14 @@ import Loader from "@/components/common/Loader";
 import { httpsCallable } from "firebase/functions";
 import { useSearchParams } from "next/navigation";
 import IELTSScoreDisplay from "./IELTSScoreDisplay";
+import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import IELTSSkillsTestOptions from "./IELTSSkillsTestOptions";
 
-
+const NavTab = ({activeTab, setActiveTab, globalState}) => {
+  return <DefaultLayout>
+    <IELTSSkillsTestOptions activeTab={activeTab} setActiveTab={setActiveTab} globalState={globalState}/>
+  </DefaultLayout>
+}
 
 const TestSubmissionPage = ({globalAnswer, addFeedback, globalFeedback}) => {
   const user = useUser();
@@ -102,10 +108,10 @@ const TestSubmissionPage = ({globalAnswer, addFeedback, globalFeedback}) => {
 
 
 const FullTestPage = () => {
-  const tabs = ['listening', 'reading', 'writing', 'speaking', 'submit'];
+  const tabs = ['listening', 'reading', 'writing', 'speaking'];
   const [start, setStart] = useState(false);
   const { globalState,  globalFeedback, addAnswer, addFeedback } = useAnswer();
-  const [activeTab, setActiveTab] = useState(globalFeedback?.overall ? 'submit' : 'listening');
+  const [activeTab, setActiveTab] = useState('navigation');
   const [loading, setLoading] = useState(true); 
   const functions = FirebaseFunction()
 
@@ -132,67 +138,25 @@ const FullTestPage = () => {
   }, [params]);
 
 
-  function TabNavigation() {
-    const handleKeyDown = useCallback((e) => {
-      if (e.key === 'ArrowRight') {
-        setActiveTab((prev) => tabs[(tabs.indexOf(prev) + 1) % tabs.length]);
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        setActiveTab((prev) => tabs[(tabs.indexOf(prev) - 1 + tabs.length) % tabs.length]);
-      }
-    }, [tabs]);
-
-
-    const handleClick = (tab) => {
-      setActiveTab(tab);
-    };
-
-    return (
-      <div className="flex w-full justify-center mb-4 overflow-x-auto">
-        <div className="flex border-b w-full justiry-center border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
-          {tabs.map((tab, index) => (
-            <button
-              key={index}
-              role="tab"
-              aria-selected={activeTab === tab}
-              onClick={() => handleClick(tab)}
-              tabIndex={activeTab === tab ? 0 : -1}
-              className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
-                  ? 'border-b-2 border-blue-500 text-blue-500'
-                  : 'text-gray-500 hover:text-gray-700'
-                }`}
-
-            >
-              {tab.toUpperCase()}
-            </button>
-          ))}
-          
-        </div>
-        
-      </div>
-    );
-  }
-
   if (loading) {
     return <Loader />
   }
 
 
-  if (!start && !params.get("result")) {
-    return <StartInstruction setStart={setStart} />
-  }
+  // if (!start && !params.get("result")) {
+  //   return <StartInstruction setStart={setStart} />
+  // }
 
  
 
   return (
     <>
-      <TabNavigation />
-      <div className={activeTab !== 'reading' ? "mx-auto max-w-screen-2xl" : "mx-auto max-w-full"}>
-        {activeTab === 'listening' && (<div className="max-w-screen-2xl"><AcademicListeningPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.listening?.questionId} savedAnswer={globalFeedback.listening?.answer} Feedback={globalFeedback.listening?.corrections} Result={globalFeedback.listening}/></div>)}
+    {activeTab === 'navigation' && (<NavTab activeTab={activeTab} setActiveTab={setActiveTab} globalState={globalState}/>)}
+      <div className="mx-auto">
+        {activeTab === 'listening' && (<><AcademicListeningPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.listening?.questionId} savedAnswer={globalFeedback.listening?.answer} Feedback={globalFeedback.listening?.corrections} Result={globalFeedback.listening}/></>)}
         {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.reading?.questionId} savedAnswer={globalFeedback.reading?.answer} Feedback={globalFeedback.reading?.corrections} Result={globalFeedback.reading} />)}
         {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={[globalFeedback.writing?.result["task1"]["questionId"], globalFeedback.writing?.result["task2"]["questionId"]]} savedAnswer={globalFeedback.writing?.result} Feedback={{feedback1: globalFeedback.writing?.result.task1.result, feedback2:globalFeedback.writing?.result.task2.result }}/>)}
         {activeTab === 'speaking' && (<FullSpeakingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.speaking?.questionId} savedAnswer={globalFeedback.speaking?.answer} Feedback={globalFeedback.speaking?.result}/>)}
-        {activeTab === 'submit' && (<TestSubmissionPage globalAnswer={globalState} addFeedback={addFeedback} globalFeedback={globalFeedback}/>)}
       </div>
     </>
   )

@@ -1,9 +1,11 @@
 'use client'
 import React from "react"
-import FullTestPage from "./FullTestPage"
+import FullTestPage from "./FullTestPage";
+import withUser from "@/hooks/withUser";
 import { AnswerProvider } from "../hook/useAnswerCollection";
 import withSubscription from "@/hooks/withSubscribtion";
-import IELTSSkillsTestOptions from "./IELTSSkillsTestOptions";
+
+
 
 const Container =  () => {
     return (
@@ -16,4 +18,4 @@ const Container =  () => {
     )
 }
 
-export default withSubscription(Container);
+export default withSubscription(withUser(Container));

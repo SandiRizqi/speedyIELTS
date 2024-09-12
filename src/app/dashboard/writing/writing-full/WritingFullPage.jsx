@@ -3,7 +3,6 @@ import React from 'react';
 import WritingOne from './_writingone/page';
 import WritingTwo from './_writingtwo/page';
 import { useState, useEffect, useCallback } from 'react';
-import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import StartInstruction from './StartInstruction';
 import Loader from '@/components/common/Loader';
 import { httpsCallable } from 'firebase/functions';
@@ -51,7 +50,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
 
     if (isFullTest) {
       setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], ...answer, done: true, userId: user.uid, testType: "WritingFullAcademic" } }));
-      return setNextTest('speaking')
+      return setNextTest('navigation')
     }
 
     setIsLoading(true);

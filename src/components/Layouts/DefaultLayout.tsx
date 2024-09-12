@@ -14,7 +14,7 @@ const DefaultLayout = ({
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const fullpage = ['/dashboard/reading/academic-reading', '/dashboard/full-test']
+  const fullpage = ['/dashboard/reading/academic-reading', '/dashboard/payment']
  
 
   return (
@@ -32,7 +32,7 @@ const DefaultLayout = ({
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
-          <main>
+          <main >
             <div className={fullpage.includes(pathname) ?  "mx-auto max-w-screen p-4 md:p-6 2xl:p-10 h-full min-h-screen": "mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 h-full min-h-screen"}>
               <Motion>
                 {children}

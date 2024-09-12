@@ -265,18 +265,18 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
         return [data, score];
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        // e.preventDefault();
         const [answerData, score] = await getAnswers(answer);
         const result = { ...answerData, result: score }
         setTestResult(result);
     };
 
 
-    const handleCollect = (e) => {
-        e.preventDefault();
+    const handleCollect = () => {
+        // e.preventDefault();
         setCollectAnswer(prev => ({ ...prev, listening: { ...prev['listening'], userAnswer: answer, done: true, type: "listening-questions", id: questions["questionId"], userId: user.uid, testType: "ListeningAcademic" } }));
-        setNextTest('reading');
+        setNextTest('navigation');
     };
 
 
