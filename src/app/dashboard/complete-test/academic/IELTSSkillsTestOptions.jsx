@@ -273,11 +273,11 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState}) => {
                     </div>
                   ) : (
                     <div className="flex justify-between items-center">
-                      <button className="bg-blue-500 text-white px-4 py-2  hover:bg-blue-600 transition-colors duration-300">
-                        Start
-                      </button>
-                      <span className="text-slate-600 text-sm md:text-base">Time: {skill.time} min</span>
+                    <div className="bg-blue-500 text-white px-4 py-2 cursor-pointer hover:bg-blue-600 transition-colors duration-300">
+                      Start
                     </div>
+                    <span className="text-slate-600 text-sm md:text-base">Time: {skill.time} min</span>
+                  </div>
                   )}
                 </div>
               </button>

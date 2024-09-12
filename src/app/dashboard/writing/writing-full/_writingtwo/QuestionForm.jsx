@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 export default function QuestionForm({ answer, setAnswer, feedback, question, loading }) {
     const [text, setText] = useState(answer['answer'] || '');
     const [highlightedText, setHighlightedText] = useState("");
-    
+
 
 
     const handleHighlisht = (value) => {
@@ -19,7 +19,7 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
 
 
     const handleAnswerChange = (event) => {
-        setAnswer(prev => ({ ...prev, task2 : { ...prev['task2'], answer: event.target.value }}));
+        setAnswer(prev => ({ ...prev, task2: { ...prev['task2'], answer: event.target.value } }));
         setText(event.target.value);
     };
 
@@ -31,43 +31,43 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
 
 
     useEffect(() => {
-        if(feedback){
+        if (feedback) {
             const ListMistakes = feedback.corrections?.map(obj => obj.mistakes);
-            if(ListMistakes) {
+            if (ListMistakes) {
                 handleHighlisht(ListMistakes);
             }
         }
 
-    },[feedback]);
+    }, [feedback]);
 
 
 
 
     return (
-        <div className='mt-4 border border-gray-200 rounded-md p-4'>
-            <div className="text-left bg-gray-100 rounded-md p-4">
-                <p className="max-w-full mb-4 text-md font-bold text-gray-500">
+        <div className='mt-4 border border-black  p-4'>
+            <div className="text-left bg-slate-100 rounded-md p-4">
+                <p className="max-w-full mb-4 text-sm font-bold text-black">
                     {question.questions}
                 </p>
             </div>
-            
+
 
 
             <div
-                className="overflow-hidden rounded-lg border border-gray-200 mt-4 shadow-sm"
+                className="overflow-hidden rounded-lg border border-slate-200 mt-4 shadow-sm"
             >
 
-            {!feedback && (
-                                <textarea
-                                    id="OrderNotes"
-                                    className="w-full resize-none border-none p-4 align-top focus:ring-0 sm:text-sm"
-                                    rows="13"
-                                    onChange={handleAnswerChange}
-                                    value={answer['answer']}
-                                    disabled={loading}
-                                    placeholder="Enter your answer here... ."
-                                ></textarea>
-                            )}
+                {!feedback && (
+                    <textarea
+                        id="OrderNotes"
+                        className="w-full resize-none border-none p-4 align-top focus:ring-0 sm:text-sm"
+                        rows="13"
+                        onChange={handleAnswerChange}
+                        value={answer['answer']}
+                        disabled={loading}
+                        placeholder="Enter your answer here... ."
+                    ></textarea>
+                )}
 
                 {feedback && (
                     <div
@@ -80,7 +80,7 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
                     <p className='text-sm text-gray-500'>
                         Words: {countWords(answer['answer'])}
                     </p>
-                   
+
                 </div>
             </div>
         </div>

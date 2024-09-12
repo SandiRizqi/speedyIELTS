@@ -15,6 +15,7 @@ import ScoreDisplay from '../ScoreDisplay';
 import { useSearchParams } from 'next/navigation';
 import { useUser } from '@/service/user';
 import withSubscription from '@/hooks/withSubscribtion';
+import TestLayout from '@/components/Layouts/TestLayout';
 
 
 
@@ -80,6 +81,15 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
     }
   }
 
+
+  useEffect(() => {
+    if (finished) {
+      handleSubmitAnswer();
+    }
+  },[finished])
+
+
+
   useEffect(() => {
     let isMounted = true;
 
@@ -118,7 +128,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
   return (
     <>
-      <Breadcrumb pageName='Full Speaking' />
+      <TestLayout onSubmit={() => setFinished(true)}  time={15} loading={loading} finish={finished} onCancel={setNextTest ? () => setNextTest('navigation') : null}>
       <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
@@ -154,8 +164,8 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
             <div className="flex flex-col md:flex-row h-full">
               {/* Assistant Column */}
               <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-                {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3' || order[indexStep] === 'closing') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
-                {(order[indexStep] === 'part1' || order[indexStep] === 'part2' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
+                {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3' || order[indexStep] === 'closing') && (<VoiceAssistant intro={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
+                {(order[indexStep] === 'part1' || order[indexStep] === 'part2' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
 
               </div>
 
@@ -177,7 +187,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
                       </div>
                     </div>
-                  )) : (<PartTwo question={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
+                  )) : (<PartTwo question={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="p-4 border-t mt-auto">
@@ -185,20 +195,11 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
                     <button
                       onClick={() => setStatusTest(!statusTest)}
-                      disabled={finished || feedback}
-                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${finished || feedback ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={finished || feedback || statusTest}
+                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${finished || feedback || statusTest? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       Start Conversation
-                    </button>
-
-                    <button
-                      onClick={() => handleSubmitAnswer()}
-                      disabled={!finished}
-                      className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!finished ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
-                        }`}
-                    >
-                      {!loading ? 'Submit' : 'Loading'}
                     </button>
 
                   </div>
@@ -208,6 +209,9 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
           </div>
         </div>
       </div>
+
+      </TestLayout>
+      
     </>
   );
 }

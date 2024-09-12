@@ -70,7 +70,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
 
 
 
-  
+
 
   const getQuestion = async (typequest, id) => {
     const getData = httpsCallable(functions, 'getQuestion');
@@ -91,7 +91,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
 
   useEffect(() => {
     const fetchData = async () => {
-   
+
       try {
         const [question1, question2] = await Promise.all([
           getQuestion("writing1-questions", questionId ? questionId[0] : null),
@@ -142,15 +142,15 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
 
   return (
     <>
-      <TestLayout onSubmit={() => setFinish(true)} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2]} time={60} loading={isLoading} finish={finish}>
-      <div className='flex flex-1 justify-center'>
-        <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>
-          {activeTab === 1 ? <WritingOne question={question} answer={answer['task1']} setAnswer={setAnswer} feedback={feedback?.feedback1} isLoading={isLoading} /> : <WritingTwo question={question} answer={answer['task2']} setAnswer={setAnswer} feedback={feedback?.feedback2} isLoading={isLoading} />}
+      <TestLayout onSubmit={() => setFinish(true)} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2]} time={60} loading={isLoading} finish={finish} onCancel={setNextTest ? () => setNextTest('navigation') : null} labels={"Task"}>
+        <div className='flex flex-1 justify-center'>
+          <div className='dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800 bg-white'>
+            {activeTab === 1 ? <WritingOne question={question} answer={answer['task1']} setAnswer={setAnswer} feedback={feedback?.feedback1} isLoading={isLoading} /> : <WritingTwo question={question} answer={answer['task2']} setAnswer={setAnswer} feedback={feedback?.feedback2} isLoading={isLoading} />}
+          </div>
         </div>
-      </div>
 
       </TestLayout>
-      
+
     </>
   );
 }

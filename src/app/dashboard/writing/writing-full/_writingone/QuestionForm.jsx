@@ -73,11 +73,11 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
 
 
     return (
-        <div className={`border border-gray-200 rounded-md p-4 md:mt-0 ${!feedback ? 'grid grid-cols-2 gap-4' : ''}`}>
+        <div className={`border border-black  p-4   md:mt-0 ${!feedback ? 'grid grid-cols-2 gap-4' : ''}`}>
             {/* Left side: question and image */}
             <div className={`${!feedback ? 'col-span-1' : ''}`}>
-                <div className="text-left bg-gray-100 rounded-md p-4">
-                    <p className="max-w-full mb-4 text-xs font-bold text-gray-500">
+                <div className="text-left bg-slate-100 rounded-md p-4">
+                    <p className="max-w-full mb-4 text-xs font-bold text-black">
                         {questions.questions}
                     </p>
                 </div>

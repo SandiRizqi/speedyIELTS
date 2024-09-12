@@ -328,7 +328,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
 
 
     return (
-        <TestLayout onSubmit={() => setFinish(true)} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3, 4]} time={35} loading={loading} finish={finish}>
+        <TestLayout onSubmit={() => setFinish(true)} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3, 4]} time={35} loading={loading} finish={finish} onCancel={setNextTest ? () => setNextTest('navigation') : null}>
             <>
 
                 <main className='bg-white text-black rounded-sm py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main" >

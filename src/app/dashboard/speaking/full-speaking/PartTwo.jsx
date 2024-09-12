@@ -98,10 +98,16 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
   const stopRecording = () => {
     if (microphone.current) {
       microphone.current.disconnect();
-      mediaRecorder.current.stop();
-      clearTimeout(silenceTimer.current);
     }
-    SpeechRecognition.stopListening()
+    if (mediaRecorder.current && mediaRecorder.current.state === 'recording') {
+      mediaRecorder.current.stop();
+    }
+    setVolume(0);
+    clearTimeout(silenceTimer.current);
+  
+    // Properly clean up SpeechRecognition and set recording status to inactive
+    SpeechRecognition.stopListening();
+    
     setStatus('inactive');
     resetSilenceDetection();
   };
@@ -129,7 +135,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
         if (status !== 'listening') {
           setStatus('listening')
   
-          if (mediaRecorder.current.state !== 'listening') {
+          if (mediaRecorder.current.state !== 'recording') {
             mediaRecorder.current.start();
             audioChunks.current = [];
           }
@@ -139,6 +145,22 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
 
     animationFrame.current = requestAnimationFrame(animateWaveform);
   };
+
+  const resetAudioResources = () => {
+    // Reset the microphone and media recorder if they exist
+    if (microphone.current) {
+      microphone.current.disconnect();
+    }
+    if (mediaRecorder.current) {
+      mediaRecorder.current = null;
+    }
+    if (audioContext.current) {
+      audioContext.current.close();
+      audioContext.current = null;
+    }
+    
+  };
+  
 
 
   useEffect(() => {
@@ -159,6 +181,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
       startRecording();;
     } else if (status === 'inactive') {
       resetTranscript();
+      resetAudioResources();
       handleNextPart();
     }
 

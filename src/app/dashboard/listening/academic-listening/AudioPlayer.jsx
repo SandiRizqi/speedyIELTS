@@ -41,7 +41,7 @@ const AudioPlayer = ({ audioUrls }) => {
     };
 
     const playNext = () => {
-        if (currentTrack  < audioUrls.length -1) {
+        if (currentTrack < audioUrls.length - 1) {
             setCurrentTrack((prevTrack) => (prevTrack + 1) % audioUrls.length);
         }
     };
@@ -49,13 +49,11 @@ const AudioPlayer = ({ audioUrls }) => {
     const playPrevious = () => {
         if (currentTrack > 0) {
             setCurrentTrack((prevTrack) => (prevTrack - 1 + audioUrls.length) % audioUrls.length);
-        }  
+        }
     };
     return (
-        <div className="flex flex-1 max-w-screen p-4 items-center justify-center  bg-gray-100">
-            <audio ref={audioRef}>
-                <source src={currentUrl} type="audio/mpeg" />
-            </audio>
+        <div className="flex flex-1 max-w-screen p-4 items-center justify-center">
+
             <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-md w-full">
                 <h2 className="text-xl font-bold mb-4">Audio Player</h2>
                 <p className="mb-2">Now playing: Track {currentTrack + 1} of {audioUrls.length}</p>
@@ -68,9 +66,9 @@ const AudioPlayer = ({ audioUrls }) => {
                     </button>
                     <button
                         onClick={togglePlayPause}
-                        className="px-4 py-2 bg-green-500 text-white  hover:bg-green-600"
+                        className={`px-4 py-2 ${!isPlaying ? "bg-green-500" : "bg-danger"} text-white  hover:bg-green-600`}
                     >
-                        {isPlaying ? 'Pause' : 'Play'}
+                        {isPlaying ? 'Stop' : 'Play'}
                     </button>
                     <button
                         onClick={playNext}
@@ -78,8 +76,13 @@ const AudioPlayer = ({ audioUrls }) => {
                     >
                         Next
                     </button>
-            </div>
-        </div >
+                </div>
+                <audio ref={audioRef} controls className='my-2 w-full'>
+                    <source src={currentUrl} type="audio/mpeg" />
+                </audio>
+
+            </div >
+
         </div>
     )
 }

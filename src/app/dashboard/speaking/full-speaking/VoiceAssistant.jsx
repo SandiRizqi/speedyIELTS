@@ -34,12 +34,29 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
   const VOLUME_THRESHOLD = 5;
   const SILENCE_DURATION = 5000;
   const QUESTION_WAIT_TIME = 60000; // 1 minute
+
+
+  const resetAudioResources = () => {
+    // Reset the microphone and media recorder if they exist
+    if (microphone.current) {
+      microphone.current.disconnect();
+    }
+    if (mediaRecorder.current) {
+      mediaRecorder.current = null;
+    }
+    if (audioContext.current) {
+      audioContext.current.close();
+      audioContext.current = null;
+    }
+    
+  };
   
 
  
   
 
   const startConversation = () => {
+  
 
     if(intro) {
       //console.log(examiner['gender'])
@@ -124,17 +141,14 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
 
   const stopRecording = () => {
     SpeechRecognition.stopListening();
-    if (microphone.current) {
-      microphone.current.disconnect();
-      mediaRecorder.current.stop();
-      setIsRecording(false);
-      setRecordingStatus('inactive');
-      setVolume(0);
-      clearTimeout(silenceTimer.current);
+    resetAudioResources();
+    setIsRecording(false);
+    setRecordingStatus('inactive');
+    setVolume(0);
+    clearTimeout(silenceTimer.current);
 
-      if (currentQuestionIndex < questions.length - 1) {
-          setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-      }
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prevIndex => prevIndex + 1);
     }
   };
 
@@ -224,6 +238,9 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
       handleNextPart();
     }
   }, [currentQuestionIndex, isStart, questions]);
+
+  
+
 
 
   useEffect(() => {

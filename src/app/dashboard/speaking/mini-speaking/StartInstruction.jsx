@@ -36,8 +36,8 @@ const StartInstruction = ({ setStart }) => {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="max-w-lg w-full bg-white dark:bg-slate-700 shadow-lg rounded-lg overflow-hidden m-4">
-        <div className="bg-slate-800  py-6 px-8 text-white text-2xl font-bold rounded-t">
+      <div className="max-w-lg w-full bg-white dark:bg-slate-700 shadow-lg  overflow-hidden m-4">
+        <div className="bg-slate-800  py-6 px-8 text-white text-2xl font-bold">
           Test Instructions
         </div>
         <div className="p-8 space-y-6">

@@ -6,7 +6,7 @@ import { Clock, Maximize, Notebook } from 'lucide-react';
 import { usePathname, useRouter } from "next/navigation";
 
 
-const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish }) => {
+const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel,labels }) => {
   const [timeLeft, setTimeLeft] = useState(time * 60); // 60 minutes in seconds
   const path = usePathname();
   const router = useRouter();
@@ -14,6 +14,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleCancelClick = () => {
+    
     if (finish) {
       return handleGoBack();
     }
@@ -22,6 +23,9 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
 
   const handleConfirmCancel = () => {
     setShowConfirm(false);
+    if (onCancel) {
+      return onCancel();
+    }
     handleGoBack();
   };
 
@@ -112,7 +116,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
       key={part}
       onClick={() => setActivePart(part)}
     >
-      Part {part}
+      {labels ? labels : "Part"} {part}
     </button>
   );
 
@@ -171,21 +175,24 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
         {children}
       </div>
 
-      <footer className="bg-white shadow-md px-4">
-        <div className="flex border-b">
-          {tabs.map((obj) => {
-            return renderPartButton(obj);
-          })}
-        </div>
-        {/* <div className="p-4">
-          <div className="flex justify-center space-x-2 mb-4">
-            {activePart === 1 && generateNumberButtons(1, 13)}
-            {activePart === 2 && generateNumberButtons(1, 13)}
-            {activePart === 3 && generateNumberButtons(1, 14)}
-          </div>
-          
-        </div> */}
-      </footer>
+      <footer className="bg-blue-500 shadow-md px-2 py-1">
+  <div className="flex justify-center border-b border-transparent">
+    {tabs?.map((obj) => (
+      <button
+        key={obj}
+        className={`flex-1 py-3 px-6 transition-all duration-300 ease-in-out rounded-lg text-white font-semibold text-sm mx-1 border
+        ${activePart === obj 
+          ? 'bg-orange-400 text-white shadow-lg border-orange-500'  // Orange when active (clicked)
+          : 'bg-transparent hover:bg-white hover:text-indigo-600 hover:border-indigo-400'}
+        `}
+        onClick={() => setActivePart(obj)}
+      >
+        {labels ? labels : "Part"} {obj}
+      </button>
+    ))}
+  </div>
+</footer>
+
     </div>
     </>
   );
