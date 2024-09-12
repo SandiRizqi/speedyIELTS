@@ -458,7 +458,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
     }
 
     return (
-        <TestLayout onSubmit={!isFullTest ? () => setFinish(true) : handleCollect} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3]} time={60} loading={loading}>
+        <TestLayout onSubmit={() => setFinish(true)} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3]} time={60} loading={loading} finish={finish}>
 
             <>
                 <div className="flex flex-1 justify-center">

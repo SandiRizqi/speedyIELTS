@@ -19,47 +19,12 @@ import TestLayout from "@/components/Layouts/TestLayout";
 
 
 
-
-function TabNavigation({ activeTab, setActiveTab }) {
-    const tabs = [1, 2, 3, 4];
-
-    const handleKeyDown = useCallback((e) => {
-        if (e.key === 'ArrowRight') {
-            setActiveTab((prev) => (prev + 1) % tabs.length);
-        } else if (e.key === 'ArrowLeft') {
-            setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
-        }
-    }, [tabs.length]);
-
-    return (
-        <div className="flex w-full justify-end">
-            <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
-                {tabs.map((tab, index) => (
-                    <button
-                        key={index}
-                        role="tab"
-                        aria-selected={activeTab === tab}
-                        tabIndex={activeTab === tab ? 0 : -1}
-                        className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
-                                ? 'border-b-2 border-blue-500 text-blue-500'
-                                : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                        onClick={() => setActiveTab(tab)}
-                    >
-                        PART-{tab}
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-
 const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result }) => {
     const user = useUser();
     const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [activeTab, setActiveTab] = useState(1);
+    const [finish, setFinish] = useState(false);
     const [testResult, setTestResult] = useState(Result || null);
     const [questions, setQuestion] = useState(null);
     const [audioPath, setAudioPath] = useState(null);
@@ -317,6 +282,19 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
 
 
     useEffect(() => {
+        if (finish) {
+            if (isFullTest) {
+                handleCollect();
+            } else {
+                handleSubmit();
+            }
+        }
+
+    }, [finish])
+
+
+
+    useEffect(() => {
         const getQuestionID = async () => {
             const getData = httpsCallable(functions, 'getQuestion');
             getData({ type: "listening-questions", id: params.get("id") || questionId }).then((result) => {
@@ -350,7 +328,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
 
 
     return (
-        <TestLayout onSubmit={!isFullTest ? () => setFinish(true) : handleCollect} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3, 4]} time={35} loading={loading}>
+        <TestLayout onSubmit={() => setFinish(true)} activePart={activeTab} setActivePart={setActiveTab} tabs={[1, 2, 3, 4]} time={35} loading={loading} finish={finish}>
             <>
 
                 <main className='bg-white text-black rounded-sm py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main" >

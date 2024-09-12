@@ -93,7 +93,7 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
                         <textarea
                             id="OrderNotes"
                             className="w-full bg-gray-100 p-4 border-none align-top focus:ring-0 sm:text-sm"
-                            rows="8"
+                            rows="13"
                             onChange={handleAnswerChange}
                             value={text}
                             disabled={feedback ? true: false}

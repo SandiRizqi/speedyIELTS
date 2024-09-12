@@ -25,8 +25,8 @@ const WritingTwo = ({ question, answer, setAnswer, feedback, isLoading }) => {
 
     <section className="bg-white  rounded-sm pt-14 min-h-screen dark:bg-slate-800 dark:text-slate-400 dark:border-slate-800">
       <div className="mx-auto min-h-screen pb-4 w-full h-full px-4 sm:px-6 lg:px-8">
-        <header className="bg-gray-50">
-          <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 sm:py-12 lg:px-8">
+        <header className="bg-slate-50 rounded rounded-md">
+          <div className="mx-auto  px-4 py-14 sm:px-6 sm:py-12 lg:px-8">
             <div className="sm:flex sm:items-center sm:justify-between">
               <div className="text-center sm:text-left">
                 <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Writing Task 2</h1>

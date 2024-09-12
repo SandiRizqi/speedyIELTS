@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <DefaultLayout>
+   
       <Container />
-    </DefaultLayout>
+    
   );
 };
 

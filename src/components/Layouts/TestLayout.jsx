@@ -6,7 +6,7 @@ import { Clock, Maximize, Notebook } from 'lucide-react';
 import { usePathname, useRouter } from "next/navigation";
 
 
-const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading }) => {
+const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish }) => {
   const [timeLeft, setTimeLeft] = useState(time * 60); // 60 minutes in seconds
   const path = usePathname();
   const router = useRouter();
@@ -14,6 +14,9 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleCancelClick = () => {
+    if (finish) {
+      return handleGoBack();
+    }
     setShowConfirm(true);
   };
 
@@ -119,10 +122,12 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
       {/* Header */}
       <header className="bg-white shadow-lg p-4 flex justify-between items-center">
         <img src="/images/logo/type/logo_round.png" alt="Logo" className="h-10" />
-        <div className="flex items-center space-x-2">
+        {!finish && (
+          <div className="flex items-center space-x-2">
           <Clock size={24} className="text-slate-500" />
           <span className="text-slate-700">{formatTime(timeLeft)}</span>
         </div>
+        )}
         <div className="flex items-center space-x-4">
           <button className="p-2 text-slate-500 hover:text-slate-700">
             <Notebook size={24} />
@@ -130,8 +135,8 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
           <button className="p-2 text-slate-500 hover:text-slate-700" onClick={toggleFullscreen}>
             <Maximize size={24} />
           </button>
-          <button className="px-4 py-2 bg-yellow-600 text-white  hover:bg-yellow-700 transition-colors" onClick={handleCancelClick}>
-            Cancel
+          <button className="px-4 py-2 bg-yellow-600 text-white  hover:bg-yellow-700 transition-colors" onClick={handleCancelClick} disabled={loading}>
+           {finish ? "Back": "Cancel"}
           </button>
           <button className="px-4 py-2 bg-green-600 text-white  hover:bg-green-700 transition-colors" onClick={() => onSubmit()} disabled={loading}>
             {loading ? "loading... ." : "Submit"}
@@ -162,7 +167,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
       )}
       </header>
 
-      <div className="flex flex-col overflow-scroll p-6">
+      <div className="flex flex-col overflow-y-scroll p-6">
         {children}
       </div>
 

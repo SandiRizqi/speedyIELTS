@@ -7,7 +7,7 @@ const Container = () => {
     return (
         <UserProvider >
             <AuthStateChangeProvider>
-                <WritingFullPage isFullTest={false} setCollectAnswer={null} setNextTest={null} savedQuestion={null} savedAnswer={null} feedback={null}/>
+                <WritingFullPage isFullTest={false} setCollectAnswer={null} setNextTest={null} savedQuestion={null} savedAnswer={null} feedback={null} questionId={null}/>
             </AuthStateChangeProvider>
         </UserProvider>
     )
