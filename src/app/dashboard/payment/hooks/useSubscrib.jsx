@@ -37,7 +37,7 @@ const useSubscrip = () => {
                 snapEmbed(result.data.token, 'snap-container', {
                     onSuccess: function () {
                         action(false);
-                        router.push('/dashboard')
+                        router.push('/dashboard/settings')
                     },
                     onPending: function (payload) {
                         console.log(payload);
