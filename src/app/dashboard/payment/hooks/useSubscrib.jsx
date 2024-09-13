@@ -38,12 +38,13 @@ const useSubscrip = () => {
         
         // Payment embed
         snapEmbed(result.data.token, 'snap-container', {
+            
           onSuccess: function () {
             setStatus('success'); // Set success status
             action(false);
             setLoading(false);
           },
-          onPending: function (payload) {
+          onPending: function () {
             setStatus('pending'); // Set pending status
             //console.log(payload);
           },
