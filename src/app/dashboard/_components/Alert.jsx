@@ -29,10 +29,27 @@ export function SuccessMessage ({title, text, score}) {
       });
 };
 
-export function ErrorMessage (e) {
+export function ErrorMessage (error) {
+    let message;
+
+  // Check if the error is an object and has a message property
+  if (error && typeof error === "object") {
+    // Look for specific error fields (like message or status)
+    if (error.response && error.response.data && error.response.data.message) {
+      message = error.response.data.message; // For API error responses
+    } else if (error.message) {
+      message = error.message; // For generic JavaScript errors
+    } else {
+      message = JSON.stringify(error); // If it's an object without a message
+    }
+  } else {
+    // If it's a string or something unexpected, display it directly
+    message = error ? String(error) : "An unknown error occurred.";
+  }
+
     Swal.fire({
         title: "Error",
-        text: `Error ${e}`,
+        text: `Error:  ${message}`,
         icon: "error",
         cancelButtonColor: "#017d88",
         confirmButtonColor: "#017d88",

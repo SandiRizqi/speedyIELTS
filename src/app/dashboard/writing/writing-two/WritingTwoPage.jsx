@@ -9,7 +9,7 @@ import StartInstruction from './StartInstruction';
 import Loader from '@/components/common/Loader';
 import { httpsCallable } from 'firebase/functions';
 import { FirebaseFunction } from '@/service/firebase';
-import { SuccessMessage } from '../../_components/Alert';
+import { SuccessMessage, ErrorMessage } from '../../_components/Alert';
 import LoadingScore from '../LoadingScore';
 import { useSearchParams } from 'next/navigation';
 import withSubscribtion from '@/hooks/withSubscribtion';
@@ -78,7 +78,9 @@ const WritingTwoPage = () => {
       });
 
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      ErrorMessage(error)
+      
+    } finally {
       setLoading(false);
     }
 
@@ -93,7 +95,7 @@ const WritingTwoPage = () => {
       });
 
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      ErrorMessage(error);
     }
 
   };

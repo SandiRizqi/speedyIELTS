@@ -6,7 +6,7 @@ import Feedback from './FeedBack';
 import { UserProvider } from '@/service/user';
 import AuthStateChangeProvider from '@/service/auth';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
-import { SuccessMessage } from '../../_components/Alert';
+import { SuccessMessage, ErrorMessage } from '../../_components/Alert';
 import StartInstruction from './StartInstruction';
 import { FirebaseFunction } from '@/service/firebase';
 import { httpsCallable } from 'firebase/functions';
@@ -80,7 +80,9 @@ const WritingOnePage = () => {
       });
 
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      ErrorMessage(error)
+     
+    } finally {
       setLoading(false);
     }
 
@@ -96,7 +98,7 @@ const WritingOnePage = () => {
       });
 
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      ErrorMessage(error);
     }
 
   };

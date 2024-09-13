@@ -11,7 +11,7 @@ import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
 import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
-import { SuccessMessage } from "@/app/dashboard/_components/Alert";
+import { SuccessMessage, ErrorMessage } from "@/app/dashboard/_components/Alert";
 import TestLayout from "@/components/Layouts/TestLayout";
 
 
@@ -253,17 +253,38 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
     const getAnswers = async (userAnswer) => {
         let data;
         let score;
-        setLoading(true);
-        const getData = httpsCallable(functions, 'getQuestionAnswers');
-        await getData({ type: "listening-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid, testType: "ListeningAcademic" }).then((result) => {
+        setLoading(true); // Set loading to true before making the request
+    
+        try {
+            const getData = httpsCallable(functions, 'getQuestionAnswers');
+    
+            const result = await getData({
+                type: "listening-questions", 
+                id: questions["questionId"], 
+                userAnswer: userAnswer, 
+                userId: user.uid, 
+                testType: "ListeningAcademic"
+            });
+    
+            // Extract data and score
             data = result.data;
-            score = data['result']
-            setFeedback(data['corrections'])
+            score = data['result'];
+    
+            // Set feedback and stop loading
+            setFeedback(data['corrections']);
             setLoading(false);
+    
+            // Show success message with the score
             SuccessMessage({ score: score['overall'] });
-        });
-        return [data, score];
+    
+        } catch (error) {
+            setLoading(false); // Stop loading if an error occurs
+            ErrorMessage(error); // Show the error message using your ErrorMessage function
+        }
+    
+        return [data, score]; // Return data and score
     };
+    
 
     const handleSubmit = async () => {
         // e.preventDefault();
@@ -296,17 +317,39 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
 
     useEffect(() => {
         const getQuestionID = async () => {
-            const getData = httpsCallable(functions, 'getQuestion');
-            getData({ type: "listening-questions", id: params.get("id") || questionId }).then((result) => {
+            try {
+                const getData = httpsCallable(functions, 'getQuestion');
+        
+                const result = await getData({ 
+                    type: "listening-questions", 
+                    id: params.get("id") || questionId 
+                });
+        
                 const quest = result.data;
                 const paths = quest["questions"].map(obj => obj.audio);
+                
+                // Set the audio paths and the question
                 setAudioPath(paths);
                 setQuestion(quest);
+        
+                // If it's a full test, collect the answers
                 if (isFullTest) {
-                    setCollectAnswer(prev => ({ ...prev, listening: { ...prev['listening'], questions: result.data['questions'], questionId: result.data['questionId'], audio: paths } }));
+                    setCollectAnswer(prev => ({
+                        ...prev, 
+                        listening: {
+                            ...prev['listening'], 
+                            questions: quest['questions'], 
+                            questionId: quest['questionId'], 
+                            audio: paths
+                        }
+                    }));
                 }
-            });
+            } catch (error) {
+                // Handle any errors
+                ErrorMessage(error); // Show error using the error handler
+            }
         };
+        
 
         if (!questions) {
             getQuestionID();

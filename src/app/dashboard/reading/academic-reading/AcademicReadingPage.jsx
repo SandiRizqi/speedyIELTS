@@ -386,20 +386,36 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
         try {
             let data;
             let score;
-            setLoading(true);
+            setLoading(true); // Set loading to true at the start
+
             const getData = httpsCallable(functions, 'getQuestionAnswers');
-            await getData({ type: "reading-questions", id: questions["questionId"], userAnswer: userAnswer, userId: user.uid, testType: "ReadingAcademic" }).then((result) => {
-                data = result.data;
-                score = data['result'];
-                setFeedback(data['corrections'])
-                SuccessMessage({ score: score["overall"] })
-                setLoading(false);
+
+            const result = await getData({
+                type: "reading-questions",
+                id: questions["questionId"],
+                userAnswer: userAnswer,
+                userId: user.uid,
+                testType: "ReadingAcademic"
             });
-            return [data, score];
-        } catch {
-            ErrorMessage("Error calculating your score.")
+
+            // Process the result data
+            data = result.data;
+            score = data['result'];
+
+            // Set feedback and show success message
+            setFeedback(data['corrections']);
+            SuccessMessage({ score: score["overall"] });
+        } catch (error) {
+            // In case of any error, display the error message
+            ErrorMessage(error);
+        } finally {
+            // Ensure that loading is set to false regardless of success or error
+            setLoading(false);
         }
+
+        return [data, score];
     };
+
 
     const handleSubmit = async () => {
         //e.preventDefault();
@@ -419,16 +435,36 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
 
 
     useEffect(() => {
-        //getQuestions();
         const getQuestionID = async () => {
-            const getData = httpsCallable(functions, 'getQuestion');
-            await getData({ type: "reading-questions", id: params.get("id") || questionId }).then((result) => {
+            try {
+                const getData = httpsCallable(functions, 'getQuestion');
+
+                // Make the async call to get question data
+                const result = await getData({
+                    type: "reading-questions",
+                    id: params.get("id") || questionId
+                });
+
+                // Set the question data
                 setQuestion(result.data);
+
+                // If it's a full test, update the answer collection
                 if (isFullTest) {
-                    setCollectAnswer(prev => ({ ...prev, reading: { ...prev['reading'], questions: result.data['questions'], questionId: result.data['questionId'] } }));
+                    setCollectAnswer(prev => ({
+                        ...prev,
+                        reading: {
+                            ...prev['reading'],
+                            questions: result.data['questions'],
+                            questionId: result.data['questionId']
+                        }
+                    }));
                 }
-            });
+            } catch (error) {
+                // Handle any errors
+                ErrorMessage(error.message || "Error fetching question data.");
+            }
         };
+
 
         if (!questions) {
             getQuestionID();

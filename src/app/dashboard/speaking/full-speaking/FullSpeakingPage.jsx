@@ -16,6 +16,7 @@ import { useSearchParams } from 'next/navigation';
 import { useUser } from '@/service/user';
 import withSubscription from '@/hooks/withSubscribtion';
 import TestLayout from '@/components/Layouts/TestLayout';
+import { ErrorMessage } from '../../_components/Alert';
 
 
 
@@ -40,14 +41,40 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
 
   const getQuestion = async () => {
-    const getData = httpsCallable(functions, 'getQuestion');
-    await getData({ type: "speaking-questions", id: params.get("id") || questionId }).then((result) => {
-      setQuestion({questions: result.data['questions'], questionId: result.data['questionId']});
+    try {
+      const getData = httpsCallable(functions, 'getQuestion');
+      
+      // Await the result of the getQuestion call
+      const result = await getData({
+        type: "speaking-questions",
+        id: params.get("id") || questionId
+      });
+  
+      // Set the question data
+      setQuestion({
+        questions: result.data['questions'], 
+        questionId: result.data['questionId']
+      });
+  
+      // If it's a full test, update the collected answers
       if (isFullTest) {
-        setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], question: { questions: result.data['questions'], questionId: result.data['questionId'] } } }));
+        setCollectAnswer(prev => ({
+          ...prev, 
+          speaking: {
+            ...prev['speaking'], 
+            question: {
+              questions: result.data['questions'], 
+              questionId: result.data['questionId']
+            }
+          }
+        }));
       }
-    });
+    } catch (error) {
+      // Handle errors with an appropriate message
+      ErrorMessage(error.message || "Error fetching speaking questions.");
+    }
   };
+  
 
   const getSpeakingScore = async (values) => {
     setLoading(true)
@@ -58,8 +85,10 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
       setFeedback(respon["result"]);
       setLoading(false)
     } catch (error) {
-      console.error("Error fetching questions:", error);
-      setLoading(false)
+      ErrorMessage(error);
+      
+    } finally {
+      setLoading(false);
     }
 
   };

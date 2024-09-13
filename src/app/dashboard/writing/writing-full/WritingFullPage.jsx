@@ -62,8 +62,10 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
       setIsLoading(false);
       SuccessMessage({ score: data["overall"] })
 
-    } catch (e) {
-      ErrorMessage(e);
+    } catch (error) {
+      ErrorMessage(error);
+
+    } finally {
       setIsLoading(false);
     }
   };
@@ -83,7 +85,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
       return quest;
 
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      ErrorMessage(error)
     }
 
   };
@@ -99,6 +101,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
         ]);
 
         if (!question1 || !question2) {
+          ErrorMessage("Failed to get questions.");
           throw new Error('Failed to fetch data');
         };
         setAnswer(prev => ({ ...prev, task1: { ...prev['task1'], ...question1 }, task2: { ...prev['task2'], ...question2 } }))
@@ -108,7 +111,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
         }
 
       } catch (error) {
-        console.log(error.message);
+        ErrorMessage(error);
       };
     };
 

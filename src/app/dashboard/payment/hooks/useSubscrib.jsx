@@ -4,57 +4,68 @@ import useSnap from "./useSnap";
 import { useState } from "react";
 import { FirebaseFunction } from "@/service/firebase";
 import { httpsCallable } from "firebase/functions";
-import { useRouter } from 'next/navigation'
+import { ErrorMessage } from "../../_components/Alert";
+
 
 const useSubscrip = () => {
     const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState(''); // Track status: 'success', 'pending', 'error'
+    const [errorMessage, setErrorMessage] = useState(''); // Track error message
     const user = useUser();
     const { snapEmbed } = useSnap();
     const func = FirebaseFunction();
-    const router = useRouter()
 
+  
     const Subs = async (TYPE, action) => {
-        if(!user) {
-            return window.alert("User doesn't exist")
-        };
-
-        setLoading(true);
+      if (!user) {
+        return window.alert("User doesn't exist");
+      }
+  
+      setLoading(true);
       
-        const data = {
-            uid: user.uid,
-            firstname: user.displayName,
-            lastname: '',
-            email: user.email,
-            phonenumber: '',
-            Subscribtion: TYPE,
-        };
+      const data = {
+        uid: user.uid,
+        firstname: user.displayName,
+        lastname: '',
+        email: user.email,
+        phonenumber: '',
+        Subscribtion: TYPE,
+      };
+      
+      try {
+        const getOrder = httpsCallable(func, 'makeSubscription');
+        const result = await getOrder({ data: data });
         
-        try {
-            const getOrder = httpsCallable(func, 'makeSubscription');
-            await getOrder({ data: data }).then((result) => {
-                action(true);
-                setLoading(false);
-                snapEmbed(result.data.token, 'snap-container', {
-                    onSuccess: function () {
-                        action(false);
-                        router.push('/dashboard/settings')
-                    },
-                    onPending: function (payload) {
-                        console.log(payload);
-                    },
-                    onError: function (payload) {
-                        console.log(payload);
-                        
-                    },
-                })
-            });
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        // Payment embed
+        snapEmbed(result.data.token, 'snap-container', {
+          onSuccess: function () {
+            setStatus('success'); // Set success status
+            action(false);
+            setLoading(false);
+          },
+          onPending: function (payload) {
+            setStatus('pending'); // Set pending status
+            //console.log(payload);
+          },
+          onError: function (payload) {
+            setStatus('error'); // Set error status
+            setErrorMessage(payload.message || "An error occurred during payment.");
+            //console.log(payload);
+          },
+        });
+  
+      } catch (error) {
+        setStatus('error');
+        setErrorMessage(error.message || 'Error processing your payment.');
+        //console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    return {Subs, loading};
-};
+  
+    return { Subs, loading, status, errorMessage };
+  };
+  
 
 
 export default useSubscrip;
