@@ -3,18 +3,21 @@
 import { UserProvider } from '@/service/user';
 import AuthStateChangeProvider from '@/service/auth';
 import useSubscrip from './hooks/useSubscrib';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
-import PaymentSuccessPage from './status/PaymentSuccessPage';
-import PaymentPendingPage from './status/PaymentPendingPage';
-import PaymentErrorPage from './status/PaymentErrorPage';
+import useSnap from './hooks/useSnap';
 
-const SubsButton = ({ type, action }) => {
-    const { Subs, loading, status, errorMessage } = useSubscrip();
+
+
+const SubsButton = ({ type}) => {
+    const { Subs, loading } = useSubscrip();
 
     async function handleSubs() {
-        await Subs(type, action);
-    }
+        await Subs(type);
+    };
+
+
 
     return (
         <a
@@ -28,36 +31,25 @@ const SubsButton = ({ type, action }) => {
 }
 
 const PaymentPage = () => {
-    const [showSnap, setShowSnap] = useState(false);
-    const { loading, status, errorMessage } = useSubscrip(); // Extracting loading, status, and errorMessage from the hook
+    const params = useSearchParams();
+    const id = params.get('id');
+    const {snapEmbed} = useSnap();
+
+
+    useEffect(() => {
+        if (id) {
+            snapEmbed(id, 'snap-container');
+        }
+    },[id])
+    
 
     return (
         <UserProvider>
             <AuthStateChangeProvider>
                 <Breadcrumb pageName='Payment' />
                 <div className="flex flex-1 max-w-screen-xl mx-auto items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-                    {/* Payment status handlers */}
-                    {status === 'success' && (
-                        <PaymentSuccessPage 
-                            amount={300000} 
-                            transactionId="TRANSACTION_ID" 
-                            date={new Date().toLocaleDateString()} 
-                        />
-                    )}
 
-                    {status === 'pending' && (
-                        <PaymentPendingPage 
-                            amount={300000} 
-                            transactionId="TRANSACTION_ID" 
-                            date={new Date().toLocaleDateString()} 
-                        />
-                    )}
-
-                    {status === 'error' && (
-                        <PaymentErrorPage error={errorMessage} />
-                    )}
-
-                    {!showSnap && !status && (
+                    {!id ? (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-stretch md:grid-cols-3 md:gap-8">
                             {/* Free Plan */}
                             <div className="divide-y divide-gray-200 rounded-sm shadow-lg bg-white dark:border-strokedark dark:bg-boxdark">
@@ -130,7 +122,7 @@ const PaymentPage = () => {
                                         <strong className="text-3xl font-bold text-gray-900 sm:text-4xl">IDR 150.000</strong>
                                         <span className="text-sm font-medium text-gray-700">/week</span>
                                     </p>
-                                    <SubsButton type={"SPEEDYIELTS_WEEKLY"} action={setShowSnap} />
+                                    <SubsButton type={"SPEEDYIELTS_WEEKLY"} />
                                 </div>
                                 <div className="p-6 sm:px-8">
                                     <p className="text-lg font-medium text-gray-900 sm:text-xl">What's included:</p>
@@ -195,7 +187,7 @@ const PaymentPage = () => {
                                         <strong className="text-3xl font-bold text-gray-900 sm:text-4xl">IDR 300.000</strong>
                                         <span className="text-sm font-medium text-gray-700">/month</span>
                                     </p>
-                                    <SubsButton type={"SPEEDYIELTS_PREMIUM"} action={setShowSnap} />
+                                    <SubsButton type={"SPEEDYIELTS_PREMIUM"} />
                                 </div>
                                 <div className="p-6 sm:px-8">
                                     <p className="text-lg font-medium text-gray-900 sm:text-xl">What's included:</p>
@@ -252,9 +244,9 @@ const PaymentPage = () => {
                                 </div>
                             </div>
                         </div>
-                    )}
+                    ): (<div id="snap-container" className={`bg-white p-4 rounded-lg shadow-md w-full max-w-lg block dark:bg-slate-700 dark:text-slate-400`}></div>)}
 
-                    <div id="snap-container" className={showSnap ? 'bg-white p-4 rounded-lg shadow-md w-full max-w-md' : 'hidden'}></div>
+                    
                 </div>
             </AuthStateChangeProvider>
         </UserProvider>
