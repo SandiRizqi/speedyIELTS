@@ -1,8 +1,15 @@
 import React from 'react';
 import { XCircle, RefreshCcw, Home } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 
 const PaymentErrorPage = ({ errorMessage, errorCode }) => {
+  const router = useRouter();
+
+
+  function handleHome () {
+    router.push('/dashboard')
+  }
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
@@ -28,8 +35,8 @@ const PaymentErrorPage = ({ errorMessage, errorCode }) => {
         </p>
         
         <div className="space-y-4">
-          <button className="w-full  text-blue-700 font-bold py-2 px-4  transition duration-300">
-            <Home className="w-4 h-4 mr-2" />
+          <button className="w-full  text-blue-700 font-bold py-2 px-4  transition duration-300" onClick={handleHome}>
+            {/* <Home className="w-4 h-4 mr-2" /> */}
             Return to Home
           </button>
         </div>

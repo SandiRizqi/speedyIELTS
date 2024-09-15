@@ -37,7 +37,7 @@ const useSnap = () => {
         if (snap) {
             snap.embed(snap_token, {
                 embedId,
-                onSuccess: function () {
+                onSuccess: function (result) {
                     action?.onSuccess?.(result);
                 },
                 onPending: function (result) {

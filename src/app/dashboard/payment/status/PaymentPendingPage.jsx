@@ -1,7 +1,15 @@
 import React from 'react';
 import { Clock, Home } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const PaymentPendingPage = ({ amount, transactionId, date }) => {
+    const router = useRouter();
+
+
+  function handleHome () {
+    router.push('/dashboard')
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
@@ -30,8 +38,8 @@ const PaymentPendingPage = ({ amount, transactionId, date }) => {
           You will receive a confirmation email once the payment is complete.
         </p>
         
-        <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-          <Home className="w-4 h-4 mr-2" />
+        <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300" onClick={handleHome}>
+          {/* <Home className="w-4 h-4 mr-2" /> */}
           Return to Home
         </button>
       </div>

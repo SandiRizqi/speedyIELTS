@@ -37,8 +37,7 @@ const useSubscrip = () => {
         const getOrder = httpsCallable(func, process.env.NEXT_PUBLIC_PAYMENT_FUNCTION);
         const result = await getOrder({ data: data });
         setToken(result.data.token);
-
-        router.replace(`/dashboard/payment?id=${result.data.token}`)
+        router.push(`/dashboard/payment?id=${result.data.token}`)
         
         // Payment embed
         // snapEmbed(result.data.token, 'snap-container');

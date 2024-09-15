@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import PaymentSuccessPage from "./PaymentSuccessPage";
+import StatusHandler from "./StatusHandler";
 
 export const metadata: Metadata = {
   title: "Speedy IELTS | Payment status",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <DefaultLayout>
-      <PaymentSuccessPage />
+      <StatusHandler />
     </DefaultLayout>
   );
 };

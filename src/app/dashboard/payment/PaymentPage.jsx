@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import useSnap from './hooks/useSnap';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -34,11 +35,24 @@ const PaymentPage = () => {
     const params = useSearchParams();
     const id = params.get('id');
     const {snapEmbed} = useSnap();
+    const router = useRouter();
 
 
     useEffect(() => {
         if (id) {
-            snapEmbed(id, 'snap-container');
+            snapEmbed(id, 'snap-container', {
+                onSuccess: function (payload) {
+                    //console.log(payload);
+                    router.push(`/dashboard/payment/status?order=${payload.order_id}`)
+                },
+                onPending: function() {
+                    //console.log(payload);
+                    router.push(`/dashboard/payment/status?order=${payload.order_id}`)
+                },
+                onClose: function () {
+                    router.push('/dahboard/payment')
+                }
+            });
         }
     },[id])
     
