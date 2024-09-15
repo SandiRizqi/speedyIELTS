@@ -56,6 +56,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                     value={localValue}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    className="dark:bg-slate-700 dark:text-slate-400 px-2 border"
                 />
                 {/* Feedback Text Below the Input */}
                 <div className="mt-1 text-sm text-black-600">
@@ -88,7 +89,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                 className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
             >
                 <h3 className="text-lg text-gray-700 mb-4">{part?.instruction}</h3>
-                {part?.image && (<img src={part.image} alt="image" className="" />)}
+                {part?.image && (<img src={part.image} alt="image" className="max-h-[400px]" />)}
                 {children}
             </div>
         );
@@ -220,7 +221,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number] || ""}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-md my-1 px-2 border border-gray-300 rounded"
+                                    className="w-md my-1 px-2 border rounded"
                                     placeholder="Type your answer here"
                                 />
                                 {feedback && (

@@ -193,6 +193,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                 value={localValue}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                className="dark:bg-slate-700 dark:text-slate-400 px-2 border"
             />
             {/* Feedback Text Below the Input */}
             <div className="mt-1 text-sm text-black-600">
@@ -244,7 +245,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                 className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
             >
                 <h3 className="text-lg text-gray-700 mb-4">{part?.instruction}</h3>
-                {part?.image && (<img src={part.image} alt="image" className="" />)}
+                {part?.image && (<img src={part.image} alt="image" className="max-h-[400px]" />)}
                 {children}
             </div>
         );
@@ -401,6 +402,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
             // Process the result data
             data = result.data;
             score = data['result'];
+            setTestResult(data);
 
             // Set feedback and show success message
             setFeedback(data['corrections']);

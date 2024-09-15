@@ -4,9 +4,10 @@ import withProtected from "@/hooks/withProtected";
 import withUser from "@/hooks/withUser";
 import { Clock, Maximize, Notebook } from 'lucide-react';
 import { usePathname, useRouter } from "next/navigation";
+import DarkModeSwitcher from "../Header/DarkModeSwitcher";
 
 
-const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel,labels }) => {
+const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel, labels }) => {
   const [timeLeft, setTimeLeft] = useState(time * 60); // 60 minutes in seconds
   const path = usePathname();
   const router = useRouter();
@@ -14,7 +15,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleCancelClick = () => {
-    
+
     if (finish) {
       return handleGoBack();
     }
@@ -124,15 +125,18 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   return (
     <><div className="flex flex-col h-screen bg-slate-100" id="testlayouter">
       {/* Header */}
-      <header className="bg-white shadow-lg p-4 flex justify-between items-center">
+      <header className="bg-white shadow-lg p-4 flex justify-between items-center dark:bg-slate-900 z-1">
         <img src="/images/logo/type/logo_round.png" alt="Logo" className="h-10" />
         {!finish && (
           <div className="flex items-center space-x-2">
-          <Clock size={24} className="text-slate-500" />
-          <span className="text-slate-700">{formatTime(timeLeft)}</span>
-        </div>
+            <Clock size={24} className="text-slate-500" />
+            <span className="text-slate-700 dark:text-white">{formatTime(timeLeft)}</span>
+          </div>
         )}
         <div className="flex items-center space-x-4">
+          <ul className="p-2">
+            <DarkModeSwitcher />
+          </ul>
           <button className="p-2 text-slate-500 hover:text-slate-700">
             <Notebook size={24} />
           </button>
@@ -140,7 +144,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
             <Maximize size={24} />
           </button>
           <button className="px-4 py-2 bg-yellow-600 text-white  hover:bg-yellow-700 transition-colors" onClick={handleCancelClick} disabled={loading}>
-           {finish ? "Back": "Cancel"}
+            {finish ? "Back" : "Cancel"}
           </button>
           <button className="px-4 py-2 bg-green-600 text-white  hover:bg-green-700 transition-colors" onClick={() => onSubmit()} disabled={loading}>
             {loading ? "loading... ." : "Submit"}
@@ -148,50 +152,50 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
         </div>
 
         {showConfirm && (
-        <div className="fixed inset-0 bg-slate-900 bg-opacity-30 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-xl max-w-sm w-full">
-            <h2 className="text-lg font-semibold mb-4">Confirm Cancellation</h2>
-            <p>Are you sure you want to cancel?</p>
-            <div className="flex justify-center space-x-4 mt-6">
-              <button
-                className="px-4 py-2 bg-slate-300 text-black hover:bg-slate-400"
-                onClick={handleClosePopup}
-              >
-                No
-              </button>
-              <button
-                className="px-4 py-2 bg-danger text-white hover:bg-danger"
-                onClick={handleConfirmCancel}
-              >
-                Yes, Cancel
-              </button>
+          <div className="fixed inset-0 bg-slate-900 bg-opacity-30 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded shadow-xl max-w-sm w-full dark:bg-slate-700">
+              <h2 className="text-lg font-semibold mb-4">Confirm Cancellation</h2>
+              <p>Are you sure you want to cancel?</p>
+              <div className="flex justify-center space-x-4 mt-6">
+                <button
+                  className="px-4 py-2 bg-slate-300 text-black hover:bg-slate-400"
+                  onClick={handleClosePopup}
+                >
+                  No
+                </button>
+                <button
+                  className="px-4 py-2 bg-danger text-white hover:bg-danger"
+                  onClick={handleConfirmCancel}
+                >
+                  Yes, Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </header>
 
-      <div className="flex flex-col overflow-y-scroll p-6">
+      <div className="flex flex-col overflow-y-scroll p-6 dark:bg-slate-900">
         {children}
       </div>
 
-      <footer className="bg-blue-500 shadow-md px-2 py-1">
-  <div className="flex justify-center border-b border-transparent">
-    {tabs?.map((obj) => (
-      <button
-        key={obj}
-        className={`flex-1 py-3 px-6 transition-all duration-300 ease-in-out rounded-lg text-white font-semibold text-sm mx-1 border
-        ${activePart === obj 
-          ? 'bg-orange-400 text-white shadow-lg border-orange-500'  // Orange when active (clicked)
-          : 'bg-transparent hover:bg-white hover:text-indigo-600 hover:border-indigo-400'}
+      <footer className="bg-blue-500 shadow-md px-2 py-1 dark:bg-slate-900 z-1 shadow-lg">
+        <div className="flex justify-center border-b border-transparent">
+          {tabs?.map((obj) => (
+            <button
+              key={obj}
+              className={`flex-1 py-3 px-6 transition-all duration-300 ease-in-out rounded-lg text-white font-semibold text-sm mx-1 border
+        ${activePart === obj
+                  ? 'bg-orange-400 text-white shadow-lg border-orange-500'  // Orange when active (clicked)
+                  : 'bg-transparent hover:bg-white hover:text-indigo-600 hover:border-indigo-400'}
         `}
-        onClick={() => setActivePart(obj)}
-      >
-        {labels ? labels : "Part"} {obj}
-      </button>
-    ))}
-  </div>
-</footer>
+              onClick={() => setActivePart(obj)}
+            >
+              {labels ? labels : "Part"} {obj}
+            </button>
+          ))}
+        </div>
+      </footer>
 
     </div>
     </>

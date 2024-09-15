@@ -66,7 +66,7 @@ const AudioPlayer = ({ audioUrls }) => {
                     </button>
                     <button
                         onClick={togglePlayPause}
-                        className={`px-4 py-2 ${!isPlaying ? "bg-green-500" : "bg-danger"} text-white  hover:bg-green-600`}
+                        className={`px-4 py-2 ${!isPlaying ? "bg-green-500" : "bg-danger"} text-white`}
                     >
                         {isPlaying ? 'Stop' : 'Play'}
                     </button>
