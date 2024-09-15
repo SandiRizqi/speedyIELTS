@@ -1,7 +1,7 @@
 import PaymentPage from "./PaymentPage";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import PricingPage from "./PricingPage";
+
 
 export const metadata: Metadata = {
   title: "Speedy IELTS | Payment",
