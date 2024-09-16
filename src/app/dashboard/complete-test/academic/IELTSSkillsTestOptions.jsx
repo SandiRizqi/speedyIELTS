@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Clock, Award } from 'lucide-react';
 import { useUser } from '@/service/user';
 import { usePathname, useRouter } from 'next/navigation';
+import { FirebaseFunction } from '@/service/firebase';
+import { ErrorMessage } from '../../_components/Alert';
+import { httpsCallable } from 'firebase/functions';
 
 const getScoreColor = (score) => {
   if (score < 4) return 'text-red-500';
@@ -147,16 +150,19 @@ const ScoreModal = ({ skill, score }) => {
   );
 };
 
-const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState}) => {
+const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedback, globalFeedback}) => {
   const [completedSkills, setCompletedSkills] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [scores, setScores] = useState({});
-  const [overallScore, setOverallScore] = useState(0);
+  const [overallScore, setOverallScore] = useState(globalFeedback?.overall || 0);
   const user = useUser();
   const [timeLeft, setTimeLeft] = useState(180); // 3 hours in minutes
   const path = usePathname();
   const router = useRouter();
   const [showConfirm, setShowConfirm] = useState(false);
+  const functions = FirebaseFunction();
+  const [loading, setLoading] = useState(false);
+
 
   const handleCancelClick = () => {
     setShowConfirm(true);
@@ -200,20 +206,30 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState}) => {
     }
   };
 
-  const handleSubmit = () => {
-    const newScores = {};
-    skills.forEach(skill => {
-      newScores[skill.name] = completedSkills.includes(skill.name)
-        ? (Math.random() * 3 + 6).toFixed(1) // Random score between 6.0 and 9.0
-        : 'N/A';
-    });
-    setScores(newScores);
-    setSubmitted(true);
-
-    // Calculate overall score
-    const validScores = Object.values(newScores).filter(score => score !== 'N/A');
-    const overall = validScores.reduce((sum, score) => sum + parseFloat(score), 0) / validScores.length;
-    setOverallScore(overall.toFixed(1));
+  const handleSubmit = async () => {
+   // setSubmitted(true);
+   setLoading(true)
+    console.log(globalState)
+    //event.preventDefault();
+    const getFullScore = httpsCallable(functions, 'getFullSkillScore');
+    
+    try {
+      const respons = await getFullScore({...globalState, userId: user.uid});
+      const result = respons.data["data"]["result"];
+      addFeedback(result);
+      setOverallScore(result.overall);
+      setScores({
+        listening: result.listening.result.overall,
+        reading: result.reading.result.overall,
+        writing: result.writing.result.overall,
+        speaking: result.writing.result.overall
+      })
+     
+    } catch (error) {
+      ErrorMessage(error)
+    } finally {
+      setLoading(false); // Set loading to false when submission completes
+    }
   };
 
   return (
@@ -261,14 +277,14 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState}) => {
                     <div>
                       <div className="flex justify-center mb-2">
                         <CircularProgress
-                          percentage={(parseFloat(scores[skill.name]) / 9) * 100}
+                          percentage={(parseFloat(scores[skill.name.toLowerCase()]) / 9) * 100}
                           scoreColor={getScoreColor(parseFloat(scores[skill.name]))}
                         >
-                          {scores[skill.name]}
+                          {scores[skill.name.toLowerCase()]}
                         </CircularProgress>
                       </div>
-                      {scores[skill.name] !== 'N/A' && (
-                        <ScoreModal skill={skill.name} score={parseFloat(scores[skill.name])} />
+                      {scores[skill.name.toLowerCase()] !== 'N/A' && (
+                        <ScoreModal skill={skill.name} score={parseFloat(scores[skill.name.toLowerCase()])} />
                       )}
                     </div>
                   ) : globalState[skill.name.toLowerCase()]?.done === true ? (
@@ -315,10 +331,9 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState}) => {
             </button>
             <button
               onClick={handleSubmit}
-              disabled={submitted || completedSkills.length === 0}
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 transition-colors duration-300"
             >
-              Submit Test
+              {loading ? "Loading... .": "Submit Test"}
             </button>
           </div>
         </div>
