@@ -228,7 +228,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Feedback",
-        route: "#",
+        route: "/dashboard/feedback",
       }
     ],
   }
