@@ -36,9 +36,11 @@ const PricingTier = ({ title, price, range, features, isPopular, type }) => {
                 </div>
             )}
             <h3 className={`text-4xl font-black mb-6 relative ${!isPopular || "text-white"}`}>{title}</h3>
-            <p className={`text-2xl font-black mb-8 relative ${!isPopular || "text-white"}`}>
-                IDR{price}<span className="text-lg font-normal opacity-80">/{range}</span>
-            </p>
+            {price && (
+                <p className={`text-2xl font-black mb-8 relative ${!isPopular || "text-white"}`}>
+                    IDR{price}<span className="text-lg font-normal opacity-80">/{range}</span>
+                </p>
+            )}
             <ul className="space-y-4 mb-8 relative">
                 {features.map((feature, index) => (
                     <li key={index} className="flex items-center">
@@ -103,7 +105,7 @@ const PaymentPage = () => {
             isPopular: false
         },
         {
-            title: "Mothly Premium",
+            title: "Monthly Premium",
             price: "300,000",
             range: "Mo",
             type: "SPEEDYIELTS_PREMIUM",
@@ -147,7 +149,7 @@ const PaymentPage = () => {
 
                     {!id ? (
                         <>
-                            <div className="absolute inset-0 overflow-hidden">
+                            <div className="absolute inset-0 overflow-hidden dark:bg-slate-900 dark:text-slate-700">
                                 <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-blue-400 rounded-full filter blur-5xl opacity-20 animate-blob"></div>
                                 <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-blue-600 rounded-full filter blur-5xl opacity-20 animate-blob animation-delay-2000"></div>
                                 <div className="absolute -bottom-1/4 left-1/4 w-1/2 h-1/2 bg-blue-500 rounded-full filter blur-5xl opacity-20 animate-blob animation-delay-4000"></div>
