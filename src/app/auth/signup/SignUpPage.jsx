@@ -1,54 +1,64 @@
 'use client'
 import React from 'react';
-import { SignInWithPassword, SignInWithGoogle } from "@/service/firebase";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendEmailVerification } from "firebase/auth";
+import { Authenticaion } from '@/service/firebase';
 import { useState, useRef } from 'react';
 import withUnProtected from "@/hooks/withUnProtected";
 import getErrorMessage from "./getErrorMessage";
 
-
-const LoginPage = () => {
+const SignUpPage = () => {
     const [errors, setErrors] = useState(null);
+    const [success, setSuccess] = useState(null);
     const form = useRef();
-
+    const auth = Authenticaion();
 
     async function handleSubmit(e) {
         e.preventDefault();
         const email = e.target.elements.email.value;
         const password = e.target.elements.password.value;
+        const retryPassword = e.target.elements.retryPassword.value;
+
+        // Check if passwords match
+        if (password !== retryPassword) {
+            setErrors("Passwords do not match");
+            return;
+        }
 
         try {
-            // Sign in the user using email and password
-            const [userCredential, err] = await SignInWithPassword(email, password);
-
-            if (err) {
-                // Handle error from sign in
-                setErrors(getErrorMessage(err));
-                return;
-            }
-
+            // Create user with email and password
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Check if the user's email is verified
-            if (!user.emailVerified) {
-                setErrors("Your email is not verified. Please check your inbox and verify your email before logging in.");
-                return;
-            }
+            // Send email verification
+            await sendEmailVerification(user);
 
-            // If the email is verified, proceed to the next step (e.g., redirect to dashboard)
-            // Redirect to the dashboard or another page after successful login
-        } catch (e) {
-            // Handle any unexpected errors
-            setErrors(getErrorMessage(e));
+            // Notify user about email verification
+            setSuccess("A verification email has been sent to your email address. Please verify your email before logging in.");
+
+            // Optionally, sign out the user so they can only log in after verification
+            await auth.signOut();
+        } catch (error) {
+            setErrors(getErrorMessage(error));
         }
     }
 
+    async function handleSignUpGoogle() {
+        const provider = new GoogleAuthProvider();
+        try {
+            const userCredential = await signInWithPopup(auth, provider);
+            const user = userCredential.user;
 
-    async function handleSignInGoogle() {
-        const [_, err] = await SignInWithGoogle();
-        if (err) {
-            setErrors(getErrorMessage(err))
-        };
-    };
+            // Check if the user email is verified
+            if (user.emailVerified) {
+                // Handle successful Google sign up (e.g., redirect to dashboard)
+            } else {
+                setErrors("Please verify your email before logging in.");
+                await auth.signOut(); // Sign the user out if email is not verified
+            }
+        } catch (error) {
+            setErrors(getErrorMessage(error));
+        }
+    }
 
     return (
         <div>
@@ -84,59 +94,59 @@ const LoginPage = () => {
                 <div className="sm:hidden h-[400px] flex flex-col justify-end bg-cover bg-center bg-[url('/images/model-1.png')] pt-20 shadow-2xl">
                     <div className="container mx-auto">
                         <div className="pb-20 space-y-1 px-8">
-                            <h1 className="font-bold text-xl text-white">Boost your IELTS Band score and Unlock Your Future</h1>
-                            <span className="font-light text-white text-sm block">Enhance your learning experience with cutting-edge AI technology designed to support your educational journey at every step.</span>
+                            <h1 className="font-bold text-xl text-white">Join SpeedyIELTS and Boost Your IELTS Band Score</h1>
+                            <span className="font-light text-white text-sm block">Sign up now to access cutting-edge AI technology designed to support your IELTS preparation journey.</span>
                         </div>
                     </div>
                 </div>
                 <div className="container mx-auto h-full">
                     <div className="sm:flex flex-row h-full">
                         <div className="hidden sm:flex sm:flex-col sm:justify-end sm:pb-36 sm:w-7/12 px-8">
-                            <h1 className="font-bold text-4xl text-white mb-1 leading-tight">Boost your IELTS Band score and Unlock Your Future</h1>
-                            <span className="font-light text-white text-lg">Enhance your learning experience with cutting-edge AI technology designed to support your educational journey at every step.</span>
+                            <h1 className="font-bold text-4xl text-white mb-1 leading-tight">Join SpeedyIELTS and Boost Your IELTS Band Score</h1>
+                            <span className="font-light text-white text-lg">Sign up now to access cutting-edge AI technology designed to support your IELTS preparation journey.</span>
                         </div>
                         <div className="flex-1 flex flex-col justify-center mx-auto">
                             <div className="p-6 sm:p-8 shadow-lg bg-white w-full max-w-md relative -top-12 sm:top-0 sm:left-0 rounded-2xl">
-                                <h3 className="font-bold text-primary-black text-2xl mb-10">Login SpeedyIELTS</h3>
+                                <h3 className="font-bold text-primary-black text-2xl mb-10">Sign Up for SpeedyIELTS</h3>
                                 <form onSubmit={handleSubmit} ref={form}>
                                     <div className="mb-4">
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Email</label>
-                                        <input autoFocus="" type="text" placeholder="Use your email" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="email" />
+                                        <input autoFocus="" type="email" placeholder="Enter your email" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="email" required />
                                     </div>
                                     <div className="mb-4">
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Password</label>
-                                        <input type="password" placeholder="Insert your password" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" />
+                                        <input type="password" placeholder="Create a password" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" required />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="font-medium block text-sm text-neutral-black mb-1">Confirm Password</label>
+                                        <input type="password" placeholder="Confirm your password" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="retryPassword" required />
                                     </div>
                                     <button type="submit" className="bg-blue-600 rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full transition-all duration-300 transform hover:scale-105">
-                                        <span>Sign In</span>
+                                        <span>Sign Up</span>
                                     </button>
                                 </form>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}
                                 <div className="flex flex-row items-center gap-4 my-6">
                                     <div className="h-0.5 bg-primary-light-slate flex-1"></div>
-                                    <label className="font-normal text-xs text-black block">or Sign In</label>
+                                    <label className="font-normal text-xs text-black block">or Sign Up with</label>
                                     <div className="h-0.5 bg-primary-light-slate flex-1"></div>
                                 </div>
-                                <button type="button" className="bg-[#F1F2F4] w-full px-6 py-3 rounded-md transition-all duration-300 transform hover:scale-105" onClick={handleSignInGoogle}>
+                                <button type="button" className="bg-[#F1F2F4] w-full px-6 py-3 rounded-md transition-all duration-300 transform hover:scale-105" onClick={handleSignUpGoogle}>
                                     <div className="flex flex-row items-center justify-center gap-3">
                                         <img src="/images/icon/google-icon.svg" />
-                                        <span className="font-semibold text-sm text-primary-black">Sign in with Google</span>
+                                        <span className="font-semibold text-sm text-primary-black">Sign up with Google</span>
                                     </div>
                                 </button>
                                 <div className="font-normal text-sm text-neutral-black text-center mt-5">
-                                    Don't have account? <a href="/auth/signup" className="font-semibold text-sm text-primary-color">SignUp</a>
+                                    Already have an account? <a href="/auth/signin" className="font-semibold text-sm text-primary-color">Login</a>
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
-
         </div>
     );
 };
 
-export default withUnProtected(LoginPage);
+export default withUnProtected(SignUpPage);
