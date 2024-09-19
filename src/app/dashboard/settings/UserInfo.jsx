@@ -203,7 +203,9 @@ const UserInfo = () => {
                     <div className="p-7">
                         <form action="#">
                             <div className="mb-4 flex items-center gap-3">
-                                <div className="h-14 w-14 rounded-full">
+                                {user?.picture && (
+                                    <>
+                                    <div className="h-14 w-14 rounded-full">
                                     <Image
                                         src={user?.picture}
                                         width={55}
@@ -224,6 +226,8 @@ const UserInfo = () => {
                                         </button>
                                     </span>
                                 </div>
+                                    </>
+                                )}
                             </div>
 
                             <div

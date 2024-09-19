@@ -131,7 +131,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                                     onChange={(value) => handleAnswer(obj.number, value)}
                                     className="w-md my-1 px-2 border border-gray-300 rounded"
                                     placeholder="Type your answer here"
-                                    feedback={feedback ? feedback[obj.name] : null}
+                                    feedback={feedback ? feedback[obj.number] : null}
                                     number={obj.number}
                                 />
                             </div>
