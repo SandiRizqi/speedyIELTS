@@ -56,3 +56,31 @@ export function ErrorMessage (error) {
         showConfirmButton: true,
       });
 }
+
+
+export function SuccessMessageText(success) {
+  let message;
+
+  // Check if the success object has a message property
+  if (success && typeof success === "object") {
+    // Look for specific success message fields
+    if (success.response && success.response.data && success.response.data.message) {
+      message = success.response.data.message; // For API success responses
+    } else if (success.message) {
+      message = success.message; // For generic success messages
+    } else {
+      message = JSON.stringify(success); // If it's an object without a message
+    }
+  } else {
+    // If it's a string or something unexpected, display it directly
+    message = success ? String(success) : "Operation completed successfully.";
+  }
+
+  Swal.fire({
+    title: "Success",
+    text: `Success: ${message}`,
+    icon: "success",
+    confirmButtonColor: "#017d88",
+    showConfirmButton: false,
+  });
+}

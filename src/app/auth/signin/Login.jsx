@@ -9,36 +9,29 @@ import getErrorMessage from "./getErrorMessage";
 const LoginPage = () => {
     const [errors, setErrors] = useState(null);
     const form = useRef();
+    const [loading, setLoading] = useState(false);
 
 
     async function handleSubmit(e) {
         e.preventDefault();
+        setLoading(true);
         const email = e.target.elements.email.value;
         const password = e.target.elements.password.value;
 
         try {
             // Sign in the user using email and password
-            const [userCredential, err] = await SignInWithPassword(email, password);
+            const [_, err] = await SignInWithPassword(email, password);
 
             if (err) {
                 // Handle error from sign in
                 setErrors(getErrorMessage(err));
                 return;
             }
-
-            const user = userCredential.user;
-
-            // Check if the user's email is verified
-            if (!user.emailVerified) {
-                setErrors("Your email is not verified. Please check your inbox and verify your email before logging in.");
-                return;
-            }
-
-            // If the email is verified, proceed to the next step (e.g., redirect to dashboard)
-            // Redirect to the dashboard or another page after successful login
         } catch (e) {
             // Handle any unexpected errors
             setErrors(getErrorMessage(e));
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -108,7 +101,7 @@ const LoginPage = () => {
                                         <input type="password" placeholder="Insert your password" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" />
                                     </div>
                                     <button type="submit" className="bg-blue-600 rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full transition-all duration-300 transform hover:scale-105">
-                                        <span>Sign In</span>
+                                        <span>{loading ? "Loading... ." : "Sign In"}</span>
                                     </button>
                                 </form>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}

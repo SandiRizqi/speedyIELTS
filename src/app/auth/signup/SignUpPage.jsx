@@ -1,19 +1,26 @@
 'use client'
 import React from 'react';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendEmailVerification } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import { SuccessMessageText } from '@/app/dashboard/_components/Alert';
 import { Authenticaion } from '@/service/firebase';
 import { useState, useRef } from 'react';
 import withUnProtected from "@/hooks/withUnProtected";
 import getErrorMessage from "./getErrorMessage";
+import { FirebaseFunction } from '@/service/firebase';
+import { httpsCallable } from 'firebase/functions';
+
 
 const SignUpPage = () => {
     const [errors, setErrors] = useState(null);
-    const [success, setSuccess] = useState(null);
+    // const [success, setSuccess] = useState(null);
     const form = useRef();
     const auth = Authenticaion();
+    const functions = FirebaseFunction();
+    const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
+        setLoading(true);
         const email = e.target.elements.email.value;
         const password = e.target.elements.password.value;
         const retryPassword = e.target.elements.retryPassword.value;
@@ -26,35 +33,21 @@ const SignUpPage = () => {
 
         try {
             // Create user with email and password
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Send email verification
-            await sendEmailVerification(user);
-
-            // Notify user about email verification
-            setSuccess("A verification email has been sent to your email address. Please verify your email before logging in.");
-
-            // Optionally, sign out the user so they can only log in after verification
-            await auth.signOut();
+            const addUser = httpsCallable(functions, "createUserWithEmailAndPassword")
+            await addUser({email: email, password: password}).then(() => {
+                SuccessMessageText("A verification email has been sent to your email address. Please verify your email before logging in.")
+            })
         } catch (error) {
             setErrors(getErrorMessage(error));
+        } finally {
+            setLoading(false)
         }
     }
 
     async function handleSignUpGoogle() {
         const provider = new GoogleAuthProvider();
         try {
-            const userCredential = await signInWithPopup(auth, provider);
-            const user = userCredential.user;
-
-            // Check if the user email is verified
-            if (user.emailVerified) {
-                // Handle successful Google sign up (e.g., redirect to dashboard)
-            } else {
-                setErrors("Please verify your email before logging in.");
-                await auth.signOut(); // Sign the user out if email is not verified
-            }
+            await signInWithPopup(auth, provider);
         } catch (error) {
             setErrors(getErrorMessage(error));
         }
@@ -122,7 +115,7 @@ const SignUpPage = () => {
                                         <input type="password" placeholder="Confirm your password" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="retryPassword" required />
                                     </div>
                                     <button type="submit" className="bg-blue-600 rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full transition-all duration-300 transform hover:scale-105">
-                                        <span>Sign Up</span>
+                                        <span>{loading ? "Loading... .": "Sign Up"}</span>
                                     </button>
                                 </form>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}
