@@ -1,6 +1,7 @@
 'use client'
 import React from 'react';
 import { GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import Link from 'next/link';
 import { SuccessMessageText } from '@/app/dashboard/_components/Alert';
 import { Authenticaion } from '@/service/firebase';
 import { useState, useRef } from 'react';
@@ -131,7 +132,7 @@ const SignUpPage = () => {
                                     </div>
                                 </button>
                                 <div className="font-normal text-sm text-neutral-black text-center mt-5">
-                                    Already have an account? <a href="/auth/signin" className="font-semibold text-sm text-primary-color">Login</a>
+                                    Already have an account? <Link href="/auth/signin" className="font-semibold text-sm text-primary-color">Login</Link>
                                 </div>
                             </div>
                         </div>

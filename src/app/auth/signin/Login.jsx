@@ -1,6 +1,7 @@
 'use client'
 import React from 'react';
 import { SignInWithPassword, SignInWithGoogle } from "@/service/firebase";
+import Link from 'next/link';
 import { useState, useRef } from 'react';
 import withUnProtected from "@/hooks/withUnProtected";
 import getErrorMessage from "./getErrorMessage";
@@ -117,7 +118,7 @@ const LoginPage = () => {
                                     </div>
                                 </button>
                                 <div className="font-normal text-sm text-neutral-black text-center mt-5">
-                                    Don't have account? <a href="/auth/signup" className="font-semibold text-sm text-primary-color">SignUp</a>
+                                    Don't have account? <Link href="/auth/signup" className="font-semibold text-sm text-primary-color">Sign Up</Link>
                                 </div>
                             </div>
                         </div>

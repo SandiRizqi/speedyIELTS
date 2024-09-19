@@ -60,7 +60,7 @@ const AudioPlayer = ({ audioUrls }) => {
                 <div className="flex space-x-4">
                     <button
                         onClick={playPrevious}
-                        className="px-4 py-2 bg-blue-600 text-white hover:bg-orange-400"
+                        className="px-4 py-2 bg-blue-500 text-white hover:bg-orange-400"
                     >
                         Previous
                     </button>
@@ -68,11 +68,11 @@ const AudioPlayer = ({ audioUrls }) => {
                         onClick={togglePlayPause}
                         className={`px-4 py-2 ${!isPlaying ? "bg-green-500" : "bg-danger"} text-white`}
                     >
-                        {isPlaying ? 'Stop' : 'Play'}
+                        {isPlaying ? 'Stop' : 'Start'}
                     </button>
                     <button
                         onClick={playNext}
-                        className="px-4 py-2 bg-blue-600 text-white  hover:bg-orange-400"
+                        className="px-4 py-2 bg-blue-500 text-white  hover:bg-orange-400"
                     >
                         Next
                     </button>

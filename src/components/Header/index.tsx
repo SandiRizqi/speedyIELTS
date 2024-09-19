@@ -9,7 +9,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title:
     "Dashboard | Dashboard",
-  description: "This is Next.js Home for TailAdmin Dashboard Template",
+  description: "",
 };
 
 const Header = (props: {
