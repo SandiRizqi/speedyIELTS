@@ -78,7 +78,7 @@ export function SuccessMessageText(success) {
 
   Swal.fire({
     title: "Success",
-    text: `Success: ${message}`,
+    text: `${message}`,
     icon: "success",
     confirmButtonColor: "#017d88",
     showConfirmButton: false,

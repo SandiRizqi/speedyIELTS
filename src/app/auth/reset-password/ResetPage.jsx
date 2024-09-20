@@ -1,33 +1,31 @@
 'use client'
 import React from 'react';
-import { SignInWithPassword, SignInWithGoogle } from "@/service/firebase";
+import { FirebaseFunction } from '@/service/firebase';
+import { httpsCallable } from 'firebase/functions';
+import { SuccessMessageText, ErrorMessage } from '@/app/dashboard/_components/Alert';
 import Link from 'next/link';
 import { useState, useRef } from 'react';
 import withUnProtected from "@/hooks/withUnProtected";
 import getErrorMessage from "./getErrorMessage";
 
 
-const LoginPage = () => {
+const ResetPage = () => {
     const [errors, setErrors] = useState(null);
     const form = useRef();
     const [loading, setLoading] = useState(false);
+    const functions =  FirebaseFunction();
 
 
     async function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
         const email = e.target.elements.email.value;
-        const password = e.target.elements.password.value;
 
         try {
-            // Sign in the user using email and password
-            const [_, err] = await SignInWithPassword(email, password);
-
-            if (err) {
-                // Handle error from sign in
-                setErrors(getErrorMessage(err));
-                return;
-            }
+            const resetPass = httpsCallable(functions, "resetPassword");
+            await resetPass({email: email}).then((res) => {
+                SuccessMessageText(res.data.message);
+            })
         } catch (e) {
             // Handle any unexpected errors
             setErrors(getErrorMessage(e));
@@ -37,12 +35,6 @@ const LoginPage = () => {
     }
 
 
-    async function handleSignInGoogle() {
-        const [_, err] = await SignInWithGoogle();
-        if (err) {
-            setErrors(getErrorMessage(err))
-        };
-    };
 
     return (
         <div>
@@ -91,39 +83,20 @@ const LoginPage = () => {
                         </div>
                         <div className="flex-1 flex flex-col justify-center mx-auto">
                             <div className="p-6 sm:p-8 shadow-lg bg-white w-full max-w-md relative -top-12 sm:top-0 sm:left-0 rounded-2xl">
-                                <h3 className="font-bold text-primary-black text-2xl mb-10">Login SpeedyIELTS</h3>
+                                <h3 className="font-bold text-primary-black text-2xl mb-10">Reset Password</h3>
                                 <form onSubmit={handleSubmit} ref={form}>
                                     <div className="mb-4">
                                         <label className="font-medium block text-sm text-neutral-black mb-1">Email</label>
                                         <input autoFocus="" type="text" placeholder="Use your email" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="email" />
                                     </div>
-                                    <div className="mb-4">
-                                        <label className="font-medium block text-sm text-neutral-black mb-1">Password</label>
-                                        <input type="password" placeholder="Insert your password" className="px-4 py-3 w-full text-sm border border-primary-light-slate rounded-md outline-none placeholder-primary-placeholder" name="password" />
-                                    </div>
                                     <button type="submit" className="bg-blue-600 rounded-md px-4 py-3 font-medium text-sm text-white text-center w-full transition-all duration-300 transform hover:scale-105">
-                                        <span>{loading ? "Loading... ." : "Sign In"}</span>
+                                        <span>{loading ? "Loading... ." : "Reset Password"}</span>
                                     </button>
                                 </form>
-                                <div className="font-normal text-sm text-neutral-black text-center mt-2">
-                                    Forget your password? <Link href="/auth/reset-password" className="font-semibold text-sm text-primary-color">Reset Password</Link>
-                                </div>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}
-                                <div className="flex flex-row items-center gap-4 my-4">
-                                    <div className="h-0.5 bg-primary-light-slate flex-1"></div>
-                                    <label className="font-normal text-xs text-black block">or Sign In</label>
-                                    <div className="h-0.5 bg-primary-light-slate flex-1"></div>
-                                </div>
-                                <button type="button" className="bg-[#F1F2F4] w-full px-6 py-3 rounded-md transition-all duration-300 transform hover:scale-105" onClick={handleSignInGoogle}>
-                                    <div className="flex flex-row items-center justify-center gap-3">
-                                        <img src="/images/icon/google-icon.svg" />
-                                        <span className="font-semibold text-sm text-primary-black">Sign in with Google</span>
-                                    </div>
-                                </button>
-                                <div className="font-normal text-sm text-neutral-black text-center mt-2">
+                                <div className="font-normal text-sm text-neutral-black text-center mt-5">
                                     Don't have account? <Link href="/auth/signup" className="font-semibold text-sm text-primary-color">Sign Up</Link>
                                 </div>
-                                
                             </div>
                         </div>
 
@@ -137,4 +110,4 @@ const LoginPage = () => {
     );
 };
 
-export default withUnProtected(LoginPage);
+export default withUnProtected(ResetPage);
