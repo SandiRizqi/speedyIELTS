@@ -123,8 +123,9 @@ const PaymentPage = () => {
 
 
     useEffect(() => {
+        let snapInstance;
         if (id) {
-            snapEmbed(id, 'snap-container', {
+            snapInstance = snapEmbed(id, 'snap-container', {
                 onSuccess: function (payload) {
                     //console.log(payload);
                     router.push(`/dashboard/payment/status?order=${payload.order_id}`)
@@ -134,10 +135,24 @@ const PaymentPage = () => {
                     router.push(`/dashboard/payment/status?order=${payload.order_id}`)
                 },
                 onClose: function () {
-                    router.push('/dahboard/payment')
+                    router.push('/dashboard/payment')
                 }
             });
         }
+
+        return () => {
+            // Cleanup function to remove the payment interface
+            if (snapInstance && typeof snapInstance.destroy === 'function') {
+                snapInstance.destroy();
+            } else {
+                // Manual cleanup if destroy method is not available
+                const snapContainer = document.getElementById('snap-container');
+                if (snapContainer) {
+                    snapContainer.innerHTML = '';
+                }
+                // Remove any global event listeners or overlays here if necessary
+            }
+        };
     }, [id])
 
 
