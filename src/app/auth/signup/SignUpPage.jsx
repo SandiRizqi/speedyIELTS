@@ -132,7 +132,7 @@ const SignUpPage = () => {
                                     </div>
                                 </button>
                                 <div className="font-normal text-sm text-neutral-black text-center mt-5">
-                                    Already have an account? <Link href="/auth/signin" className="font-semibold text-sm text-primary-color">Login</Link>
+                                    Already have an account? <Link href="/auth/signin" className="font-semibold text-sm text-primary-color">Sign In</Link>
                                 </div>
                             </div>
                         </div>

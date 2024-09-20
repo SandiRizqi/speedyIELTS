@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import DarkModeSwitcher from "../Header/DarkModeSwitcher";
 
 
-const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel, labels, Answers }) => {
+const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel, labels, Answers, Corrections }) => {
   const [timeLeft, setTimeLeft] = useState(time * 60); // 60 minutes in seconds
   const path = usePathname();
   const router = useRouter();
@@ -16,6 +16,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isAnswerOpen, setIsAnswerOpen] = useState(false);
+
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -90,7 +91,10 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   };
 
 
-
+  const handleSubmit = () => {
+    onSubmit();
+    //setIsFinish(true);
+  };
 
 
   useEffect(() => {
@@ -102,7 +106,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
 
   useEffect(() => {
     if (!timeLeft) {
-      onSubmit();
+      handleSubmit();
     }
   }, [timeLeft])
 
@@ -167,8 +171,8 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
                 <DarkModeSwitcher />
                 {Answers && (
                   <button className="p-2 text-slate-500 hover:text-slate-700" onClick={toggleAnswers}>
-                  <Notebook size={24} />
-                </button>
+                    <Notebook size={24} />
+                  </button>
                 )}
                 <button className="p-2 text-slate-500 hover:text-slate-700" onClick={toggleFullscreen}>
                   <Maximize size={24} />
@@ -180,9 +184,11 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
                   {finish ? "Back" : "Cancel"}
                 </button>
 
-                <button className="px-4 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors w-full sm:w-auto max-w-sm" onClick={() => onSubmit()} disabled={loading}>
-                  {loading ? "loading... ." : "Submit"}
-                </button>
+                
+                  <button className="px-4 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors w-full sm:w-auto max-w-sm" onClick={() => handleSubmit()} disabled={loading || finish}>
+                    {loading ? "loading... ." : "Submit"}
+                  </button>
+                
               </idv>
 
             </div>
@@ -230,8 +236,8 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
 
             {Answers && (
               <button className="p-2 text-slate-500 hover:text-slate-700" onClick={toggleAnswers}>
-              <Notebook size={24} />
-            </button>
+                <Notebook size={24} />
+              </button>
             )}
             <button className="p-2 text-slate-500 hover:text-slate-700" onClick={toggleFullscreen}>
               <Maximize size={24} />
@@ -241,9 +247,11 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
             <button className="px-4 py-2 bg-yellow-600 text-white  hover:bg-yellow-700 transition-colors" onClick={handleCancelClick} disabled={loading}>
               {finish ? "Back" : "Cancel"}
             </button>
-            <button className="px-4 py-2 bg-green-600 text-white  hover:bg-green-700 transition-colors" onClick={() => onSubmit()} disabled={loading}>
-              {loading ? "loading... ." : "Submit"}
-            </button>
+           
+              <button className="px-4 py-2 bg-green-600 text-white  hover:bg-green-700 transition-colors" onClick={() => handleSubmit()} disabled={loading || finish}>
+                {loading ? "loading... ." : "Submit"}
+              </button>
+           
           </div>
 
           {showConfirm && (
@@ -292,7 +300,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   }, []);
 
 
-  
+
 
   return (
     <><div className="flex flex-col h-screen bg-slate-100" id="testlayouter">
@@ -312,20 +320,33 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
 
             {/* Answers Grid */}
             <div className="grid grid-cols-4 gap-4">
-              {Array.from({ length: 40 }, (_, i) => i + 1).map((num) => (
-                <div
-                  key={num}
-                  className={`flex flex-col items-center p-2 rounded-lg ${Answers[num]
-                      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300' // Blue if there is an answer
-                      : 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300' // Orange if no answer
-                    }`}
-                >
-                  <span className="text-md font-bold">{num}</span>
-                  <span className="text-xs">
-                    {Answers[num]?.toUpperCase() || '-'}
-                  </span>
-                </div>
-              ))}
+              {Array.from({ length: 40 }, (_, i) => i + 1).map((num) => {
+                const answer = Answers[num]?.toUpperCase(); // Get the user's answer in uppercase
+
+                let bgColor = 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'; // Default (no answer)
+                if (answer) {
+                  bgColor = 'bg-blue-300 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
+                  if (Corrections) {
+                    const correction = Corrections[num];
+                    if (correction && correction.includes(answer)) {
+                      bgColor = 'bg-green-500 text-white dark:bg-green-500 dark:text-white'; // Green if correct
+                    } else {
+                      bgColor = 'bg-danger text-white dark:bg-danger dark:text-white'; // Red if incorrect
+                    }
+                  }
+
+
+                }
+
+                return (
+                  <div key={num} className={`flex flex-col items-center p-2 rounded-lg ${bgColor}`}>
+                    <span className="text-md font-bold">{num}</span>
+                    <span className="text-xs">
+                      {answer || '-'}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Modal Footer */}

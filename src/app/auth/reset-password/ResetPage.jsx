@@ -95,7 +95,7 @@ const ResetPage = () => {
                                 </form>
                                 {errors && (<span className='text-danger text-xs'>{errors}</span>)}
                                 <div className="font-normal text-sm text-neutral-black text-center mt-5">
-                                    Don't have account? <Link href="/auth/signup" className="font-semibold text-sm text-primary-color">Sign Up</Link>
+                                     <Link href="/auth/signin" className="font-semibold text-sm text-primary-color">Sign In</Link>
                                 </div>
                             </div>
                         </div>
