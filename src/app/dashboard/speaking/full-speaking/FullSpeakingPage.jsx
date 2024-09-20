@@ -200,7 +200,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
               {/* Chat Column */}
               <div className="md:w-2/3 flex flex-col justify-between max-h-[34rem] dark:bg-slate-700">
-                <div className="overflow-y-auto p-4 space-y-4 ">
+                <div className="overflow-y-auto p-4 space-y-4 flex-grow">
                   {order[indexStep] !== 'part2' ? messages.map((message, index) => (
                     <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>

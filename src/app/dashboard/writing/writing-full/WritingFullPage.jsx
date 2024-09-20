@@ -64,6 +64,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
 
     } catch (error) {
       ErrorMessage(error);
+      setFinish(false);
 
     } finally {
       setIsLoading(false);

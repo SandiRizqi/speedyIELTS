@@ -14,37 +14,38 @@ import ScoreDisplay from '../ScoreDisplay';
 import LoadingScore from '../LoadingScore';
 import Loader from '@/components/common/Loader';
 import { useSearchParams } from 'next/navigation';
+import TestLayout from '@/components/Layouts/TestLayout';
 
 
-const Timer = ({ minutes, seconds, setFinish }) => {
-  const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
+// const Timer = ({ minutes, seconds, setFinish }) => {
+//   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (timeLeft.seconds > 0) {
-        setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
-      } else if (timeLeft.minutes > 0) {
-        setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
-      } else {
-        clearInterval(interval);
-      }
-    }, 1000);
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       if (timeLeft.seconds > 0) {
+//         setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
+//       } else if (timeLeft.minutes > 0) {
+//         setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
+//       } else {
+//         clearInterval(interval);
+//       }
+//     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [timeLeft]);
+//     return () => clearInterval(interval);
+//   }, [timeLeft]);
 
-  useEffect(() => {
-    if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-      setFinish(true);
-    }
-  }, [timeLeft]);
+//   useEffect(() => {
+//     if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
+//       setFinish(true);
+//     }
+//   }, [timeLeft]);
 
-  return (
-    <div className='block text-center bg-slate-800 rounded-md p-1'>
-      <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
-    </div>
-  );
-};
+//   return (
+//     <div className='block text-center bg-slate-800 rounded-md p-1'>
+//       <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
+//     </div>
+//   );
+// };
 
 
 
@@ -144,11 +145,12 @@ const WritingOnePage = () => {
   return (
     <UserProvider>
       <AuthStateChangeProvider>
-        <Breadcrumb pageName='Writing Task 1' />
+        {/* <Breadcrumb pageName='Writing Task 1' /> */}
+        <TestLayout onSubmit={() => setFinish(true)}  time={20} loading={loading} finish={finish} onCancel={null}>
         <div className='flex flex-1 justify-center'>
-          <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1  top-20 inline-block gap-4 z-50'>
+          {/* <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1  top-20 inline-block gap-4 z-50'>
             {start && !finish && (<Timer minutes={20} seconds={0} setFinish={setFinish} />)}
-          </div>
+          </div> */}
 
           <section className="bg-white rounded-sm w-full h-full py-14 dark:bg-slate-800 dark:text-slate-400">
 
@@ -232,6 +234,7 @@ const WritingOnePage = () => {
           </section>
 
         </div>
+        </TestLayout>
       </AuthStateChangeProvider>
     </UserProvider>
   );

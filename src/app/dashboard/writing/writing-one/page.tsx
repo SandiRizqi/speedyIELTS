@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <DefaultLayout>
+    
       <WritingOnePage />
-    </DefaultLayout>
+    
   );
 };
 

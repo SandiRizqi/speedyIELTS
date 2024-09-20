@@ -1,6 +1,6 @@
 import WritingTwoPage from "./WritingTwoPage";
 import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+// import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {
   title: "SpeedyIELTS | Writing Task 2",
@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <DefaultLayout>
+    
       <WritingTwoPage />
-    </DefaultLayout>
+   
   );
 };
 

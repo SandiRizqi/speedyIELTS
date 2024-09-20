@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+// import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Container from "./Container";
 
 
@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <DefaultLayout>
+    // <DefaultLayout>
       <Container />
-    </DefaultLayout>
+    // </DefaultLayout>
   );
 };
 

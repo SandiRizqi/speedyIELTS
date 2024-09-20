@@ -32,8 +32,8 @@ export default function StatusHandler() {
     }
 
     useEffect(() => {
-        if (params.get('order')) {
-            getTransaction(params.get('order'));
+        if (params.get('order_id')) {
+            getTransaction(params.get('order_id'));
         }
     }, [params])
 

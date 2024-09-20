@@ -7,21 +7,21 @@ import WritingFullPage from "../../writing/writing-full/WritingFullPage";
 import FullSpeakingPage from "../../speaking/full-speaking/FullSpeakingPage";
 import StartInstruction from "./StartInstruction";
 import { useAnswer } from "../hook/useAnswerCollection";
-import { FaHeadphones, FaBook, FaPen, FaMicrophone } from "react-icons/fa"; // Importing icons from react-icons
+// import { FaHeadphones, FaBook, FaPen, FaMicrophone } from "react-icons/fa"; // Importing icons from react-icons
 import { FirebaseFunction } from "@/service/firebase";
 import { useUser } from "@/service/user";
 import withUser from "@/hooks/withUser";
 import Loader from "@/components/common/Loader";
 import { httpsCallable } from "firebase/functions";
 import { useSearchParams } from "next/navigation";
-import IELTSScoreDisplay from "./IELTSScoreDisplay";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+// import IELTSScoreDisplay from "./IELTSScoreDisplay";
+// import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import IELTSSkillsTestOptions from "./IELTSSkillsTestOptions";
 
 const NavTab = ({activeTab, setActiveTab, globalState}) => {
-  return <DefaultLayout>
-    <IELTSSkillsTestOptions activeTab={activeTab} setActiveTab={setActiveTab} globalState={globalState}/>
-  </DefaultLayout>
+  // return <DefaultLayout>
+    return <IELTSSkillsTestOptions activeTab={activeTab} setActiveTab={setActiveTab} globalState={globalState}/>
+  // </DefaultLayout>
 }
 
 // const TestSubmissionPage = ({globalAnswer, addFeedback, globalFeedback}) => {

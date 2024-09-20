@@ -13,6 +13,8 @@ import LoadingScore from '../LoadingScore';
 import ScoreDisplay from '../ScoreDisplay';
 import { useSearchParams } from 'next/navigation';
 import { useUser } from '@/service/user';
+import { ErrorMessage } from '../../_components/Alert';
+import TestLayout from '@/components/Layouts/TestLayout';
 
 
 
@@ -52,17 +54,27 @@ const FullSpeakingPage = () => {
       const res = await getData(values);
       const respon = res.data;
       setFeedback(respon["result"]);
-      setLoading(false)
+      // setLoading(false)
     } catch (error) {
-      console.error("Error fetching questions:", error);
-      setLoading(false)
+      ErrorMessage(error)
+      // setLoading(false);
+      setFinished(false)
+    } finally {
+      setLoading(false);
     }
 
   };
 
   const handleSubmitAnswer = async () => {
     await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingMiniAcademic", questionId: questionId })
-  }
+  };
+
+
+  useEffect(() => {
+    if (finished) {
+      handleSubmitAnswer();
+    }
+  },[finished])
 
   function handleNext() {
     if (indexStep < order.length - 1) {
@@ -111,8 +123,9 @@ const FullSpeakingPage = () => {
 
   return (
     <>
-      <Breadcrumb pageName='Mini Speaking' />
-      <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
+      <TestLayout onSubmit={() => setFinished(true)}  time={7} loading={loading} finish={finished} >
+        {/* <Breadcrumb pageName='Mini Speaking' /> */}
+      <div className='bg-white flex flex-col rounded-sm w-full  p-4 py-20 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
             <div className="sm:flex sm:items-center sm:justify-between mb-4">
@@ -142,7 +155,7 @@ const FullSpeakingPage = () => {
         </header>
 
 
-        <div className='w-full mt-4'>
+        <div className='w-full mt-4 h-full'>
           <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
             <div className="flex flex-col md:flex-row h-full">
               {/* Assistant Column */}
@@ -154,7 +167,7 @@ const FullSpeakingPage = () => {
 
               {/* Chat Column */}
               <div className="md:w-2/3 flex flex-col justify-between max-h-[34rem] dark:bg-slate-700">
-                <div className="overflow-y-auto p-4 space-y-4 ">
+                <div className="overflow-y-auto p-4 space-y-4 flex-grow">
                   {order[indexStep] !== 'part2' ? messages.map((message, index) => (
                     <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>
@@ -185,14 +198,14 @@ const FullSpeakingPage = () => {
                       Start Conversation
                     </button>
 
-                    <button
+                    {/* <button
                       onClick={() => handleSubmitAnswer()}
                       disabled={!finished || feedback}
                       className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!finished || feedback? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       {!loading ? 'Submit' : 'Loading'}
-                    </button>
+                    </button> */}
 
                   </div>
                 </div>
@@ -201,6 +214,8 @@ const FullSpeakingPage = () => {
           </div>
         </div>
       </div>
+
+      </TestLayout>
     </>
   );
 }

@@ -35,9 +35,9 @@ const PricingTier = ({ title, price, range, features, isPopular, type }) => {
                     <Sparkles className="inline-block mr-2" size={20} /> Most Popular
                 </div>
             )}
-            <h3 className={`text-4xl font-black mb-6 relative ${!isPopular || "text-white"}`}>{title}</h3>
+            <h3 className={`text-2xl font-black mb-6 relative ${!isPopular || "text-white"}`}>{title}</h3>
             {price && (
-                <p className={`text-2xl font-black mb-8 relative ${!isPopular || "text-white"}`}>
+                <p className={`text-xl font-black mb-8 relative ${!isPopular || "text-white"}`}>
                     IDR{price}<span className="text-lg font-normal opacity-80">/{range}</span>
                 </p>
             )}
@@ -45,7 +45,7 @@ const PricingTier = ({ title, price, range, features, isPopular, type }) => {
                 {features.map((feature, index) => (
                     <li key={index} className="flex items-center">
                         <Check className={`mr-3 ${isPopular ? 'text-white' : 'text-blue-600'}`} size={24} />
-                        <span className="text-lg">{feature}</span>
+                        <span className="text-md">{feature}</span>
                     </li>
                 ))}
             </ul>
@@ -91,7 +91,7 @@ const PaymentPage = () => {
         },
         {
             title: "Weekly Premium",
-            price: "100,000",
+            price: "99,000",
             range: "Week",
             type: "SPEEDYIELTS_WEEKLY",
             features: ["7 Days access to All Unlimited Tests",
@@ -106,10 +106,10 @@ const PaymentPage = () => {
         },
         {
             title: "Monthly Premium",
-            price: "300,000",
+            price: "369,000",
             range: "Mo",
             type: "SPEEDYIELTS_PREMIUM",
-            features: ["31 Days access to All Unlimited Tests",
+            features: ["Save 7%","31 Days access to All Unlimited Tests",
                 "Access to hundreds of samples",
                 "Complete result",
                 "Comprehensive feedback",
@@ -118,6 +118,21 @@ const PaymentPage = () => {
                 "Improve your IELTS score rapidly",
             ],
             isPopular: true
+        },
+        {
+            title: "3Month Bundle",
+            price: "899,000",
+            range: "3Mo",
+            type: "SPEEDYIELTS_3PREMIUM",
+            features: ["save 24%","90 Days access to All Unlimited Tests",
+                "Access to hundreds of samples",
+                "Complete result",
+                "Comprehensive feedback",
+                "All previous results tracking",
+                "Good for longterm learning",
+                "Improve your IELTS score rapidly",
+            ],
+            isPopular: false
         }
     ];
 
@@ -128,14 +143,14 @@ const PaymentPage = () => {
             snapInstance = snapEmbed(id, 'snap-container', {
                 onSuccess: function (payload) {
                     //console.log(payload);
-                    router.push(`/dashboard/payment/status?order=${payload.order_id}`)
+                    router.push(`/dashboard/payment/status?order_id=${payload.order_id}`)
                 },
-                onPending: function () {
+                onPending: function (payload) {
                     //console.log(payload);
-                    router.push(`/dashboard/payment/status?order=${payload.order_id}`)
+                    router.push(`/dashboard/payment/status?order_id=${payload.order_id}`)
                 },
                 onClose: function () {
-                    router.push('/dashboard/payment')
+                    router.push('/dashboard')
                 }
             });
         }
@@ -174,7 +189,7 @@ const PaymentPage = () => {
                                     <h4 className="text-4xl font-black mb-6 text-white leading-tight"><span className="text-blue-600 bg-clip-text">Perfect Plan</span></h4>
                                     <p className="text-2xl text-blue-400">Unlock your potential IELTS score with our flexible pricing options</p>
                                 </div>
-                                <div className="grid lg:grid-cols-3 gap-12 mt-8">
+                                <div className="grid lg:grid-cols-4 gap-4 mt-8">
                                     {pricingTiers.map((tier, index) => (
                                         <PricingTier key={index} {...tier} />
                                     ))}
