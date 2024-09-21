@@ -196,7 +196,7 @@ const PaymentPage = () => {
             gtag('config', 'AW-16709210026');
             if (id) {
                 gtag('event', 'conversion', {
-                    'send_to': 'AW-16709210026/wNbICLed2tQZEKqfyZ8-',
+                    'send_to': 'AW-16709210026/bjc9CNze5tQZEKqfyZ8-',
                     'transaction_id': '',
                 });
             }
