@@ -5,7 +5,6 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {
   title: "Speedy IELTS | Payment",
-  viewport: "width=device-width, initial-scale=1.0",
   description:
     "",
 };

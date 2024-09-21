@@ -11,16 +11,15 @@ import { useRouter } from 'next/navigation';
 import { Check, Sparkles, ArrowRight } from 'lucide-react';
 
 
-const PricingTier = ({ title, price, range, features, isPopular, type }) => {
+const PricingTier = ({ title, price, range, features, isPopular, type, handleConversion }) => {
     const [isHovered, setIsHovered] = useState(false);
     const { Subs, loading } = useSubscrip();
 
     
+
+    
     async function handleChoose(type) {
-        if (typeof window.gtagReportConversion === "function") {
-            // Call the Google Tag Manager delayed event and navigate to the URL
-            window.gtagReportConversion("https://app.speedyielts.com/dashboard/payment");
-        }
+        handleConversion();
         await Subs(type);
     }
 
@@ -179,6 +178,52 @@ const PaymentPage = () => {
     }, [id])
 
 
+    useEffect(() => {
+        // Create a new script element for Google Tag Manager
+        const script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16709210026';
+        script.async = true;
+    
+        // Append the script to the document body
+        document.body.appendChild(script);
+    
+        // Initialize gtag after the script has been loaded
+        script.onload = () => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            window.dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', 'AW-16709210026');
+    
+          // Function to report conversion
+          window.gtagReportConversion = function (url) {
+            var callback = function () {
+              if (typeof url !== 'undefined') {
+                window.location.href = url;
+              }
+            };
+            gtag('event', 'speedyielts_subs_conversion', {
+              'send_to': 'AW-16709210026/wNbICLed2tQZEKqfyZ8-',
+              'transaction_id': '',
+              'event_callback': callback,
+            });
+            return false;
+          };
+        };
+    
+        // Cleanup the script when the component unmounts
+        return () => {
+          document.body.removeChild(script);
+        };
+      }, []);
+    
+
+      const handleConversion = () => {
+        window.gtagReportConversion('https://app.speedyielts.com/dashboard/payment');
+      };
+
+
     return (
         <UserProvider>
             <AuthStateChangeProvider>
@@ -199,7 +244,7 @@ const PaymentPage = () => {
                                 </div>
                                 <div className="grid lg:grid-cols-4 gap-4 mt-8">
                                     {pricingTiers.map((tier, index) => (
-                                        <PricingTier key={index} {...tier} />
+                                        <PricingTier key={index} {...tier} handleConversion={handleConversion}/>
                                     ))}
                                 </div>
                             </div>
