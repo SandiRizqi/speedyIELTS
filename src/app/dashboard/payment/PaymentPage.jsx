@@ -203,7 +203,7 @@ const PaymentPage = () => {
                 window.location.href = url;
               }
             };
-            gtag('event', 'speedyielts_subs_conversion', {
+            gtag('event', 'conversion', {
               'send_to': 'AW-16709210026/wNbICLed2tQZEKqfyZ8-',
               'transaction_id': '',
               'event_callback': callback,
@@ -216,7 +216,7 @@ const PaymentPage = () => {
         return () => {
           document.body.removeChild(script);
         };
-      }, []);
+    }, []);
     
 
       const handleConversion = () => {
