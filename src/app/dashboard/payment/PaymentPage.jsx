@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { Check, Sparkles, ArrowRight } from 'lucide-react';
 
 
-const PricingTier = ({ title, price, range, features, isPopular, type, handleConversion }) => {
+const PricingTier = ({ title, price, range, features, isPopular, type }) => {
     const [isHovered, setIsHovered] = useState(false);
     const { Subs, loading } = useSubscrip();
 
@@ -19,7 +19,6 @@ const PricingTier = ({ title, price, range, features, isPopular, type, handleCon
 
     
     async function handleChoose(type) {
-        handleConversion();
         await Subs(type);
     }
 
@@ -183,45 +182,32 @@ const PaymentPage = () => {
         const script = document.createElement('script');
         script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16709210026';
         script.async = true;
-    
+
         // Append the script to the document body
         document.body.appendChild(script);
-    
+
         // Initialize gtag after the script has been loaded
         script.onload = () => {
-          window.dataLayer = window.dataLayer || [];
-          function gtag() {
-            window.dataLayer.push(arguments);
-          }
-          gtag('js', new Date());
-          gtag('config', 'AW-16709210026');
-    
-          // Function to report conversion
-          window.gtagReportConversion = function (url) {
-            var callback = function () {
-              if (typeof url !== 'undefined') {
-                window.location.href = url;
-              }
-            };
-            gtag('event', 'conversion', {
-              'send_to': 'AW-16709210026/wNbICLed2tQZEKqfyZ8-',
-              'transaction_id': '',
-              'event_callback': callback,
-            });
-            return false;
-          };
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                window.dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'AW-16709210026');
+            if (id) {
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-16709210026/wNbICLed2tQZEKqfyZ8-',
+                    'transaction_id': '',
+                });
+            }
         };
-    
+
         // Cleanup the script when the component unmounts
         return () => {
-          document.body.removeChild(script);
+            document.body.removeChild(script);
         };
-    }, []);
+    }, [id]);
     
-
-      const handleConversion = () => {
-        window.gtagReportConversion('https://app.speedyielts.com/dashboard/payment');
-      };
 
 
     return (
@@ -244,7 +230,7 @@ const PaymentPage = () => {
                                 </div>
                                 <div className="grid lg:grid-cols-4 gap-4 mt-8">
                                     {pricingTiers.map((tier, index) => (
-                                        <PricingTier key={index} {...tier} handleConversion={handleConversion}/>
+                                        <PricingTier key={index} {...tier} />
                                     ))}
                                 </div>
                             </div>
