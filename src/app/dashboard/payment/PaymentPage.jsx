@@ -15,8 +15,12 @@ const PricingTier = ({ title, price, range, features, isPopular, type }) => {
     const [isHovered, setIsHovered] = useState(false);
     const { Subs, loading } = useSubscrip();
 
-
+    
     async function handleChoose(type) {
+        if (typeof window.gtagReportConversion === "function") {
+            // Call the Google Tag Manager delayed event and navigate to the URL
+            window.gtagReportConversion("https://app.speedyielts.com/dashboard/payment");
+        }
         await Subs(type);
     }
 
@@ -136,6 +140,9 @@ const PaymentPage = () => {
         }
     ];
 
+    
+    
+
 
     useEffect(() => {
         let snapInstance;
@@ -143,6 +150,7 @@ const PaymentPage = () => {
             snapInstance = snapEmbed(id, 'snap-container', {
                 onSuccess: function (payload) {
                     //console.log(payload);
+                    // gtag_report_conversion(`https://app.speedyielts.com/dashboard/payment/status?order_id=${payload.order_id}`)
                     router.push(`/dashboard/payment/status?order_id=${payload.order_id}`)
                 },
                 onPending: function (payload) {
