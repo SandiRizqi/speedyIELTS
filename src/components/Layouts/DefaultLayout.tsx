@@ -15,6 +15,46 @@ const DefaultLayout = ({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const fullpage = ['/dashboard/reading/academic-reading', '/dashboard/payment']
+
+  useEffect(() => {
+    // Create a new script element
+    const script = document.createElement('script');
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-16709210026';
+    script.async = true;
+
+    // Append the script to the document body
+    document.body.appendChild(script);
+
+    // Initialize gtag after the script has been loaded
+    script.onload = () => {
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      function gtag(...args: any[]) {
+        (window as any).dataLayer.push(args);
+      }
+      gtag('js', new Date());
+      gtag('config', 'AW-16709210026');
+
+      // Function to report conversion
+      (window as any).gtagReportConversion = (url?: string) => {
+        const callback = () => {
+          if (typeof url !== 'undefined') {
+            window.location.href = url;
+          }
+        };
+        gtag('event', 'speedyielts_subs_conversion', {
+          'send_to': 'AW-16709210026/wNbICLed2tQZEKqfyZ8-',
+          'transaction_id': '',
+          'event_callback': callback,
+        });
+        return false;
+      };
+    };
+
+    // Cleanup script when the component unmounts
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
  
 
   return (
