@@ -2,7 +2,7 @@
 import 'regenerator-runtime/runtime';
 import { useState, useEffect, useRef } from "react";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-
+import { useSpeaking } from './hook/useSpeaking';
 
 const Timer = ({ minutes, seconds, status, setStatus }) => {
   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -41,17 +41,15 @@ const Timer = ({ minutes, seconds, status, setStatus }) => {
 
 
 
-const PartTwo = ({ question, setMessages, handleNextPart }) => {
+const PartTwo = ({ question, setMessages, isVisible }) => {
   const [status, setStatus] = useState('waiting');
-  const audioRef = useRef(null);
-  const audioContext = useRef(null);
-  const analyser = useRef(null);
+  const {audioContext, analyser, microphone, 
+    mediaRecorder, animationFrame, audioRef,
+    synth, audioChunks, silenceTimer, handleNext
+  } = useSpeaking();
   const [volume, setVolume] = useState(0);
-  const microphone = useRef(null);
-  const mediaRecorder = useRef(null);
-  const silenceTimer = useRef(null);
-  const silenceStart = useRef(null);
-  const animationFrame = useRef(null);
+  // const silenceStart = useRef(null);
+
   const {
     transcript,
     listening,
@@ -114,7 +112,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
   
 
   const resetSilenceDetection = () => {
-    silenceStart.current = null;
+    silenceTimer.current = null;
   };
 
 
@@ -141,39 +139,28 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
           }
           resetSilenceDetection();
         }
-      }
+    }
 
     animationFrame.current = requestAnimationFrame(animateWaveform);
   };
 
-  const resetAudioResources = () => {
-    // Reset the microphone and media recorder if they exist
-    if (microphone.current) {
-      microphone.current.disconnect();
-    }
-    if (mediaRecorder.current) {
-      mediaRecorder.current = null;
-    }
-    if (audioContext.current) {
-      audioContext.current.close();
-      audioContext.current = null;
-    }
+  // const resetAudioResources = () => {
+  //   // Reset the microphone and media recorder if they exist
+  //   if (microphone.current) {
+  //     microphone.current.disconnect();
+  //   }
+  //   if (mediaRecorder.current) {
+  //     mediaRecorder.current = null;
+  //   }
+  //   if (audioContext.current) {
+  //     audioContext.current.close();
+  //     audioContext.current = null;
+  //   }
     
-  };
+  // };
   
 
 
-  useEffect(() => {
-    return () => {
-      if (audioContext.current) {
-        audioContext.current.close();
-      }
-      if (animationFrame.current) {
-        cancelAnimationFrame(animationFrame.current);
-      }
-      clearTimeout(silenceTimer.current);
-    };
-  }, []);
 
 
   useEffect(() => {
@@ -181,17 +168,41 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
       startRecording();;
     } else if (status === 'inactive') {
       resetTranscript();
-      resetAudioResources();
-      handleNextPart();
+      // resetAudioResources();
+      stopRecording();
+      handleNext();
     }
 
   }, [status])
 
 
-
-
-
+  // useEffect(() => {
+  //   return () => {
+  //     if (audioContext.current) {
+  //       audioContext.current.close();
+  //       audioContext.current = null;
+  //     }
+  //     if (animationFrame.current) {
+  //       cancelAnimationFrame(animationFrame.current);
+  //     }
+  //     if (microphone.current) {
+  //       microphone.current.disconnect();
+  //     }
+  //     if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
+  //       mediaRecorder.current.stop();
+  //     }
+  //     SpeechRecognition.stopListening();
+  //     resetTranscript();
+  //     clearTimeout(silenceTimer.current);
+  //   };
+  // }, []);
   
+
+
+
+
+
+  if (!isVisible) return null; 
 
   return (
     <div className="flex flex-col w-full">
@@ -202,7 +213,7 @@ const PartTwo = ({ question, setMessages, handleNextPart }) => {
         dangerouslySetInnerHTML={{ __html: `<span >${question}</span>` }} />
         
         {status === 'listening' && (
-          <div className="max-w-screen-md h-24 bg-white bg-opacity-30 rounded-2xl overflow-hidden relative">
+          <div className="w-full h-24 bg-white bg-opacity-30 rounded-2xl overflow-hidden relative">
           <div className="absolute inset-0 flex items-center justify-around p-2">
             {[...Array(20)].map((_, index) => (
               <div

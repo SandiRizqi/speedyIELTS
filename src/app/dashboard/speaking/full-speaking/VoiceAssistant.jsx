@@ -3,25 +3,23 @@ import 'regenerator-runtime/runtime';
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Play, Pause } from 'lucide-react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { useSpeaking } from './hook/useSpeaking';
 
-
-const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currectSection, start }) => {
-  const [isRecording, setIsRecording] = useState(false);
+const VoiceAssistant = ({ intro, questions, setMessages, start, isVisible }) => {
+  
+  // const [isRecording, setIsRecording] = useState(false);
   const [volume, setVolume] = useState(0);
   const [recordingStatus, setRecordingStatus] = useState('inactive');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [assistantSpeaking, setAssistantSpeaking] = useState(false);
-  const audioContext = useRef(null);
-  const analyser = useRef(null);
-  const microphone = useRef(null);
-  const mediaRecorder = useRef(null);
-  const animationFrame = useRef(null);
-  const audioRef = useRef(null);
-  const synth = useRef(window.speechSynthesis);
-  const audioChunks = useRef([]);
-  const silenceTimer = useRef(null);
+  const {audioContext, analyser, microphone, 
+    mediaRecorder, animationFrame, audioRef,
+    synth, audioChunks, silenceTimer, handleNext, currectSection
+  } = useSpeaking();
   const [isStart, setIsStart] = useState(false);
   const silenceStart = useRef(null);
+
+  
 
   const {
     transcript,
@@ -56,8 +54,6 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
   
 
   const startConversation = () => {
-  
-
     if(intro) {
       //console.log(examiner['gender'])
       const utterance = new SpeechSynthesisUtterance(intro);
@@ -72,7 +68,8 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
 
       utterance.onend = () => {
         setMessages(prevMessages => [...prevMessages, { sender: 'assistant', text: intro }]);
-        handleNextPart();
+        setCurrentQuestionIndex(0);
+        handleNext();
       };
       return synth.current.speak(utterance);
     };
@@ -92,6 +89,10 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
 
 
   const askQuestion = (index) => {
+    if (currectSection === 'part2') {
+      return ;
+    };
+
     SpeechRecognition.stopListening()
     setAssistantSpeaking(true);
     setMessages(prevMessages => [...prevMessages, { sender: 'assistant', text: questions[index] }]);
@@ -124,7 +125,7 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
         audioRef.current.src = audioUrl;
       };
 
-      setIsRecording(true);
+      // setIsRecording(true);
       setRecordingStatus('listening');
       resetSilenceDetection();
       SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
@@ -142,7 +143,7 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
   const stopRecording = () => {
     SpeechRecognition.stopListening();
     resetAudioResources();
-    setIsRecording(false);
+    // setIsRecording(false);
     setRecordingStatus('inactive');
     setVolume(0);
     clearTimeout(silenceTimer.current);
@@ -231,13 +232,15 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
   },[listening])
 
   useEffect(() => {
-   
-    if (currentQuestionIndex < questions?.length && isStart) {
-      askQuestion(currentQuestionIndex);
-    } else if (currentQuestionIndex >= questions?.length && isStart ) {
-      handleNextPart();
+    if (questions) {
+      if (currentQuestionIndex < questions.length && isStart) {
+        askQuestion(currentQuestionIndex);
+      } else if (currentQuestionIndex >= questions.length && isStart ) {
+        setCurrentQuestionIndex(0);
+        handleNext();
+      }
     }
-  }, [currentQuestionIndex, isStart, questions]);
+  }, [currentQuestionIndex, isStart, questions, currectSection, intro]);
 
   
 
@@ -247,11 +250,33 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
     if(start) {
       startConversation();
     }
-  }, [start])
+  }, [start, currectSection, intro])
+
+
+  useEffect(() => {
+    return () => {
+      if (audioContext.current) {
+        audioContext.current.close();
+        audioContext.current = null;
+      }
+      if (animationFrame.current) {
+        cancelAnimationFrame(animationFrame.current);
+      }
+      if (microphone.current) {
+        microphone.current.disconnect();
+      }
+      if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
+        mediaRecorder.current.stop();
+      }
+      SpeechRecognition.stopListening();
+      resetTranscript();
+      clearTimeout(silenceTimer.current);
+    };
+  }, []);
 
 
 
-
+  if (!isVisible) return null; 
 
   return (
     <div className="">

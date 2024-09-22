@@ -17,6 +17,8 @@ import { useUser } from '@/service/user';
 import withSubscription from '@/hooks/withSubscribtion';
 import TestLayout from '@/components/Layouts/TestLayout';
 import { ErrorMessage } from '../../_components/Alert';
+import { useSpeaking } from './hook/useSpeaking';
+// import VoiceAssistantComponent from './VoiceAssistantComponent';
 
 
 
@@ -25,10 +27,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
   const user = useUser();
   const [question, setQuestion] = useState(null);
   const [start, setStart] = useState(questionId ? true : false);
-  const [finished, setFinished] = useState(false);
-  const [statusTest, setStatusTest] = useState(false);
-  const order = [ "intro1", "part1", "intro2", "part2","intro3" ,"part3", "closing"];
-  const [indexStep, setIndexStep] = useState(0)
+  const {handleNext, currentSection, statusTest, setStatusTest, finished, setFinished } = useSpeaking();
   const [messages, setMessages] = useState(savedAnswer || []);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(Feedback || null);
@@ -86,7 +85,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
       setLoading(false)
     } catch (error) {
       ErrorMessage(error);
-      
+      setFinished(false);
     } finally {
       setLoading(false);
     }
@@ -101,14 +100,15 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
     await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: question.questionId })
   }
 
-  function handleNext() {
-    if (indexStep < order.length - 1) {
-      setIndexStep(prev => prev + 1);
-    } else {
-      setStatusTest(false);
-      setFinished(true);
-    }
-  }
+  // function handleNext() {
+  //   console.log("Next")
+  //   if (indexStep < order.length - 1) {
+  //     setIndexStep(prev => prev + 1);
+  //   } else {
+  //     setStatusTest(false);
+  //     setFinished(true);
+  //   }
+  // }
 
 
   useEffect(() => {
@@ -139,7 +139,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
   // Use effect to trigger the scroll when messages change
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, currentSection]);
 
   if (!question) {
     return <Loader />;
@@ -158,7 +158,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
   return (
     <>
       <TestLayout onSubmit={() => setFinished(true)}  time={15} loading={loading} finish={finished} onCancel={setNextTest ? () => setNextTest('navigation') : null}>
-      <div className='bg-white rounded-sm w-full h-full  p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
+      <div className='bg-white rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
             <div className="sm:flex sm:items-center sm:justify-between mb-4">
@@ -188,20 +188,27 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
         </header>
 
 
-        <div className='w-full mt-4'>
+        <div className='w-full mt-2 h-full pb-30'>
           <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
             <div className="flex flex-col md:flex-row h-full">
-              {/* Assistant Column */}
-              <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-                {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3' || order[indexStep] === 'closing') && (<VoiceAssistant intro={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
-                {(order[indexStep] === 'part1' || order[indexStep] === 'part2' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
-
-              </div>
+                {/* Assistant Column */}
+                
+                <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
+                      <VoiceAssistant
+                        intro={['intro1', 'intro2', 'intro3', 'closing'].includes(currentSection) ? question?.questions[currentSection] : null}
+                        questions={['part1', 'part3'].includes(currentSection) ? question?.questions[currentSection] : null}
+                        setMessages={setMessages}
+                        start={statusTest}
+                        isVisible={currentSection !== 'part2'}
+                      />
+                      {/* <VoiceAssistantComponent  intro={question?.questions[order[indexStep]]} questions={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} /> */}
+                </div>
+                
 
               {/* Chat Column */}
-              <div className="md:w-2/3 flex flex-col justify-between max-h-[34rem] dark:bg-slate-700">
+              <div className={`${currentSection === 'part2' ? "w-full": "md:w-2/3"} flex flex-col justify-between max-h-[34rem] dark:bg-slate-700`}>
                 <div className="overflow-y-auto p-4 space-y-4 flex-grow">
-                  {order[indexStep] !== 'part2' ? messages.map((message, index) => (
+                  {currentSection !== 'part2' ? messages.map((message, index) => (
                     <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>
                         {message.text}
@@ -216,7 +223,9 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
                       </div>
                     </div>
-                  )) : (<PartTwo question={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} />)}
+                  )) : null}
+                  <PartTwo question={question?.questions[currentSection]} setMessages={setMessages} isVisible={currentSection === 'part2'}/>
+                  
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="p-4 border-t mt-auto">
