@@ -69,6 +69,7 @@ const VoiceAssistant = ({ intro, questions, setMessages, start, isVisible }) => 
       utterance.onend = () => {
         setMessages(prevMessages => [...prevMessages, { sender: 'assistant', text: intro }]);
         setCurrentQuestionIndex(0);
+        setIsStart(false);
         handleNext();
       };
       return synth.current.speak(utterance);
