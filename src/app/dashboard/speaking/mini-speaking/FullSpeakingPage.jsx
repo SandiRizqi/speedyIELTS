@@ -41,7 +41,7 @@ const FullSpeakingPage = () => {
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
-    await getData({ type: "speaking-questions", id: params.get("id") }).then((result) => {
+    await getData({ type: "speaking-questions", id: params.get("id"), userId: user.uid }).then((result) => {
       setQuestion(result.data['questions']);
       setQuestionId(result.data['questionId'])
     });

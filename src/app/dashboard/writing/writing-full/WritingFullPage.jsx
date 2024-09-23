@@ -79,7 +79,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
     const getData = httpsCallable(functions, 'getQuestion');
     let quest;
     try {
-      await getData({ type: typequest, id: id }).then((result) => {
+      await getData({ type: typequest, id: id, userId: user.uid, }).then((result) => {
         quest = result.data;
 
       });

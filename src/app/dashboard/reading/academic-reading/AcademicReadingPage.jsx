@@ -444,7 +444,8 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                 // Make the async call to get question data
                 const result = await getData({
                     type: "reading-questions",
-                    id: params.get("id") || questionId
+                    id: params.get("id") || questionId,
+                    userId: user.uid,
                 });
 
                 // Set the question data

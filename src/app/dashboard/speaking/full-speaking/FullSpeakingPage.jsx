@@ -46,7 +46,8 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
       // Await the result of the getQuestion call
       const result = await getData({
         type: "speaking-questions",
-        id: params.get("id") || questionId
+        id: params.get("id") || questionId,
+        userId: user.uid,
       });
   
       // Set the question data

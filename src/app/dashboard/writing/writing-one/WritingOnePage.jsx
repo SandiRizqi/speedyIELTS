@@ -15,6 +15,7 @@ import LoadingScore from '../LoadingScore';
 import Loader from '@/components/common/Loader';
 import { useSearchParams } from 'next/navigation';
 import TestLayout from '@/components/Layouts/TestLayout';
+import { useUser } from '@/service/user';
 
 
 // const Timer = ({ minutes, seconds, setFinish }) => {
@@ -50,6 +51,7 @@ import TestLayout from '@/components/Layouts/TestLayout';
 
 
 const WritingOnePage = () => {
+  const user = useUser();
   const [question, setQuestion] = useState(null);
   const functions = FirebaseFunction();
   const [start, setStart] = useState(false);
@@ -93,7 +95,7 @@ const WritingOnePage = () => {
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      await getData({ type: "writing1-questions", id: params.get("id") }).then((result) => {
+      await getData({ type: "writing1-questions", id: params.get("id"), userId: user.uid }).then((result) => {
         const quest = result.data;
         setQuestion(quest);
       });

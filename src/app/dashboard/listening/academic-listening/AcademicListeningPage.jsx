@@ -323,7 +323,8 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
         
                 const result = await getData({ 
                     type: "listening-questions", 
-                    id: params.get("id") || questionId 
+                    id: params.get("id") || questionId,
+                    userId: user.uid, 
                 });
         
                 const quest = result.data;

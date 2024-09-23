@@ -14,7 +14,7 @@ import LoadingScore from '../LoadingScore';
 import { useSearchParams } from 'next/navigation';
 import withSubscribtion from '@/hooks/withSubscribtion';
 import TestLayout from '@/components/Layouts/TestLayout';
-
+import { useUser } from '@/service/user';
 
 // const Timer = ({ minutes, seconds, setFinish }) => {
 //   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
@@ -49,6 +49,7 @@ import TestLayout from '@/components/Layouts/TestLayout';
 
 
 const WritingTwoPage = () => {
+  const user = useUser();
   const [start, setStart] = useState(false);
   const [question, setQuestion] = useState(null);
   const [finish, setFinish] = useState(false);
@@ -91,7 +92,7 @@ const WritingTwoPage = () => {
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      await getData({ type: "writing2-questions", id: params.get("id") }).then((result) => {
+      await getData({ type: "writing2-questions", id: params.get("id"), userId: user.uid }).then((result) => {
         const quest = result.data;
         setQuestion(quest);
       });
