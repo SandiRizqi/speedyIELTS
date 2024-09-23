@@ -5,6 +5,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getDatabase, ref, onValue } from "firebase/database";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -77,7 +78,10 @@ export const FirestoreDB = () => {
   return db;
 }
 
-
+export const FirebaseRealtimeDatabase = () => {
+  const database = getDatabase();
+  return database;
+}
 export const FirebaseFunction = () => {
   return getFunctions();
 }

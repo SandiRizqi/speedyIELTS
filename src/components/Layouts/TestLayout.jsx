@@ -5,10 +5,14 @@ import withUser from "@/hooks/withUser";
 import { Clock, Maximize, Notebook } from 'lucide-react';
 import { usePathname, useRouter } from "next/navigation";
 import DarkModeSwitcher from "../Header/DarkModeSwitcher";
-
+import { FirebaseRealtimeDatabase } from "@/service/firebase";
+import { ref, onValue } from "firebase/database";
+import { motion } from 'framer-motion';
 
 const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel, labels, Answers, Corrections }) => {
   const [timeLeft, setTimeLeft] = useState(time * 60); // 60 minutes in seconds
+  const [isOnline, setIsOnline] = useState(false); 
+  const realDb = FirebaseRealtimeDatabase();
   const path = usePathname();
   const router = useRouter();
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -16,6 +20,31 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isAnswerOpen, setIsAnswerOpen] = useState(false);
+
+
+  useEffect(() => {
+    // Reference to the /online path in the Realtime Database
+    const statusRef = ref(realDb, ".info/connected");
+
+    // Listener for value changes in the database
+    const unsubscribe = onValue(statusRef, (snapshot) => {
+      const status = snapshot.val();
+      if (status === true) {
+        setIsOnline(true);
+      } else {
+        setIsOnline(false);
+      }
+    }, 
+    // Optional: Handle any errors, such as loss of connection
+    (error) => {
+      console.error(error);
+      setIsOnline(false); // Set to offline in case of error
+    });
+
+    // Clean up the listener when component unmounts
+    return () => unsubscribe();
+  }, []);
+
 
 
   const toggleMenu = () => {
@@ -115,27 +144,31 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
     return `${minutes} minutes`;
   };
 
-  // const generateNumberButtons = (start, end, activePart) => {
-  //   return Array.from({ length: end - start + 1 }, (_, i) => i + start).map((num) => (
-  //     <button
-  //       key={num}
-  //       className={`w-6 h-6 text-xs rounded-full ${num === start && activePart ? 'bg-blue-500 text-white' : 'bg-slate-200 text-slate-700'} flex items-center justify-center`}
-  //     >
-  //       {num}
-  //     </button>
-  //   ));
-  // };
+  const OnlineStatus = ({status, size='medium'}) => {
+    const sizeClasses = {
+      small: 'w-2 h-2',
+      medium: 'w-3 h-3',
+      large: 'w-4 h-4'
+    };
 
-
-  // const renderPartButton = (part) => (
-  //   <button
-  //     className={`flex-1 py-2 px-4 ${activePart === part ? 'bg-blue-100 text-blue-700' : 'bg-white text-slate-700'} rounded-t-lg font-medium text-sm`}
-  //     key={part}
-  //     onClick={() => setActivePart(part)}
-  //   >
-  //     {labels ? labels : "Part"} {part}
-  //   </button>
-  // );
+    return (<>
+      <motion.div
+      className={`${sizeClasses[size]} rounded-full ${status ? 'bg-green-500' : 'bg-danger'}`}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: status ? 1 : 0.3 }}
+    >
+      {status && (
+        <motion.div
+          className="w-full h-full rounded-full bg-green-500 opacity-75"
+          animate={{ scale: [1, 1.5, 1] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+        />
+      )}
+    </motion.div>
+    </>
+    )
+  }
 
 
   const MobileHeader = () => {
@@ -167,7 +200,10 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
 
             {/* Menu items: Buttons (shown when menu is expanded on small screens) */}
             <div className={`mt-4 sm:flex flex-wrap items-center justify-center space-x-4 space-y-2 ${isMenuOpen ? "block" : "hidden"}`}>
+              
+
               <ul className="p-2 flex items-center gap-2 2xsm:gap-4 justify-center">
+                <OnlineStatus status={isOnline}/>
                 <DarkModeSwitcher />
                 {Answers && (
                   <button className="p-2 text-slate-500 hover:text-slate-700" onClick={toggleAnswers}>
@@ -178,7 +214,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
                   <Maximize size={24} />
                 </button>
               </ul>
-              <idv className="flex flex-1">
+              <div className="flex flex-1">
                 {/* Add max-w-sm and sm:w-auto for responsive behavior */}
                 <button className="px-4 py-2 bg-yellow-600 text-white hover:bg-yellow-700 transition-colors w-full sm:w-auto max-w-sm" onClick={handleCancelClick} disabled={loading}>
                   {finish ? "Back" : "Cancel"}
@@ -195,7 +231,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
                   {loading ? "loading... ." : "Submit"}
                 </button>
 
-              </idv>
+              </div>
 
             </div>
 
@@ -235,6 +271,8 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
             </div>
           )}
           <div className="flex items-center space-x-4">
+            <OnlineStatus status={isOnline}/>
+
             <ul className="p-2">
               <DarkModeSwitcher />
 

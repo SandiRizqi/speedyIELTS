@@ -237,6 +237,7 @@ const VoiceAssistant = ({ intro, questions, setMessages, start, isVisible }) => 
         askQuestion(currentQuestionIndex);
       } else if (currentQuestionIndex >= questions.length && isStart ) {
         setCurrentQuestionIndex(0);
+        setIsStart(false);
         handleNext();
       }
     }
