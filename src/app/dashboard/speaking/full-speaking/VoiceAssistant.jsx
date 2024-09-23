@@ -56,6 +56,8 @@ const VoiceAssistant = ({ intro, questions, setMessages, start, isVisible }) => 
   const startConversation = () => {
     if(intro) {
       //console.log(examiner['gender'])
+      SpeechRecognition.stopListening()
+      //stopRecording();
       const utterance = new SpeechSynthesisUtterance(intro);
       const voices = synth.current.getVoices();
       const selectedVoice = voices.find(voice => voice.lang.startsWith('en-'));
