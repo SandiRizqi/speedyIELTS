@@ -205,12 +205,20 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
     return () => {
       if (audioContext.current) {
         audioContext.current.close();
+        audioContext.current = null;
       }
       if (animationFrame.current) {
         cancelAnimationFrame(animationFrame.current);
       }
+      if (microphone.current) {
+        microphone.current.disconnect();
+      }
+      if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
+        mediaRecorder.current.stop();
+      }
+      SpeechRecognition.stopListening();
+      resetTranscript();
       clearTimeout(silenceTimer.current);
-      synth.current.cancel();
     };
   }, []);
 
