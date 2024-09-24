@@ -191,8 +191,8 @@ const FullSpeakingPage = () => {
 
                     <button
                       onClick={() => setStatusTest(!statusTest)}
-                      disabled={start}
-                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${start ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={statusTest}
+                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       Start Conversation
