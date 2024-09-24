@@ -47,9 +47,9 @@ const StartInstruction = ({ setStart }) => {
           </p>
           <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 text-sm">
             <li>Makesure your audio recorder is available.</li>
-            <li>You have approximately 15 minutes to complete the test.</li>
+            <li>You have approximately 6 minutes to complete the test.</li>
             <li>
-              The test consists of 3 parts. you should answer after the examiner finish the question.
+              The test consists of 1 part. you should answer after the examiner finish the question.
             </li>
             <li>
               Your score will be displayed at the end of the exam just after you submit your answer. Good luck!

@@ -17,6 +17,7 @@ import { useUser } from '@/service/user';
 import withSubscription from '@/hooks/withSubscribtion';
 import TestLayout from '@/components/Layouts/TestLayout';
 import { ErrorMessage } from '../../_components/Alert';
+import { SuccessMessageText } from '../../_components/Alert';
 import { useSpeaking } from './hook/useSpeaking';
 // import VoiceAssistantComponent from './VoiceAssistantComponent';
 
@@ -77,6 +78,10 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
   
 
   const getSpeakingScore = async (values) => {
+    if (!finished) {
+      return SuccessMessageText("Please finish the test.")
+    };
+    
     setLoading(true)
     const getData = httpsCallable(functions, 'getSpeakingScore');
     try {
@@ -158,7 +163,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
   return (
     <>
-      <TestLayout onSubmit={() => setFinished(true)}  time={15} loading={loading} finish={finished} onCancel={setNextTest ? () => setNextTest('navigation') : null}>
+      <TestLayout onSubmit={() => setFinished(true)}  time={15} loading={loading} finish={!finished} onCancel={setNextTest ? () => setNextTest('navigation') : null}>
       <div className='bg-white rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">

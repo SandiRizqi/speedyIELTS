@@ -14,6 +14,7 @@ import ScoreDisplay from '../ScoreDisplay';
 import { useSearchParams } from 'next/navigation';
 import { useUser } from '@/service/user';
 import { ErrorMessage } from '../../_components/Alert';
+import { SuccessMessageText } from '../../_components/Alert';
 import TestLayout from '@/components/Layouts/TestLayout';
 
 
@@ -66,6 +67,9 @@ const FullSpeakingPage = () => {
   };
 
   const handleSubmitAnswer = async () => {
+    if (!finished) {
+      return SuccessMessageText("Please finish the test.")
+    }
     await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingMiniAcademic", questionId: questionId })
   };
 
@@ -123,7 +127,7 @@ const FullSpeakingPage = () => {
 
   return (
     <>
-      <TestLayout onSubmit={() => setFinished(true)}  time={7} loading={loading} finish={finished} >
+      <TestLayout onSubmit={() => setFinished(true)}  time={7} loading={loading} finish={!finished} >
         {/* <Breadcrumb pageName='Mini Speaking' /> */}
       <div className='bg-white flex flex-col rounded-sm w-full  min-h-screen p-4 py-20 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">

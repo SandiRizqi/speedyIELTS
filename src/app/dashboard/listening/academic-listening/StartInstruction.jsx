@@ -18,7 +18,7 @@ const StartInstruction = ({setStart}) => {
               The test consists of 40 questions. you should write or select the best answer.
             </li>
             <li>
-              You can go back to a previous question before you have submitted
+              You can go back to a previous question before you submit
               your answer.
             </li>
             <li>
