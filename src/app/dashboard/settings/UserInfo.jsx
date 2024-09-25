@@ -1,10 +1,119 @@
 "use client"
 import Image from "next/image";
 import { useUser } from "@/service/user";
+import { useState, useEffect } from "react";
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { FirebaseStorge } from "@/service/firebase";
+import { FirestoreDB } from "@/service/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
+import { SuccessMessageText, ErrorMessage } from "../_components/Alert";
 
 
 const UserInfo = () => {
     const user = useUser();
+    const db =FirestoreDB();
+    const [userData, setUserData] = useState(null);
+    const [file, setFile] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const storage = FirebaseStorge();
+    const [loading, setLoading] = useState(false);
+
+    
+
+
+    function handleChange(key, value) {
+        setUserData(prev => ({ ...prev, [key]: value }))
+    };
+
+
+    const uploadFile = async (file) => {
+        const storageRef = ref(storage, `assets/users/${userData.uid}/` + file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        return new Promise((resolve, reject) => {
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setUploadProgress(progress);
+                },
+                (error) => {
+                    reject(error);
+                },
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    setUserData(prev => ({ ...prev, photoURL: downloadURL }));
+                    resolve(downloadURL);
+                }
+            );
+        });
+    };
+
+
+    function handleChangePicture(e) {
+        setFile(e.target.files[0]);
+        setUploadProgress(0);
+    };
+
+    const cleanObject = (obj) => {
+        return Object.fromEntries(
+            Object.entries(obj).filter(([key, value]) => value !== undefined)
+        );
+    };
+
+
+    async function handleSubmit(e) {
+        const payload = cleanObject(userData)
+        e.preventDefault()
+        setLoading(true)
+        try {
+            const userDocRef = doc(db, "users-data", user.uid);
+            await setDoc(userDocRef, payload, { merge: true });
+            SuccessMessageText("User data saved/updated successfully!");
+            setLoading(false);
+        } catch (error) {
+            console.log(error)
+            ErrorMessage("Error saving user data: ", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
+    useEffect(() => {
+        if (file) {
+            uploadFile(file)
+        }
+    }, [file])
+
+
+    useEffect(() => {
+        if (user.uid) {
+            const userDocRef = doc(db, 'users-data', user.uid);
+            const unsubscribe = onSnapshot(
+                userDocRef,
+                (docSnapshot) => {
+                    if (docSnapshot.exists()) {
+                        const Data = docSnapshot.data();
+                        setUserData(prev => ({...prev, subscribtion: Data["subscription"],
+                            name: Data["name"],
+                            email: Data["email"],
+                            photoURL: Data["photoURL"],
+                            phoneNumber: Data["phoneNumber"],
+                            bio: Data["bio"],
+                        }))
+                    } else {
+                        console.log("No such user's document!");
+                    }
+                },
+                (err) => {
+                    console.error("Error fetching user data: ", err);
+                }
+            );
+            return () => unsubscribe();
+        }
+    }, [user.uid]);
+
 
     return (
         <div className="grid grid-cols-5 gap-8">
@@ -16,7 +125,7 @@ const UserInfo = () => {
                         </h3>
                     </div>
                     <div className="p-7">
-                        <form action="#">
+                        <form onSubmit={handleSubmit}>
                             <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                                 <div className="w-full sm:w-1/2">
                                     <label
@@ -57,7 +166,8 @@ const UserInfo = () => {
                                             name="fullName"
                                             id="fullName"
                                             placeholder="Username"
-                                            defaultValue={user?.displayName}
+                                            defaultValue={userData?.name}
+                                            onChange={(e) => handleChange("name", e.target.value)}
                                         />
                                     </div>
                                 </div>
@@ -75,7 +185,8 @@ const UserInfo = () => {
                                         name="phoneNumber"
                                         id="phoneNumber"
                                         placeholder="phone number"
-                                        defaultValue={user?.phone}
+                                        defaultValue={userData?.phoneNumber}
+                                        onChange={(e) => handleChange("phoneNumber", e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -116,10 +227,11 @@ const UserInfo = () => {
                                     <input
                                         className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                                         type="email"
-                                        name="emailAddress"
+                                        name="email"
+                                        disabled
                                         id="emailAddress"
                                         placeholder="email"
-                                        defaultValue={user?.email}
+                                        defaultValue={userData?.email}
                                     />
                                 </div>
                             </div>
@@ -170,7 +282,8 @@ const UserInfo = () => {
                                         id="bio"
                                         rows={6}
                                         placeholder="Write your bio here"
-                                        defaultValue=""
+                                        defaultValue={userData?.bio}
+                                        onChange={(e) => handleChange("bio", e.target.value)}
                                     ></textarea>
                                 </div>
                             </div>
@@ -178,7 +291,6 @@ const UserInfo = () => {
                             <div className="flex justify-end gap-4.5">
                                 <button
                                     className="flex justify-center border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                                    type="submit"
                                 >
                                     Cancel
                                 </button>
@@ -186,7 +298,7 @@ const UserInfo = () => {
                                     className="flex justify-center bg-blue-600 px-6 py-2 font-medium text-gray hover:bg-opacity-90"
                                     type="submit"
                                 >
-                                    Save
+                                    {loading? "Loading... .": "Save"}
                                 </button>
                             </div>
                         </form>
@@ -201,31 +313,30 @@ const UserInfo = () => {
                         </h3>
                     </div>
                     <div className="p-7">
+
                         <form action="#">
-                            <div className="mb-4 flex items-center gap-3">
-                                {user?.picture && (
+                            <div className="mb-4 flex items-center gap-3 mb-1">
+                                {userData?.photoURL && (
                                     <>
-                                    <div className="h-14 w-14 rounded-full">
-                                    <Image
-                                        src={user?.picture}
-                                        width={55}
-                                        height={55}
-                                        alt="User"
-                                    />
-                                </div>
-                                <div>
-                                    <span className="mb-1.5 text-black dark:text-white">
-                                        Edit your photo
-                                    </span>
-                                    <span className="flex gap-2.5">
-                                        <button className="text-sm hover:text-primary">
-                                            Delete
-                                        </button>
-                                        <button className="text-sm hover:text-primary">
-                                            Update
-                                        </button>
-                                    </span>
-                                </div>
+                                        <div className="h-14 w-14 rounded-full">
+                                            <Image
+                                                src={userData?.photoURL}
+                                                width={55}
+                                                height={55}
+                                                alt="User"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <span className="mb-1.5 text-black dark:text-white">
+                                                Edit your photo
+                                            </span>
+                                            <span className="flex gap-2.5">
+                                                <button className="text-sm hover:text-primary">
+                                                    Delete
+                                                </button>
+                                            </span>
+                                        </div>
                                     </>
                                 )}
                             </div>
@@ -237,6 +348,7 @@ const UserInfo = () => {
                                 <input
                                     type="file"
                                     accept="image/*"
+                                    onChange={handleChangePicture}
                                     className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
                                 />
                                 <div className="flex flex-col items-center justify-center space-y-3">
@@ -268,28 +380,32 @@ const UserInfo = () => {
                                             />
                                         </svg>
                                     </span>
-                                    <p>
-                                        <span className="text-primary">Click to upload</span> or
-                                        drag and drop
-                                    </p>
-                                    <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
-                                    <p>(max, 800 X 800px)</p>
+                                    {!file && (
+                                        <>
+                                            <p>
+                                                <span className="text-primary">Click to upload</span> or
+                                                drag and drop
+                                            </p>
+                                            <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
+                                            <p>(max, 800 X 800px)</p>
+                                        </>
+                                    )}
+                                    {file && <span className="text-sm text-gray-600">{file.name}</span>}
                                 </div>
-                            </div>
 
-                            <div className="flex justify-end gap-4.5">
-                                <button
-                                    className="flex justify-center  border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                                    type="submit"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    className="flex justify-center  bg-blue-600 px-6 py-2 font-medium text-gray hover:bg-opacity-90"
-                                    type="submit"
-                                >
-                                    Save
-                                </button>
+
+                            </div>
+                            <div className="space-y-2 mb-2">
+                                { uploadProgress > 0 && uploadProgress < 100 && (
+                                    <div className="w-full bg-slate-200 rounded-full h-2.5 dark:bg-slate-700">
+                                        <div
+                                            className="bg-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                                            style={{ width: `${uploadProgress}%` }}
+                                        ></div>
+                                    </div>
+                                )}
+
+
                             </div>
                         </form>
                     </div>
@@ -303,14 +419,14 @@ const UserInfo = () => {
                         </h3>
                     </div>
                     <div className="p-4 px-7 inline-block">
-                        {user.subscribtion === "PREMIUM" ? (
+                        {userData?.subscribtion === "PREMIUM" ? (
                             <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-md font-bold py-1 px-2 rounded mb-2 shadow-lg h-full">
-                                {user.subscribtion}
+                                {userData?.subscribtion}
                             </span>
 
                         ) : (
                             <span className="bg-yellow-500 text-white text-md font-bold py-1 px-2 rounded mb-2 inline-block">
-                                {user.subscribtion}
+                                {userData?.subscribtion}
                             </span>)}
 
 

@@ -14,7 +14,7 @@ const AuthStateChangeProvider = ({children}) => {
     const InitAuthStateChange = () => {
         Authenticaion().onAuthStateChanged ((user) => {
             if (user) {
-                SetUser({email: user.email, uid: user.uid, picture: user.photoURL, displayName: user.displayName});
+                SetUser({email: user.email, uid: user.uid, picture: user.photoURL, photoURL: user.photoURL, displayName: user.displayName, name: user.displayName});
             } else {
                 SetUser(InitUserState);
             };

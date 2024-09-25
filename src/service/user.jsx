@@ -7,8 +7,10 @@ export const InitUserState = {
     email: null,
     uid: null,
     picture: null,
+    photoURL: null,
     displayName: null,
     subscribtion: null,
+    name: null,
     quota: null,
 }
 
@@ -40,7 +42,11 @@ export const UserProvider = (props) => {
                 (docSnapshot) => {
                     if (docSnapshot.exists()) {
                         const userData = docSnapshot.data();
-                        setUserState(prev => ({...prev, subscribtion: userData["subscription"]}))
+                        setUserState(prev => ({...prev, subscribtion: userData["subscription"],
+                            photoURL: userData["photoURL"],
+                            phoneNumber: userData["phoneNumber"],
+                            bio: userData["bio"],
+                        }))
                     } else {
                         console.log("No such user's document!");
                     }
