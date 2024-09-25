@@ -7,89 +7,10 @@ import { httpsCallable } from 'firebase/functions';
 import { useUser } from '@/service/user';
 import Score from "./Score";
 import Loader from '@/components/common/Loader';
-import { useRouter } from 'next/navigation';
+import TestOption from '../_components/TestOption';
 
 
-const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion, userQuota }) => {
-  const router = useRouter();
 
-  function handleStart() {
-    router.replace(Url);
-  }
-
-
-  return (
-    <div className="bg-white p-4 pb-0 shadow-lg dark:bg-slate-600 dark:text-white">
-      <div className='flex flex-row justify-between border-b border-slate-300 mb-4'>
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        {isSoon && (
-          <span className="bg-yellow-500 text-white text-xs font-bold py-1 px-2 rounded mb-2 inline-block">
-            COMMING SOON
-          </span>
-        )}
-        {isPremium && subscribtion !== "PREMIUM" && (
-          <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold py-1 px-2 rounded mb-2 shadow-lg h-full">
-            PREMIUM
-          </span>
-        )}
-      </div>
-      <ul className="space-y-2 mb-4">
-        {options.map((option, index) => (
-          <li key={index} className="flex items-start">
-            <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span className="text-sm">{option}</span>
-          </li>
-        ))}
-      </ul>
-      <div className='flex space-x-2 justify-center mb-4'>
-      {!isSoon && (
-          <>
-            <button 
-              onClick={() => handleStart()} 
-              disabled={subscribtion !== "PREMIUM" && isPremium || userQuota.used >= userQuota.total}
-              className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105 ${
-                subscribtion !== "PREMIUM" && isPremium || userQuota.used >= userQuota.total ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
-              }`}
-            >
-              START TEST
-            </button>
-            {subscribtion !== "PREMIUM" && !isPremium &&(
-              <div className="w-full max-w-xs">
-                <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
-                  <span>Quota: {userQuota.used} / {userQuota.total} tests used</span>
-                  <span>{(userQuota.used / userQuota.total * 100).toFixed(0)}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                  <div 
-                    className="bg-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${userQuota?.used / userQuota?.total * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-      {isPremium && subscribtion !== "PREMIUM" && (
-        <div className="flex flex-col items-center space-x-8">
-          <div className="relative">
-            <a href="/dashboard/payment">
-              <button className="bg-slate-300 hover:bg-teal-400 text-black hover:text-white px-4 py-1 rounded-t-xl flex items-center space-x-2 shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 11V7a4 4 0 10-8 0v4m16 0V7a4 4 0 00-8 0v4m12 0h-4m-4 0h4m4 0a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8z" />
-                </svg>
-                <span>Unlock unlimited tests</span>
-              </button>
-            </a>
-
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 const IELTSTestOptionsGrid = () => {
   const user = useUser();
