@@ -4,7 +4,7 @@ import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { FirebaseFunction } from '@/service/firebase';
 import { httpsCallable } from 'firebase/functions';
-import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
+// import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import Loader from '@/components/common/Loader';
 import VoiceAssistant from './VoiceAssistant';
 import StartInstruction from './StartInstruction';
@@ -22,6 +22,7 @@ import TestLayout from '@/components/Layouts/TestLayout';
 const FullSpeakingPage = () => {
   const functions = FirebaseFunction();
   const user = useUser();
+  const {userState} = user;
   const [question, setQuestion] = useState(null);
   const [questionId, setQuestionId] = useState('')
   const [start, setStart] = useState(false);
@@ -42,7 +43,7 @@ const FullSpeakingPage = () => {
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
-    await getData({ type: "speaking-questions", id: params.get("id"), userId: user.uid }).then((result) => {
+    await getData({ type: "speaking-questions", id: params.get("id"), userId: userState.uid }).then((result) => {
       setQuestion(result.data['questions']);
       setQuestionId(result.data['questionId'])
     });
@@ -70,7 +71,7 @@ const FullSpeakingPage = () => {
     if (!finished) {
       return SuccessMessageText("Please finish the test.")
     }
-    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingMiniAcademic", questionId: questionId })
+    await getSpeakingScore({ dialogue: messages, userId: userState.uid, testType: "SpeakingMiniAcademic", questionId: questionId })
   };
 
 

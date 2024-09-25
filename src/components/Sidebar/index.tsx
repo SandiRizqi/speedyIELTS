@@ -236,6 +236,7 @@ const menuGroups = [
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const user = useUser();
+  const {userState} = user;
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
   const audioRef = useRef(new Audio());
@@ -312,7 +313,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </nav>
           {/* <!-- Sidebar Menu --> */}
           <div className="flex flex-col justify-between mx-auto gap-2 w-full">
-            {user.subscribtion !== "PREMIUM" && (<UpgradeCard />)}
+            {userState.subscribtion !== "PREMIUM" && (<UpgradeCard />)}
             <AppVersion />
           </div>
 

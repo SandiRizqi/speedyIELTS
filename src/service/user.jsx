@@ -23,45 +23,45 @@ export const useUser = () => {
 }
 
 export const UserProvider = (props) => {
-    const db = FirestoreDB();
+    // const db = FirestoreDB();
     const [userState, setUserState] = useState(InitUserState);
 
     const SetUser = (UserCredential) => {
-        setUserState({...UserCredential})
+        setUserState(UserCredential)
     };
 
     const ResetUser = () => {
         setUserState(InitUserState)
     };
 
-    useEffect(() => {
-        if (userState.uid) {
-            const userDocRef = doc(db, 'users-data', userState.uid);
-            const unsubscribe = onSnapshot(
-                userDocRef,
-                (docSnapshot) => {
-                    if (docSnapshot.exists()) {
-                        const userData = docSnapshot.data();
-                        setUserState(prev => ({...prev, subscribtion: userData["subscription"],
-                            photoURL: userData["photoURL"],
-                            phoneNumber: userData["phoneNumber"],
-                            bio: userData["bio"],
-                        }))
-                    } else {
-                        console.log("No such user's document!");
-                    }
-                },
-                (err) => {
-                    console.error("Error fetching user data: ", err);
-                }
-            );
-            return () => unsubscribe();
-        }
-    }, [userState.uid]);
+    // useEffect(() => {
+    //     if (userState.uid) {
+    //         const userDocRef = doc(db, 'users-data', userState.uid);
+    //         const unsubscribe = onSnapshot(
+    //             userDocRef,
+    //             (docSnapshot) => {
+    //                 if (docSnapshot.exists()) {
+    //                     const userData = docSnapshot.data();
+    //                     setUserState(prev => ({...prev, subscribtion: userData["subscription"],
+    //                         photoURL: userData["photoURL"],
+    //                         phoneNumber: userData["phoneNumber"],
+    //                         bio: userData["bio"],
+    //                     }))
+    //                 } else {
+    //                     console.log("No such user's document!");
+    //                 }
+    //             },
+    //             (err) => {
+    //                 console.error("Error fetching user data: ", err);
+    //             }
+    //         );
+    //         return () => unsubscribe();
+    //     }
+    // }, [userState.uid]);
 
 
     const values = {
-        ...userState,
+        userState,
         SetUser,
         ResetUser
     }

@@ -21,6 +21,7 @@ import TestLayout from "@/components/Layouts/TestLayout";
 
 const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result }) => {
     const user = useUser();
+    const {userState} = user;
     const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [activeTab, setActiveTab] = useState(1);
@@ -263,7 +264,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                 type: "listening-questions", 
                 id: questions["questionId"], 
                 userAnswer: userAnswer, 
-                userId: user.uid, 
+                userId: userState.uid, 
                 testType: "ListeningAcademic"
             });
     
@@ -297,7 +298,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
 
     const handleCollect = () => {
         // e.preventDefault();
-        setCollectAnswer(prev => ({ ...prev, listening: { ...prev['listening'], userAnswer: answer, done: true, type: "listening-questions", id: questions["questionId"], userId: user.uid, testType: "ListeningAcademic" } }));
+        setCollectAnswer(prev => ({ ...prev, listening: { ...prev['listening'], userAnswer: answer, done: true, type: "listening-questions", id: questions["questionId"], userId: userState.uid, testType: "ListeningAcademic" } }));
         setNextTest('navigation');
     };
 
@@ -324,7 +325,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                 const result = await getData({ 
                     type: "listening-questions", 
                     id: params.get("id") || questionId,
-                    userId: user.uid, 
+                    userId: userState.uid, 
                 });
         
                 const quest = result.data;

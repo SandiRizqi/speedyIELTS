@@ -1,8 +1,8 @@
 'use client'
 import withUser from "@/hooks/withUser";
 import { useRef } from "react";
-import { useState, useCallback, useEffect } from "react";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { useState, useEffect } from "react";
+// import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import TestLayout from "@/components/Layouts/TestLayout";
 import { useUser } from "@/service/user";
 import { FirebaseFunction } from "@/service/firebase";
@@ -13,42 +13,6 @@ import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
 import { SuccessMessage, ErrorMessage } from "@/app/dashboard/_components/Alert";
 import ScoreComponent from "./ScoreComponent";
-
-//import { sample2  } from "./TXx9UIizmorxstpgYcz0";
-
-
-
-
-
-// const Timer = ({ minutes, seconds, setFinish }) => {
-//     const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
-
-//     useEffect(() => {
-//         const interval = setInterval(() => {
-//             if (timeLeft.seconds > 0) {
-//                 setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
-//             } else if (timeLeft.minutes > 0) {
-//                 setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
-//             } else {
-//                 clearInterval(interval);
-//             }
-//         }, 1000);
-
-//         return () => clearInterval(interval);
-//     }, [timeLeft]);
-
-//     useEffect(() => {
-//         if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-//             setFinish(true);
-//         }
-//     }, [timeLeft]);
-
-//     return (
-//         <div className='block text-center bg-slate-800 rounded-md p-1'>
-//             <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
-//         </div>
-//     );
-// };
 
 
 const PassageWrapper = ({ children }) => {
@@ -114,43 +78,10 @@ const PassageWrapper = ({ children }) => {
 
 
 
-// function TabNavigation({ activeTab, setActiveTab }) {
-//     const tabs = [1, 2, 3];
-
-//     const handleKeyDown = useCallback((e) => {
-//         if (e.key === 'ArrowRight') {
-//             setActiveTab((prev) => (prev + 1) % tabs.length);
-//         } else if (e.key === 'ArrowLeft') {
-//             setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
-//         }
-//     }, [tabs.length]);
-
-//     return (
-//         <div className="flex w-full justify-end">
-//             <div className="flex border-b border-gray-200" role="tablist" onKeyDown={handleKeyDown}>
-//                 {tabs.map((tab, index) => (
-//                     <button
-//                         key={index}
-//                         role="tab"
-//                         aria-selected={activeTab === tab}
-//                         tabIndex={activeTab === tab ? 0 : -1}
-//                         className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === tab
-//                             ? 'border-b-2 border-blue-500 text-blue-500'
-//                             : 'text-gray-500 hover:text-gray-700'
-//                             }`}
-//                         onClick={() => setActiveTab(tab)}
-//                     >
-//                         SECTION-{tab}
-//                     </button>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// }
-
 
 const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result, Tab }) => {
     const user = useUser();
+    const {userState} = user;
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [finish, setFinish] = useState(false);
     const [activeTab, setActiveTab] = useState(Tab || 1);
@@ -384,18 +315,17 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
     };
 
     const getAnswers = async (userAnswer) => {
+        let data;
+        let score;
         try {
-            let data;
-            let score;
             setLoading(true); // Set loading to true at the start
-
             const getData = httpsCallable(functions, 'getQuestionAnswers');
 
             const result = await getData({
                 type: "reading-questions",
                 id: questions["questionId"],
                 userAnswer: userAnswer,
-                userId: user.uid,
+                userId: userState.uid,
                 testType: "ReadingAcademic"
             });
 
@@ -403,10 +333,12 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
             data = result.data;
             score = data['result'];
             setTestResult(data);
+            
 
             // Set feedback and show success message
             setFeedback(data['corrections']);
             SuccessMessage({ score: score["overall"] });
+            
         } catch (error) {
             // In case of any error, display the error message
             ErrorMessage(error);
@@ -416,6 +348,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
         }
 
         return [data, score];
+        
     };
 
 
@@ -431,7 +364,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
 
     const handleCollect = () => {
         //e.preventDefault();
-        setCollectAnswer(prev => ({ ...prev, reading: { ...prev['reading'], userAnswer: answer, done: true, type: "reading-questions", id: questions["questionId"], userId: user.uid, testType: "ReadingAcademic" } }));
+        setCollectAnswer(prev => ({ ...prev, reading: { ...prev['reading'], userAnswer: answer, done: true, type: "reading-questions", id: questions["questionId"], userId: userState.uid, testType: "ReadingAcademic" } }));
         setNextTest('navigation')
     };
 
@@ -445,7 +378,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                 const result = await getData({
                     type: "reading-questions",
                     id: params.get("id") || questionId,
-                    userId: user.uid,
+                    userId: userState.uid,
                 });
 
                 // Set the question data

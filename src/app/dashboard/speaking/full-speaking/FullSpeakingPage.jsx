@@ -26,6 +26,7 @@ import { useSpeaking } from './hook/useSpeaking';
 const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer , Feedback} ) => {
   const functions = FirebaseFunction();
   const user = useUser();
+  const {userState} = user;
   const [question, setQuestion] = useState(null);
   const [start, setStart] = useState(questionId ? true : false);
   const {handleNext, currentSection, statusTest, setStatusTest, finished, setFinished } = useSpeaking();
@@ -48,7 +49,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
       const result = await getData({
         type: "speaking-questions",
         id: params.get("id") || questionId,
-        userId: user.uid,
+        userId: userState.uid,
       });
   
       // Set the question data
@@ -81,7 +82,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
     if (!finished) {
       return SuccessMessageText("Please finish the test.")
     };
-    
+
     setLoading(true)
     const getData = httpsCallable(functions, 'getSpeakingScore');
     try {
@@ -100,10 +101,10 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
   const handleSubmitAnswer = async () => {
     if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: question.questionId, done: true } }));
+      setCollectAnswer(prev => ({ ...prev, speaking: { ...prev['speaking'], dialogue: messages, userId: userState.uid, testType: "SpeakingFullAcademic", questionId: question.questionId, done: true } }));
       return setNextTest('navigation')
     };
-    await getSpeakingScore({ dialogue: messages, userId: user.uid, testType: "SpeakingFullAcademic", questionId: question.questionId })
+    await getSpeakingScore({ dialogue: messages, userId: userState.uid, testType: "SpeakingFullAcademic", questionId: question.questionId })
   }
 
   // function handleNext() {

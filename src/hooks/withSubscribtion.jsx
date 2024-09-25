@@ -9,6 +9,7 @@ const withSubscription = (Component) => {
     return (props) => {
         const db = FirestoreDB();
         const user = useUser();
+        const {userState} = user;
         const router = useRouter();
 
 
@@ -21,7 +22,7 @@ const withSubscription = (Component) => {
 
         useEffect(() => {
     
-            const userDocRef = doc(db, 'users-data', user.uid);
+            const userDocRef = doc(db, 'users-data', userState.uid);
             const unsubscribe = onSnapshot(
                 userDocRef,
                 (docSnapshot) => {

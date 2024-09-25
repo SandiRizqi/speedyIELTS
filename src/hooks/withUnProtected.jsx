@@ -7,9 +7,9 @@ const withUnProtected = (Pages) => {
     return (props) => {
         const router = useRouter();
         const user = useUser();
-        const {uid} = user;
+        const {userState} = user;
 
-        if (uid){
+        if (userState?.uid){
             router.replace("/dashboard");
             return<></>;
         }

@@ -156,6 +156,7 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
   const [scores, setScores] = useState({});
   const [overallScore, setOverallScore] = useState(globalFeedback?.overall || 0);
   const user = useUser();
+  const {userState} = user;
   const [timeLeft, setTimeLeft] = useState(180); // 3 hours in minutes
   const path = usePathname();
   const router = useRouter();
@@ -214,7 +215,7 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
     const getFullScore = httpsCallable(functions, 'getFullSkillScore');
     
     try {
-      const respons = await getFullScore({...globalState, userId: user.uid});
+      const respons = await getFullScore({...globalState, userId: userState.uid});
       const result = respons.data["data"]["result"];
       addFeedback(result);
       setOverallScore(result.overall);

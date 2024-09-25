@@ -17,6 +17,7 @@ import TestLayout from '@/components/Layouts/TestLayout';
 
 const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback }) => {
   const user = useUser();
+  const {userState} = user;
   const [start, setStart] = useState(questionId ? true : false);
   const [finish, setFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +27,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
       questionId: '',
       testType: 'WritingTask1',
       answer: '',
-      userId: user.uid,
+      userId: userState.uid,
     },
     task2:
     {
@@ -34,7 +35,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
       questionId: '',
       testType: 'WritingTask2',
       answer: '',
-      userId: user.uid,
+      userId: userState.uid,
     }
   });
   const [feedback, setFeedback] = useState(Feedback || null);
@@ -49,14 +50,14 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
   const handleSubmit = async () => {
 
     if (isFullTest) {
-      setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], ...answer, done: true, userId: user.uid, testType: "WritingFullAcademic" } }));
+      setCollectAnswer(prev => ({ ...prev, writing: { ...prev['writing'], ...answer, done: true, userId: userState.uid, testType: "WritingFullAcademic" } }));
       return setNextTest('navigation')
     }
 
     setIsLoading(true);
     try {
       const getData = httpsCallable(functions, 'getWritingFullScore');
-      const res = await getData({ ...answer, userId: user.uid, testType: "WritingFullAcademic" });
+      const res = await getData({ ...answer, userId: userState.uid, testType: "WritingFullAcademic" });
       const data = res["data"]["result"];
       setFeedback({ feedback1: data["task1"]["result"], feedback2: data["task2"]["result"] });
       setIsLoading(false);
@@ -79,7 +80,7 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
     const getData = httpsCallable(functions, 'getQuestion');
     let quest;
     try {
-      await getData({ type: typequest, id: id, userId: user.uid, }).then((result) => {
+      await getData({ type: typequest, id: id, userId: userState.uid, }).then((result) => {
         quest = result.data;
 
       });

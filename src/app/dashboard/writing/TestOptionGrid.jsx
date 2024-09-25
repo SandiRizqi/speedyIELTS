@@ -14,13 +14,14 @@ import TestOption from '../_components/TestOption';
 
 const IELTSTestOptionsGrid = () => {
   const user = useUser();
+  const {userState} = user;
   const functions = FirebaseFunction();
   const [chartData, setChartData] = useState(null);
   const [userQuota, setUserQuota] = useState({});
 
   const getQuota = async () => {
     const getData = httpsCallable(functions, 'getUserQuota');
-    await getData({ userId: user.uid }).then((result) => {
+    await getData({ userId: userState.uid }).then((result) => {
       setUserQuota(result.data);
     });
   };
@@ -28,7 +29,7 @@ const IELTSTestOptionsGrid = () => {
 
   const getChartData = async () => {
     const getData = httpsCallable(functions, 'getChartDataPG');
-    await getData({ id: user.uid }).then((result) => {
+    await getData({ id: userState.uid }).then((result) => {
       setChartData(result.data);
     });
   };
@@ -119,7 +120,7 @@ const IELTSTestOptionsGrid = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
         {testOptions.map((option, index) => (
-          <TestOption key={index} {...option} subscribtion={user?.subscribtion}/>
+          <TestOption key={index} {...option} subscribtion={userState?.subscribtion}/>
         ))}
       </div>
     </div>

@@ -8,13 +8,13 @@ const countWords = (text) => {
     return text.trim().split(/\s+/).filter(word => word).length;
 };
 
-export default function QuestionForm({ answer, setAnswer, feedback, question, loading}) {
+export default function QuestionForm({ answer, setAnswer, feedback, question, loading }) {
     const drive = FirebaseStorge();
     const [questions, setQuestion] = useState(question);
     const [text, setText] = useState(answer['answer'] || '');
     const count = countWords(text);
     const [highlightedText, setHighlightedText] = useState("");
-    
+
 
 
     const handleHighlisht = (value) => {
@@ -28,7 +28,7 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
 
 
     const handleAnswerChange = (event) => {
-        setAnswer(prev => ({...prev, task1 : { ...prev['task1'],  answer: event.target.value}}));
+        setAnswer(prev => ({ ...prev, task1: { ...prev['task1'], answer: event.target.value } }));
         setText(event.target.value);
     };
 
@@ -36,14 +36,14 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
 
 
     useEffect(() => {
-        if(feedback){
+        if (feedback) {
             const ListMistakes = feedback.corrections?.map(obj => obj.mistakes);
-            if(ListMistakes) {
+            if (ListMistakes) {
                 handleHighlisht(ListMistakes);
             }
         }
 
-    },[feedback])
+    }, [feedback])
 
 
     useEffect(() => {
@@ -51,11 +51,11 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
             try {
                 const storageRef = ref(drive, quest.picture);
                 const url = await getDownloadURL(storageRef);
-                setQuestion({...quest, pictureURL: url})
-                setAnswer(prev => ({...prev, task1: { pictureURL: url, ...prev['task1']}}))
-              } catch (error) {
+                setQuestion({ ...quest, pictureURL: url })
+                setAnswer(prev => ({ ...prev, task1: { pictureURL: url, ...prev['task1'] } }))
+            } catch (error) {
                 console.error("Error fetching image URL:", error);
-              }
+            }
         };
 
 
@@ -96,7 +96,7 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
                             rows="13"
                             onChange={handleAnswerChange}
                             value={text}
-                            disabled={feedback ? true: false}
+                            disabled={feedback ? true : false}
                             placeholder="Enter your answer here..."
                         ></textarea>
                     )}
@@ -114,7 +114,7 @@ export default function QuestionForm({ answer, setAnswer, feedback, question, lo
                         <p className='text-sm text-gray-500'>
                             Words: {count}
                         </p>
-                        
+
                     </div>
                 )}
             </div>

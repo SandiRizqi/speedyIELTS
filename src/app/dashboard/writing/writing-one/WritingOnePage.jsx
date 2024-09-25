@@ -18,40 +18,10 @@ import TestLayout from '@/components/Layouts/TestLayout';
 import { useUser } from '@/service/user';
 
 
-// const Timer = ({ minutes, seconds, setFinish }) => {
-//   const [timeLeft, setTimeLeft] = useState({ minutes, seconds });
-
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       if (timeLeft.seconds > 0) {
-//         setTimeLeft({ ...timeLeft, seconds: timeLeft.seconds - 1 });
-//       } else if (timeLeft.minutes > 0) {
-//         setTimeLeft({ minutes: timeLeft.minutes - 1, seconds: 59 });
-//       } else {
-//         clearInterval(interval);
-//       }
-//     }, 1000);
-
-//     return () => clearInterval(interval);
-//   }, [timeLeft]);
-
-//   useEffect(() => {
-//     if (timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-//       setFinish(true);
-//     }
-//   }, [timeLeft]);
-
-//   return (
-//     <div className='block text-center bg-slate-800 rounded-md p-1'>
-//       <p className='text-2xl font-medium text-gray-900 text-white'>{timeLeft.minutes}:{timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds}</p>
-//     </div>
-//   );
-// };
-
-
 
 const WritingOnePage = () => {
   const user = useUser();
+  const {userState} = user;
   const [question, setQuestion] = useState(null);
   const functions = FirebaseFunction();
   const [start, setStart] = useState(false);
@@ -95,7 +65,7 @@ const WritingOnePage = () => {
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      await getData({ type: "writing1-questions", id: params.get("id"), userId: user.uid }).then((result) => {
+      await getData({ type: "writing1-questions", id: params.get("id"), userId: userState.uid }).then((result) => {
         const quest = result.data;
         setQuestion(quest);
       });

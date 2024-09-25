@@ -8,6 +8,7 @@ import { useUser } from "@/service/user";
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useUser();
+  const {userState} = user;
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -18,16 +19,16 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {user?.displayName}
+            {userState?.displayName}
           </span>
-          <span className="block text-xs">{user?.email}</span>
+          <span className="block text-xs">{userState?.email}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
           <Image
             width={112}
             height={112}
-            src={user?.picture || '/images/icon/avatar.jpg'}
+            src={userState?.photoURL || '/images/icon/avatar.jpg'}
             className="h-12 w-12 rounded-full"
             style={{
               width: "auto",

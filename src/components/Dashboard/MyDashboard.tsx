@@ -53,13 +53,14 @@ const DashboardSkeleton: React.FC = () => {
 
 const MyDashboard: React.FC = () => {
   const user = useUser();
+  const {userState} = user;
   const functions = FirebaseFunction();
   const [chartData, setChartData] = useState(null);
 
 
   const getChartData = async () => {
     const getData = httpsCallable(functions, 'getChartDataPG');
-    await getData({ id: user.uid }).then((result: any) => {
+    await getData({ id: userState.uid }).then((result: any) => {
       setChartData(result.data);
     });
   };

@@ -14,9 +14,10 @@ const storage = FirebaseStorge();
 
 const FeedbackForm = () => {
     const user = useUser();
+    const {userState} = user;
     const initData = {
-        name: user.displayName,
-        email: user.email,
+        name: userState.name,
+        email: userState.email,
         subject: '',
         message: '',
         file: '',

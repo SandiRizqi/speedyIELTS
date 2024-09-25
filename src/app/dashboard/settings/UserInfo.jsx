@@ -6,18 +6,25 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { FirebaseStorge } from "@/service/firebase";
 import { FirestoreDB } from "@/service/firebase";
 import { doc, setDoc } from "firebase/firestore";
-import { onSnapshot } from "firebase/firestore";
+// import { onSnapshot } from "firebase/firestore";
 import { SuccessMessageText, ErrorMessage } from "../_components/Alert";
 
 
 const UserInfo = () => {
     const user = useUser();
-    const db =FirestoreDB();
+    const db = FirestoreDB();
+    const { userState } = user;
     const [userData, setUserData] = useState(null);
     const [file, setFile] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
     const storage = FirebaseStorge();
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if(userState) {
+            setUserData(userState);
+        }
+    },[userState]);
 
     
 
@@ -28,7 +35,7 @@ const UserInfo = () => {
 
 
     const uploadFile = async (file) => {
-        const storageRef = ref(storage, `assets/users/${userData.uid}/` + file.name);
+        const storageRef = ref(storage, `assets/users/${user.uid}/` + file.name);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         return new Promise((resolve, reject) => {
@@ -67,7 +74,7 @@ const UserInfo = () => {
         e.preventDefault()
         setLoading(true)
         try {
-            const userDocRef = doc(db, "users-data", user.uid);
+            const userDocRef = doc(db, "users-data", userState.uid);
             await setDoc(userDocRef, payload, { merge: true });
             SuccessMessageText("User data saved/updated successfully!");
             setLoading(false);
@@ -87,32 +94,32 @@ const UserInfo = () => {
     }, [file])
 
 
-    useEffect(() => {
-        if (user.uid) {
-            const userDocRef = doc(db, 'users-data', user.uid);
-            const unsubscribe = onSnapshot(
-                userDocRef,
-                (docSnapshot) => {
-                    if (docSnapshot.exists()) {
-                        const Data = docSnapshot.data();
-                        setUserData(prev => ({...prev, subscribtion: Data["subscription"],
-                            name: Data["name"],
-                            email: Data["email"],
-                            photoURL: Data["photoURL"],
-                            phoneNumber: Data["phoneNumber"],
-                            bio: Data["bio"],
-                        }))
-                    } else {
-                        console.log("No such user's document!");
-                    }
-                },
-                (err) => {
-                    console.error("Error fetching user data: ", err);
-                }
-            );
-            return () => unsubscribe();
-        }
-    }, [user.uid]);
+    // useEffect(() => {
+    //     if (user.uid) {
+    //         const userDocRef = doc(db, 'users-data', user.uid);
+    //         const unsubscribe = onSnapshot(
+    //             userDocRef,
+    //             (docSnapshot) => {
+    //                 if (docSnapshot.exists()) {
+    //                     const Data = docSnapshot.data();
+    //                     setUserData(prev => ({...prev, subscribtion: Data["subscription"],
+    //                         name: Data["name"],
+    //                         email: Data["email"],
+    //                         photoURL: Data["photoURL"],
+    //                         phoneNumber: Data["phoneNumber"],
+    //                         bio: Data["bio"],
+    //                     }))
+    //                 } else {
+    //                     console.log("No such user's document!");
+    //                 }
+    //             },
+    //             (err) => {
+    //                 console.error("Error fetching user data: ", err);
+    //             }
+    //         );
+    //         return () => unsubscribe();
+    //     }
+    // }, [user.uid]);
 
 
     return (
