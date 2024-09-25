@@ -11,12 +11,13 @@ const useSubscrip = () => {
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState(null)
     const user = useUser();
+    const {userState} = user;
     const func = FirebaseFunction();
     const router = useRouter();
 
   
     const Subs = async (TYPE) => {
-      if (!user) {
+      if (!userState.uid) {
         return window.alert("User doesn't exist");
       }
 
@@ -25,11 +26,11 @@ const useSubscrip = () => {
       setLoading(true);
       
       const data = {
-        uid: user.uid,
-        firstname: user.displayName,
+        uid: userState.uid,
+        firstname: userState.name,
         lastname: '',
-        email: user.email,
-        phonenumber: '',
+        email: userState.email,
+        phonenumber: userState?.phoneNumber,
         Subscribtion: TYPE,
       };
       
