@@ -35,7 +35,7 @@ const UserInfo = () => {
 
 
     const uploadFile = async (file) => {
-        const storageRef = ref(storage, `assets/users/${user.uid}/` + file.name);
+        const storageRef = ref(storage, `assets/users/${userState.uid}/` + file.name);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         return new Promise((resolve, reject) => {
@@ -94,32 +94,7 @@ const UserInfo = () => {
     }, [file])
 
 
-    // useEffect(() => {
-    //     if (user.uid) {
-    //         const userDocRef = doc(db, 'users-data', user.uid);
-    //         const unsubscribe = onSnapshot(
-    //             userDocRef,
-    //             (docSnapshot) => {
-    //                 if (docSnapshot.exists()) {
-    //                     const Data = docSnapshot.data();
-    //                     setUserData(prev => ({...prev, subscribtion: Data["subscription"],
-    //                         name: Data["name"],
-    //                         email: Data["email"],
-    //                         photoURL: Data["photoURL"],
-    //                         phoneNumber: Data["phoneNumber"],
-    //                         bio: Data["bio"],
-    //                     }))
-    //                 } else {
-    //                     console.log("No such user's document!");
-    //                 }
-    //             },
-    //             (err) => {
-    //                 console.error("Error fetching user data: ", err);
-    //             }
-    //         );
-    //         return () => unsubscribe();
-    //     }
-    // }, [user.uid]);
+
 
 
     return (
