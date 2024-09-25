@@ -10,7 +10,7 @@ import Loader from '@/components/common/Loader';
 import { useRouter } from 'next/navigation';
 
 
-const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion }) => {
+const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion, userQuota }) => {
   const router = useRouter();
 
   function handleStart() {
@@ -44,9 +44,33 @@ const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion }) =>
         ))}
       </ul>
       <div className='flex space-x-2 justify-center mb-4'>
-        {!isSoon && (<button onClick={() => handleStart()} disabled={subscribtion !== "PREMIUM" && isPremium}
-          className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${subscribtion !== "PREMIUM" && isPremium ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
-            }`} >START TEST</button>)}
+      {!isSoon && (
+          <>
+            <button 
+              onClick={() => handleStart()} 
+              disabled={subscribtion !== "PREMIUM" && isPremium || userQuota.used >= userQuota.total}
+              className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105 ${
+                subscribtion !== "PREMIUM" && isPremium || userQuota.used >= userQuota.total ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+              }`}
+            >
+              START TEST
+            </button>
+            {subscribtion !== "PREMIUM" && !isPremium && (
+              <div className="w-full max-w-xs">
+                <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  <span>Quota: {userQuota.used} / {userQuota.total} tests used</span>
+                  <span>{(userQuota.used / userQuota.total * 100).toFixed(0)}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div 
+                    className="bg-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${userQuota.used / userQuota.total * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
       {isPremium && subscribtion !== "PREMIUM" && (
         <div className="flex flex-col items-center space-x-8">
@@ -71,6 +95,14 @@ const IELTSTestOptionsGrid = () => {
   const user = useUser();
   const functions = FirebaseFunction();
   const [chartData, setChartData] = useState(null);
+  const [userQuota, setUserQuota] = useState({});
+
+  const getQuota = async () => {
+    const getData = httpsCallable(functions, 'getUserQuota');
+    await getData({ userId: user.uid }).then((result) => {
+      setUserQuota(result.data);
+    });
+  };
 
 
   const getChartData = async () => {
@@ -80,9 +112,11 @@ const IELTSTestOptionsGrid = () => {
     });
   };
 
+  
+
 
   useEffect(() => {
-    getChartData();
+    Promise.all([getChartData(), getQuota()])
   }, [])
 
   if (!chartData) {
@@ -96,6 +130,7 @@ const IELTSTestOptionsGrid = () => {
       {
         title: "ACADEMIC READING TEST",
         Url: "/dashboard/reading/academic-reading",
+        userQuota: {used: userQuota["reading-questions"] || 0, total: 2},
         options: [
           "IELTS academic reading test",
           "60 minutes long",

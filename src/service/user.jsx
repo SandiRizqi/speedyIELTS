@@ -2,11 +2,14 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { FirestoreDB } from "./firebase";
 import { doc, onSnapshot } from 'firebase/firestore';
 
+
 export const InitUserState = {
     email: null,
     uid: null,
     picture: null,
-    displayName: null
+    displayName: null,
+    subscribtion: null,
+    quota: null,
 }
 
 
