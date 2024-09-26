@@ -16,12 +16,14 @@ const FeedbackForm = () => {
     const user = useUser();
     const {userState} = user;
     const initData = {
-        name: userState.displayName,
+        name: userState.displayName || "",
         email: userState.email,
-        subject: 'PLATFORM FEEDBACK',
+        subject: 'Platform Feedback',
         message: '',
         file: '',
     }
+
+    // console.log(initData)
     const [formData, setFormData] = useState(initData);
     const [file, setFile] = useState(null);
     const db = FirestoreDB();
@@ -152,7 +154,7 @@ const FeedbackForm = () => {
                         type="text"
                         name="name"
                         placeholder="Name"
-                        value={formData.name}
+                        value={initData.name}
                         className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                         disabled
                         required
