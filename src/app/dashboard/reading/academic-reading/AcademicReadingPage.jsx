@@ -13,6 +13,43 @@ import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
 import { SuccessMessage, ErrorMessage } from "@/app/dashboard/_components/Alert";
 import ScoreComponent from "./ScoreComponent";
+import { motion } from 'framer-motion';
+import { ChevronsLeftRight } from 'lucide-react';
+
+
+const InteractiveResizeHandle = ({ onMouseDown }) => {
+    const [isActive, setIsActive] = useState(false);
+
+    return (
+      <motion.div
+        className="w-3 bg-slate-100 cursor-col-resize flex items-center justify-center"
+        onMouseEnter={() => setIsActive(true)}
+        onMouseLeave={() => setIsActive(false)}
+        onMouseDown={(e) => {
+          setIsActive(true);
+          onMouseDown(e);
+        }}
+        animate={{
+          backgroundColor: isActive ? "#94a3b8" : "#cbd5e1",
+        }}
+        transition={{ duration: 0.2 }}
+      >
+        <motion.div
+          className="h-8 flex items-center justify-center"
+          animate={{
+            scale: isActive ? 1.1 : 1,
+          }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronsLeftRight
+            className="text-slate-900 z-1 dark:text-orange-400" 
+            size={30}
+          />
+        </motion.div>
+      </motion.div>
+    )
+};
+
 
 
 const PassageWrapper = ({ children }) => {
@@ -96,10 +133,19 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
 
     const handleDrag = (e) => {
         const newWidth = (e.clientX / window.innerWidth) * 100;
-        if (newWidth > 20 && newWidth < 80) { // Set limits to prevent too much resizing
+        if (newWidth > 20 && newWidth < 100) { // Set limits to prevent too much resizing
             setLeftWidth(newWidth);
         }
     };
+
+
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', () => {
+          document.removeEventListener('mousemove', handleDrag);
+        }, { once: true });
+      };
 
 
     const ControlledInput = ({ value, onChange, ...props }) => {
@@ -160,7 +206,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                         name={`question-${props.name}`}
                         value={answer[props.name] || ""}
                         onChange={(value) => handleAnswer(props.name, value)}
-                        className="w-md my-1 px-2 border border-gray-300 rounded"
+                        className="w-md my-1 px-2 border border-slate-300 rounded"
                         placeholder={props.name}
                         feedback={feedback ? feedback[props.name] : null}
                     />
@@ -175,7 +221,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
             <div
                 className="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-slate-800 dark:text-slate-400 space-y-6"
             >
-                <h3 className="text-lg text-gray-700 mb-4">{part?.instruction}</h3>
+                <h3 className="text-lg font-bold text-slate-700 mb-4 dark:text-slate-300">{part?.instruction}</h3>
                 {part?.image && (<img src={part.image} alt="image" className="max-h-[400px]" />)}
                 {children}
             </div>
@@ -199,7 +245,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number] || ""}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-md my-1 px-2 border border-gray-300 rounded"
+                                    className="w-md my-1 px-2 border border-slate-300 rounded"
                                     placeholder="Type your answer here"
                                 />
                             </div>
@@ -216,7 +262,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                             <div key={idx} className="space-x-4">
                                 <span className="font-medium">{obj.number}.{obj.question}</span>
                                 <select
-                                    className="flex-grow my-1 px-2 border border-gray-300 rounded"
+                                    className="flex-grow my-1 px-2 border border-slate-300 rounded"
                                     name={`question-${obj.number}`}
                                     onChange={(e) => handleAnswer(obj.number, e.target.value)}
                                     value={answer[obj.number]}
@@ -290,7 +336,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                                     name={`question-${obj.number}`}
                                     value={answer[obj.number] || ""}
                                     onChange={(value) => handleAnswer(obj.number, value)}
-                                    className="w-md my-1 px-2 border border-gray-300 rounded"
+                                    className="w-md my-1 px-2 border border-slate-300 rounded"
                                     placeholder="Type your answer here"
                                 />
                                 {feedback && (
@@ -437,7 +483,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                     {/* <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1 top-16 inline-block gap-4 z-50'>
                         {start && !finish && !testResult && (<Timer minutes={60} seconds={0} setFinish={setFinish} />)}
                     </div> */}
-                    <main className='bg-white rounded-sm w-full text-black h-full py-14 dark:bg-slate-800 dark:text-slate-400 p-8' id="main" role="main">
+                    <main className='bg-white rounded-sm w-full text-black h-full py-8 dark:bg-slate-800 dark:text-slate-400 p-4' id="main" role="main">
                         {testResult && (<ScoreComponent score={testResult['result']} />)}
                         {questions && (
                             <form className="min-h-screen" >
@@ -455,16 +501,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                                                     </div>
 
                                                     {/* Resizable handle */}
-                                                    <div
-                                                        className="w-2 bg-gray-300 cursor-col-resize"
-                                                        onMouseDown={(e) => {
-                                                            e.preventDefault();
-                                                            document.addEventListener('mousemove', handleDrag);
-                                                            document.addEventListener('mouseup', () => {
-                                                                document.removeEventListener('mousemove', handleDrag);
-                                                            }, { once: true });
-                                                        }}
-                                                    />
+                                                    <InteractiveResizeHandle onMouseDown={handleMouseDown} />
 
                                                     {/* Right column */}
                                                     <div
