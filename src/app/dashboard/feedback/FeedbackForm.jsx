@@ -16,9 +16,9 @@ const FeedbackForm = () => {
     const user = useUser();
     const {userState} = user;
     const initData = {
-        name: userState.name,
+        name: userState.displayName,
         email: userState.email,
-        subject: '',
+        subject: 'PLATFORM FEEDBACK',
         message: '',
         file: '',
     }
@@ -152,7 +152,7 @@ const FeedbackForm = () => {
                         type="text"
                         name="name"
                         placeholder="Name"
-                        value={formData.displayName}
+                        value={formData.name}
                         className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                         disabled
                         required
