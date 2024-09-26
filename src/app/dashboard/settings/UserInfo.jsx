@@ -154,7 +154,7 @@ const UserInfo = () => {
                                             name="fullName"
                                             id="fullName"
                                             placeholder="Username"
-                                            defaultValue={userData?.name}
+                                            defaultValue={userData?.displayName}
                                             onChange={(e) => handleChange("name", e.target.value)}
                                         />
                                     </div>
