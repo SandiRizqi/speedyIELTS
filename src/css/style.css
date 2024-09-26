@@ -4,6 +4,34 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.left-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.left-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.left-scrollbar::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+.right-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.right-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.right-scrollbar::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 @layer base {
     body {
         @apply relative z-1 bg-whiten font-satoshi text-base font-normal text-body;

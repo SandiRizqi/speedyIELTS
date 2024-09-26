@@ -404,17 +404,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
 
                         </form>
                     )}
-                    {/* <div className="mt-8 flex justify-end gap-4">
-                     <TabNavigation setActiveTab={setActiveTab} activeTab={activeTab}/>
-                     {!testResult && (
-                         <button
-                         className="bg-blue-600 hover:bg-orange-400 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                         onClick={!isFullTest ? handleSubmit: handleCollect}
-                     >
-                         {!loading ? 'Submit' : 'Loading...'}
-                     </button>
-                     )}
-                 </div> */}
+                    
                 </main>
             </>
         </TestLayout>

@@ -494,7 +494,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                                                 <div className="flex flex-col md:flex-row min-h-screen" key={index}>
                                                     {/* Left column */}
                                                     <div
-                                                        className="relative overflow-y-auto max-h-screen"
+                                                        className="relative overflow-y-auto max-h-screen left-scrollbar mx-2"
                                                         style={{ width: `${leftWidth}%` }} // Dynamic width
                                                     >
                                                         {question.html && <PassageWrapper>{parse(question.html)}</PassageWrapper>}
@@ -505,7 +505,7 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
 
                                                     {/* Right column */}
                                                     <div
-                                                        className="p-4 flex flex-col overflow-y-auto max-h-screen"
+                                                        className="p-4 flex flex-col overflow-y-auto max-h-screen right-scrollbar"
                                                         style={{ width: `${100 - leftWidth}%` }} // Remaining width for right column
                                                     >
                                                         {question.parts.map((obj, idx) => (

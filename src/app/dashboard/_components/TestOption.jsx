@@ -47,10 +47,10 @@ const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion, user
                 <button 
                   onClick={handleStart} 
                   disabled={isButtonDisabled}
-                  className={`w-full py-3 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-102 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  className={`w-full py-3 px-6 rounded-lg text-white font-semibold transition-all duration-300 transform hover:scale-102 ${
                     isButtonDisabled
                       ? 'bg-slate-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:ring-blue-500'
+                      : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-orange-400 hover:to-orange-600'
                   }`}
                 >
                   {isButtonDisabled ? 'UNAVAILABLE' : 'START TEST'}
