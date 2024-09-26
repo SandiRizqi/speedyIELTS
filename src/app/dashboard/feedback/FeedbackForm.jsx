@@ -152,7 +152,7 @@ const FeedbackForm = () => {
                         type="text"
                         name="name"
                         placeholder="Name"
-                        value={formData.name}
+                        value={formData.displayName}
                         className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                         disabled
                         required
