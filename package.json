@@ -17,6 +17,7 @@
     "@tailwindcss/forms": "^0.5.7",
     "apexcharts": "^3.45.2",
     "axios": "^1.7.2",
+    "date-fns": "^4.1.0",
     "firebase": "^10.12.2",
     "flatpickr": "^4.6.13",
     "flowbite": "^2.3.0",

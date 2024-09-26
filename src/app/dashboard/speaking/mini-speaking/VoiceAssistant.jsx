@@ -251,53 +251,55 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
 
 
   return (
-    <div className="">
-      <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg p-8 rounded-xl shadow-2xl max-w-md w-full">
-        <h2 className="text-3xl font-bold mb-6 text-center text-white">Examiner</h2>
-        <div className="flex flex-col items-center justify-center mb-8">
+    <>
+      <div className="flex items-center justify-center  bg-gradient-to-br from-blue-500 to-blue-600 p-4 flex-col flex-grow">
+      <div className="bg-white/10 backdrop-filter backdrop-blur-xl p-10 rounded-3xl shadow-2xl max-w-md w-full transition-all duration-300 hover:shadow-3xl flex flex-col flex-grow">
+        <h2 className="text-xl font-extrabold mb-8 text-center text-white tracking-tight">Examiner</h2>
+        <div className="flex flex-col items-center justify-center">
           {/* Avatar */}
-          <div className="relative mb-6">
-            <div className="w-40 h-40 rounded-full flex items-center justify-center overflow-hidden">
-              <svg width="120" height="120" viewBox="0 0 120 120" className="transform translate-y-4">
-                <circle cx="60" cy="60" r="50" fill="#4B5563" />
+          <div className="relative mb-8 group">
+            <div className="w-48 h-48 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-300 to-blue-400 transition-all duration-300 group-hover:scale-105">
+              <svg width="140" height="140" viewBox="0 0 120 120" className="transform translate-y-4 transition-all duration-300 group-hover:scale-110">
+                <circle cx="60" cy="60" r="50" fill="gray" />
                 <circle cx="45" cy="50" r="5" fill="white" />
                 <circle cx="75" cy="50" r="5" fill="white" />
                 <path d={assistantSpeaking ? "M40 80 Q60 100 80 80" : "M40 80 Q60 95 80 80"} stroke="white" strokeWidth="3" fill="none" />
               </svg>
             </div>
-            <div className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-300 ${assistantSpeaking ? 'bg-blue-400' :
-                recordingStatus === 'recording' ? 'bg-green-400' :
-                  recordingStatus === 'listening' ? 'bg-yellow-400' :
-                    'bg-slate-300'
-              }`}>
-              <Mic />
+            <div className={`absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
+              assistantSpeaking ? 'bg-blue-400 animate-pulse' :
+              recordingStatus === 'recording' ? 'bg-green-400 animate-pulse' :
+              recordingStatus === 'listening' ? 'bg-yellow-400 animate-pulse' :
+              'bg-slate-300'
+            }`}>
+              <Mic className="text-white w-6 h-6" />
             </div>
           </div>
 
           {/* Waveform */}
           {currectSection !== 'part2' && (
-            <div className="w-full h-24 bg-white bg-opacity-30 rounded-2xl overflow-hidden relative">
-            <div className="absolute inset-0 flex items-center justify-around p-2">
-              {[...Array(20)].map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-1 rounded-full transition-all duration-300 ${assistantSpeaking || recordingStatus !== 'inactive' ? 'bg-slate-700 animate-wave' : 'bg-slate-300'}`}
-                  style={{
-                    height: `${assistantSpeaking || recordingStatus !== 'inactive' ? Math.min(volume * 10, 100) : 20}%`,
-                    animationDelay: `${index * 0.05}s`
-                  }}
-                ></div>
-              ))}
+            <div className="w-full h-28 bg-white/20 rounded-3xl overflow-hidden relative shadow-inner transition-all duration-300 hover:bg-white/30">
+              <div className="absolute inset-0 flex items-center justify-around p-3">
+                {[...Array(20)].map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-1.5 rounded-full transition-all duration-300 ${
+                      assistantSpeaking || recordingStatus !== 'inactive' ? 'bg-white animate-wave' : 'bg-slate-300'
+                    }`}
+                    style={{
+                      height: `${assistantSpeaking || recordingStatus !== 'inactive' ? Math.min(volume * 10, 100) : 20}%`,
+                      animationDelay: `${index * 0.05}s`
+                    }}
+                  ></div>
+                ))}
+              </div>
             </div>
-          </div>
           )}
         </div>
-        <div className="flex justify-center space-x-4">
-         
-        </div>
       </div>
-      <audio ref={audioRef} />
     </div>
+      <audio ref={audioRef} />
+    </>
   );
 };
 

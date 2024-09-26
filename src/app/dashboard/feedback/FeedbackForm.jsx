@@ -105,7 +105,7 @@ const FeedbackForm = () => {
     return (
         <div className="bg-white  rounded-2xl shadow-lg max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="relative space-y-6 p-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-bl-2xl rounded-tl-2xl shadow-lg overflow-hidden">
+                <div className="relative space-y-6 p-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-bl-2xl rounded-tl-2xl shadow-lg overflow-hidden">
                     <div className="absolute inset-0 bg-white opacity-10 backdrop-filter backdrop-blur-lg"></div>
                     <div className="relative z-10">
                         <h2 className="text-4xl font-bold text-white mb-4">Feedback</h2>
@@ -153,7 +153,7 @@ const FeedbackForm = () => {
                         name="name"
                         placeholder="Name"
                         value={formData.name}
-                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                         disabled
                         required
                     />
@@ -162,7 +162,7 @@ const FeedbackForm = () => {
                         name="email"
                         placeholder="Email"
                         value={formData.email}
-                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                         disabled
                         required
                     />
@@ -172,7 +172,7 @@ const FeedbackForm = () => {
                         name="subject"
                         placeholder="Subject"
                         value={formData.subject}
-                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                         onChange={handleChange}
                         required
                     />
@@ -181,12 +181,12 @@ const FeedbackForm = () => {
                         placeholder="Your message"
                         value={formData.message}
                         rows="8"
-                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+                        className="w-full p-3 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                         onChange={handleChange}
                     ></textarea>
                     <div className="space-y-2">
                         <div className="flex items-center space-x-3">
-                            <label htmlFor="file-upload" className="cursor-pointer bg-white text-indigo-600 px-4 py-2 rounded-lg border border-indigo-200 hover:bg-indigo-50 transition flex items-center space-x-2">
+                            <label htmlFor="file-upload" className="cursor-pointer bg-white text-blue-600 px-4 py-2 rounded-lg border border-blue-200 hover:bg-blue-50 transition flex items-center space-x-2">
                                 <Upload size={20} />
                                 <span>Upload File</span>
                             </label>

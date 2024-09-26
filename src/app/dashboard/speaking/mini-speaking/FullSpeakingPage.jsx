@@ -130,7 +130,7 @@ const FullSpeakingPage = () => {
     <>
       <TestLayout onSubmit={() => setFinished(true)}  time={7} loading={loading} finish={!finished} >
         {/* <Breadcrumb pageName='Mini Speaking' /> */}
-      <div className='bg-white flex flex-col rounded-sm w-full  min-h-screen p-4 py-20 dark:bg-slate-800 dark:text-slate-400'>
+      <div className='bg-white rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
             <div className="sm:flex sm:items-center sm:justify-between mb-4">
@@ -164,14 +164,14 @@ const FullSpeakingPage = () => {
           <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
             <div className="flex flex-col md:flex-row h-full">
               {/* Assistant Column */}
-              <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
+              <div className="md:w-1/3 bg-white p-0 text-white flex flex-col justify-between flex-grow max-h-[35rem]">
                 {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3' || order[indexStep] === 'closing') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
                 {(order[indexStep] === 'part1' || order[indexStep] === 'part2' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
 
               </div>
 
               {/* Chat Column */}
-              <div className="md:w-2/3 flex flex-col justify-between max-h-[34rem] dark:bg-slate-700">
+              <div className="md:w-2/3 flex flex-col justify-between max-h-screen dark:bg-slate-700 max-h-[35rem]">
                 <div className="overflow-y-auto p-4 space-y-4 flex-grow">
                   {order[indexStep] !== 'part2' ? messages.map((message, index) => (
                     <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -202,15 +202,6 @@ const FullSpeakingPage = () => {
                     >
                       Start Conversation
                     </button>
-
-                    {/* <button
-                      onClick={() => handleSubmitAnswer()}
-                      disabled={!finished || feedback}
-                      className={`flex items-center justify-center py-2 px-6  text-white font-semibold transition-all duration-300 transform hover:scale-105  ${!finished || feedback? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
-                        }`}
-                    >
-                      {!loading ? 'Submit' : 'Loading'}
-                    </button> */}
 
                   </div>
                 </div>

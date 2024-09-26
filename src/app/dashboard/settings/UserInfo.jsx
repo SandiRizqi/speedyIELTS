@@ -8,6 +8,7 @@ import { FirestoreDB } from "@/service/firebase";
 import { doc, setDoc } from "firebase/firestore";
 // import { onSnapshot } from "firebase/firestore";
 import { SuccessMessageText, ErrorMessage } from "../_components/Alert";
+import { format } from 'date-fns';
 
 
 const UserInfo = () => {
@@ -26,6 +27,11 @@ const UserInfo = () => {
         }
     },[userState]);
 
+
+    const formatExpirationDate = (date) => {
+        if (!date) return 'N/A';
+        return format(new Date(date.toDate()), 'PP');
+      };
     
 
 
@@ -410,8 +416,11 @@ const UserInfo = () => {
                             <span className="bg-yellow-500 text-white text-md font-bold py-1 px-2 rounded mb-2 inline-block">
                                 {userData?.subscribtion}
                             </span>)}
-
-
+                    </div>
+                    <div className="px-7 pb-4">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Expires: {formatExpirationDate(userData?.expiredAt)}
+                    </span>
                     </div>
                 </div>
             </div>

@@ -130,6 +130,17 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
     const functions = FirebaseFunction();
     const params = useSearchParams();
     const [leftWidth, setLeftWidth] = useState(50); // Initial width of left column (percentage)
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+        const checkScreenSize = () => {
+        setIsSmallScreen(window.innerWidth < 780); // MD breakpoint in Tailwind
+        };
+
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
+        return () => window.removeEventListener('resize', checkScreenSize);
+    }, []);
 
     const handleDrag = (e) => {
         const newWidth = (e.clientX / window.innerWidth) * 100;
@@ -491,29 +502,33 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
                                     {questions["questions"].map((question, index) => {
                                         if (question.section === activeTab) {
                                             return (
-                                                <div className="flex flex-col md:flex-row min-h-screen" key={index}>
-                                                    {/* Left column */}
-                                                    <div
-                                                        className="relative overflow-y-auto max-h-screen left-scrollbar mx-2"
-                                                        style={{ width: `${leftWidth}%` }} // Dynamic width
-                                                    >
-                                                        {question.html && <PassageWrapper>{parse(question.html)}</PassageWrapper>}
-                                                    </div>
+                                                <div className={`flex ${isSmallScreen ? 'flex-col' : 'flex-row'} min-h-screen`} key={index}>
+                                                {/* Left column / Top section on small screens */}
+                                                <div
+                                                    className={`overflow-y-auto left-scrollbar mx-2 ${
+                                                    isSmallScreen ? 'h-1/2' : 'max-h-screen'
+                                                    }`}
+                                                    style={{ width: isSmallScreen ? '100%' : `${leftWidth}%` }}
+                                                >
+                                                    {question.html && <PassageWrapper>{parse(question.html)}</PassageWrapper>}
+                                                </div>
 
-                                                    {/* Resizable handle */}
-                                                    <InteractiveResizeHandle onMouseDown={handleMouseDown} />
+                                                {/* Resizable handle - only show on larger screens */}
+                                                {!isSmallScreen && <InteractiveResizeHandle onMouseDown={handleMouseDown} />}
 
-                                                    {/* Right column */}
-                                                    <div
-                                                        className="p-4 flex flex-col overflow-y-auto max-h-screen right-scrollbar"
-                                                        style={{ width: `${100 - leftWidth}%` }} // Remaining width for right column
-                                                    >
-                                                        {question.parts.map((obj, idx) => (
-                                                            <div key={idx}>
-                                                                <RenderQuestion part={obj} />
-                                                            </div>
-                                                        ))}
+                                                {/* Right column / Bottom section on small screens */}
+                                                <div
+                                                    className={`p-4 flex flex-col overflow-y-auto right-scrollbar ${
+                                                    isSmallScreen ? 'h-1/2' : 'max-h-screen'
+                                                    }`}
+                                                    style={{ width: isSmallScreen ? '100%' : `${100 - leftWidth}%` }}
+                                                >
+                                                    {question.parts.map((obj, idx) => (
+                                                    <div key={idx}>
+                                                        <RenderQuestion part={obj} />
                                                     </div>
+                                                    ))}
+                                                </div>
                                                 </div>
                                             )
                                         } else {

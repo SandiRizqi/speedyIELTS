@@ -45,6 +45,7 @@ const AuthStateChangeProvider = ({children}) => {
                             photoURL: Data["photoURL"],
                             phoneNumber: Data["phoneNumber"],
                             bio: Data["bio"],
+                            expiredAt: Data["expiredAt"] || null,
                         }))
                     } else {
                         console.log("No such user's document!");
