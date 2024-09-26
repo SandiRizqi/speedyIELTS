@@ -164,15 +164,14 @@ const FullSpeakingPage = () => {
           <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
             <div className="flex flex-col md:flex-row h-full">
               {/* Assistant Column */}
-              <div className="md:w-1/3 bg-white p-0 text-white flex flex-col justify-between flex-grow max-h-[35rem]">
+              <div className="md:w-1/3 bg-white p-0 text-white flex flex-col justify-between ">
                 {(order[indexStep] === 'intro1' || order[indexStep] === 'intro2' || order[indexStep] === 'intro3' || order[indexStep] === 'closing') && (<VoiceAssistant intro={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
                 {(order[indexStep] === 'part1' || order[indexStep] === 'part2' || order[indexStep] === 'part3') && (<VoiceAssistant questions={question[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} />)}
-
               </div>
 
               {/* Chat Column */}
-              <div className="md:w-2/3 flex flex-col justify-between max-h-screen dark:bg-slate-700 max-h-[35rem]">
-                <div className="overflow-y-auto p-4 space-y-4 flex-grow">
+              <div className="md:w-2/3 flex flex-col justify-between max-h-screen dark:bg-slate-700">
+                <div className="overflow-y-auto p-4 space-y-4 max-h-[35rem]">
                   {order[indexStep] !== 'part2' ? messages.map((message, index) => (
                     <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>
