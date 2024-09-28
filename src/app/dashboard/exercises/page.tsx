@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <DefaultLayout>
+        
       <MiniPractice />
     </DefaultLayout>
   );
