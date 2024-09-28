@@ -259,6 +259,10 @@ const VoiceAssistant = ({ intro, questions, setMessages, start, isVisible }) => 
 
   useEffect(() => {
     return () => {
+      if (synth.current.speaking || synth.current.pending) {
+        synth.current.cancel(); // Stop any ongoing speech synthesis
+      }
+      
       if (audioContext.current) {
         audioContext.current.close();
         audioContext.current = null;

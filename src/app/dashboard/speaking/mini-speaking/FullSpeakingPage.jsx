@@ -128,9 +128,9 @@ const FullSpeakingPage = () => {
 
   return (
     <>
-      <TestLayout onSubmit={() => setFinished(true)}  time={7} loading={loading} finish={!finished} >
+      <TestLayout onSubmit={() => setFinished(true)}  time={7} loading={loading} finish={finished} >
         {/* <Breadcrumb pageName='Mini Speaking' /> */}
-      <div className='bg-white rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
+      <div className='bg-white rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400 min-h-screen'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
             <div className="sm:flex sm:items-center sm:justify-between mb-4">

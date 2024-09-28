@@ -201,8 +201,14 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
   };
 
 
+  
   useEffect(() => {
     return () => {
+
+      if (synth.current.speaking || synth.current.pending) {
+        synth.current.cancel(); // Stop any ongoing speech synthesis
+      }
+
       if (audioContext.current) {
         audioContext.current.close();
         audioContext.current = null;
@@ -212,15 +218,25 @@ const VoiceAssistant = ({ intro, questions, setMessages, handleNextPart, currect
       }
       if (microphone.current) {
         microphone.current.disconnect();
+        const tracks = microphone.current?.mediaStream?.getTracks();
+        tracks?.forEach(track => track.stop());
       }
       if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
         mediaRecorder.current.stop();
       }
       SpeechRecognition.stopListening();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+        URL.revokeObjectURL(audioRef.current.src);
+      }
       resetTranscript();
       clearTimeout(silenceTimer.current);
     };
   }, []);
+
+
+  
 
   useEffect(() => {
     if (transcript && !listening) {

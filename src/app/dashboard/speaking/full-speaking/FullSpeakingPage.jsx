@@ -164,7 +164,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
   return (
     <>
-      <TestLayout onSubmit={() => setFinished(true)}  time={15} loading={loading} finish={!finished} onCancel={setNextTest ? () => setNextTest('navigation') : null}>
+      <TestLayout onSubmit={() => setFinished(true)}  time={15} loading={loading} finish={finished} onCancel={setNextTest ? () => setNextTest('navigation') : null}>
       <div className='bg-white rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
