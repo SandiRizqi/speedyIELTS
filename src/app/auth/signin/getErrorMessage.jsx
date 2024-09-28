@@ -1,5 +1,13 @@
 export default function getErrorMessage(error) {
   const code = error.code;
+
+//   console.log(error.message)
+  // Check if the error message contains the specific blocking function error
+  if (error.message && error.message.includes('needs to be verified')) {
+    return `Your email needs to be verified before access is granted.`;
+  }
+
+
   switch(code) {
       case 'auth/email-already-in-use':
           return 'This email is already registered. Please use a different email or try logging in.';

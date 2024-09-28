@@ -30,7 +30,7 @@ export default function getErrorMessage(error) {
       case 'auth/invalid-action-code':
           return 'The action code is invalid. Please check and try again or request a new one.';
       default:
-          console.error('Unhandled Firebase auth error:', error);
+        //   console.error('Unhandled Firebase auth error:', error);
           return 'An unexpected error occurred. Please try again later or contact support.';
   }
 }
