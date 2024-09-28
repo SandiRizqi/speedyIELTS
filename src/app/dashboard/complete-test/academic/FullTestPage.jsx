@@ -5,7 +5,7 @@ import AcademicListeningPage from "../../listening/academic-listening/AcademicLi
 import AcademicReadingPage from "../../reading/academic-reading/AcademicReadingPage";
 import WritingFullPage from "../../writing/writing-full/WritingFullPage";
 import FullSpeakingPage from "../../speaking/full-speaking/FullSpeakingPage";
-import StartInstruction from "./StartInstruction";
+// import StartInstruction from "./StartInstruction";
 import { useAnswer } from "../hook/useAnswerCollection";
 // import { FaHeadphones, FaBook, FaPen, FaMicrophone } from "react-icons/fa"; // Importing icons from react-icons
 import { FirebaseFunction } from "@/service/firebase";
@@ -14,6 +14,7 @@ import withUser from "@/hooks/withUser";
 import Loader from "@/components/common/Loader";
 import { httpsCallable } from "firebase/functions";
 import { useSearchParams } from "next/navigation";
+import { ErrorMessage } from "../../_components/Alert";
 // import IELTSScoreDisplay from "./IELTSScoreDisplay";
 // import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import IELTSSkillsTestOptions from "./IELTSSkillsTestOptions";
@@ -29,13 +30,26 @@ const NavTab = ({activeTab, setActiveTab, globalState}) => {
 
 
 const FullTestPage = () => {
-
-  const { globalState,  globalFeedback, addAnswer, addFeedback } = useAnswer();
+  const { globalState,  globalFeedback, addAnswer, addFeedback, setGlobalState } = useAnswer();
+  const {userState} = useUser();
+  // const [testData, setTestData] = useState(null);
   const [activeTab, setActiveTab] = useState('navigation');
   const [loading, setLoading] = useState(true); 
   const functions = FirebaseFunction()
-
   const params = useSearchParams();
+
+
+  async function getFullTestID () {
+    const getTest = httpsCallable(functions, "makeFullTestSkill");
+    try {
+      const result = await getTest({ userId: userState.uid });
+      setGlobalState(prev => ({...prev, ...result.data}))
+    } catch (error) {
+      ErrorMessage(error)
+    } finally {
+      setLoading(false); // Set loading to false after the data is fetched
+    }
+  }
 
   useEffect(() => {
     const getResultID = async () => {
@@ -44,7 +58,7 @@ const FullTestPage = () => {
         const result = await getData({ type: "test-taken", id: params.get("result") });
         addFeedback(result.data["result"]);
       } catch (error) {
-        console.error("Error fetching result:", error);
+        ErrorMessage(error)
       } finally {
         setLoading(false); // Set loading to false after the data is fetched
       }
@@ -53,7 +67,7 @@ const FullTestPage = () => {
     if (params.get("result")) {
       getResultID();
     } else {
-      setLoading(false); // If there's no result parameter, we stop loading
+      getFullTestID();
     }
   }, [params]);
 
@@ -61,11 +75,6 @@ const FullTestPage = () => {
   if (loading) {
     return <Loader />
   }
-
-
-  // if (!start && !params.get("result")) {
-  //   return <StartInstruction setStart={setStart} />
-  // }
 
  
 

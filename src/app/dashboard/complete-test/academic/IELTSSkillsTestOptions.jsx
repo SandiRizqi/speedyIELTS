@@ -207,9 +207,14 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
     }
   };
 
+
+  const handleCheck = () => {
+    console.log(globalState)
+  }
+
   const handleSubmit = async () => {
    // setSubmitted(true);
-   setLoading(true)
+    setLoading(true)
     console.log(globalState)
     //event.preventDefault();
     const getFullScore = httpsCallable(functions, 'getFullSkillScore');
@@ -251,7 +256,7 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
               </span>
             </div>
             <div className="text-sm md:text-md">
-              Candidate ID: <span className="font-semibold">{user.email?.toUpperCase()}</span>
+              Candidate : <span className="font-semibold">{userState.email}</span>
             </div>
           </div>
         </div>
@@ -331,7 +336,7 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
               Cencel
             </button>
             <button
-              onClick={handleSubmit}
+              onClick={handleCheck}
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 transition-colors duration-300"
             >
               {loading ? "Loading... .": "Submit Test"}
