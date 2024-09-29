@@ -17,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import { ErrorMessage } from "../../_components/Alert";
 // import IELTSScoreDisplay from "./IELTSScoreDisplay";
 // import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { SpeakingProvider } from "../../speaking/full-speaking/hook/useSpeaking";
 import IELTSSkillsTestOptions from "./IELTSSkillsTestOptions";
 
 const NavTab = ({activeTab, setActiveTab, globalState}) => {
@@ -57,6 +58,7 @@ const FullTestPage = () => {
       try {
         const result = await getData({ type: "test-taken", id: params.get("result") });
         addFeedback(result.data["result"]);
+        setGlobalState(result.data);
       } catch (error) {
         ErrorMessage(error)
       } finally {
@@ -85,7 +87,7 @@ const FullTestPage = () => {
         {activeTab === 'listening' && (<><AcademicListeningPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.listening?.questionId} savedAnswer={globalFeedback.listening?.answer} Feedback={globalFeedback.listening?.corrections} Result={globalFeedback.listening}/></>)}
         {activeTab === 'reading' && (<AcademicReadingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.reading?.questionId} savedAnswer={globalFeedback.reading?.answer} Feedback={globalFeedback.reading?.corrections} Result={globalFeedback.reading} />)}
         {activeTab === 'writing' && (<WritingFullPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={[globalFeedback.writing?.result["task1"]["questionId"], globalFeedback.writing?.result["task2"]["questionId"]]} savedAnswer={globalFeedback.writing?.result} Feedback={{feedback1: globalFeedback.writing?.result.task1.result, feedback2:globalFeedback.writing?.result.task2.result }}/>)}
-        {activeTab === 'speaking' && (<FullSpeakingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.speaking?.questionId} savedAnswer={globalFeedback.speaking?.answer} Feedback={globalFeedback.speaking?.result}/>)}
+        {activeTab === 'speaking' && (<SpeakingProvider><FullSpeakingPage isFullTest={true} setNextTest={setActiveTab} setCollectAnswer={addAnswer} questionId={globalFeedback.speaking?.questionId} savedAnswer={globalFeedback.speaking?.answer} Feedback={globalFeedback.speaking?.result}/></SpeakingProvider>)}
       </div>
     </>
   )

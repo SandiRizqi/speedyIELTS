@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Clock, Award } from 'lucide-react';
 import { useUser } from '@/service/user';
 import { usePathname, useRouter } from 'next/navigation';
-import { FirebaseFunction } from '@/service/firebase';
+// import { FirebaseFunction } from '@/service/firebase';
+import { FirestoreDB } from '@/service/firebase';
+import { useAnswer } from '../hook/useAnswerCollection';
 import { ErrorMessage } from '../../_components/Alert';
-import { httpsCallable } from 'firebase/functions';
+import { onSnapshot, doc } from 'firebase/firestore';
+import { useSearchParams } from 'next/navigation';
+// import { ErrorMessage } from '../../_components/Alert';
+// import { httpsCallable } from 'firebase/functions';
 
 const getScoreColor = (score) => {
-  if (score < 4) return 'text-red-500';
+  if (score < 4) return 'text-danger';
   if (score < 7) return 'text-yellow-500';
   return 'text-green-500';
 };
@@ -93,75 +98,23 @@ const SkillIcon = ({ name, size = 24, className = "" }) => {
   return <Icon width={size} height={size} className={className} />;
 };
 
-const ScoreModal = ({ skill, score }) => {
-  const [isOpen, setIsOpen] = useState(false);
 
-  const bandDescriptors = [
-    "Non User", "Intermittent User", "Extremely Limited User", "Limited User",
-    "Modest User", "Competent User", "Good User", "Very Good User", "Expert User"
-  ];
 
-  const bandScore = Math.floor(score);
-  const percentage = ((score - bandScore) * 100).toFixed(0);
-  const scoreColor = getScoreColor(score);
-
-  return (
-    <div>
-      <button
-        className="mt-2 w-full border border-slate-300 p-2 text-slate-700 rounded-lg hover:bg-slate-100"
-        onClick={() => setIsOpen(true)}
-      >
-        View Detailed Score
-      </button>
-
-      {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={() => setIsOpen(false)}
-            >
-              &times; {/* Close button */}
-            </button>
-            <h2 className="text-xl font-semibold mb-4">{skill} Score Breakdown</h2>
-            <div className="flex justify-center mb-4">
-              <CircularProgress percentage={(score / 9) * 100} scoreColor={scoreColor}>
-                {score}
-              </CircularProgress>
-            </div>
-            <div className="mb-4">
-              <div className="font-semibold">Band Score: {bandScore}</div>
-              <div>{bandDescriptors[bandScore - 1]}</div>
-            </div>
-            <div className="mb-4">
-              <div className="font-semibold">Progress to Next Band</div>
-              <div className="w-full bg-slate-200 rounded-full h-2.5">
-                <div className={`${scoreColor} h-2.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
-              </div>
-              <div className="text-sm text-right mt-1">{percentage}%</div>
-            </div>
-            <div className="text-sm text-slate-500">
-              This score is indicative of your performance in the {skill.toLowerCase()} section of the IELTS test.
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedback, globalFeedback}) => {
+const IELTSSkillsTestOptions = ({setActiveTab}) => {
+  const { globalState,  globalFeedback, setGlobalState } = useAnswer();
   const [completedSkills, setCompletedSkills] = useState([]);
-  const [submitted, setSubmitted] = useState(false);
-  const [scores, setScores] = useState({});
+  const [submitted, setSubmitted] = useState(globalState?.isFinish || false);
+  // const [scores, setScores] = useState({});
   const [overallScore, setOverallScore] = useState(globalFeedback?.overall || 0);
   const user = useUser();
   const {userState} = user;
   const [timeLeft, setTimeLeft] = useState(180); // 3 hours in minutes
   const path = usePathname();
   const router = useRouter();
+  const params = useSearchParams();
   const [showConfirm, setShowConfirm] = useState(false);
-  const functions = FirebaseFunction();
+  const db = FirestoreDB();
+  // const functions = FirebaseFunction();
   const [loading, setLoading] = useState(false);
 
 
@@ -180,6 +133,7 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
 
 
 
+  // console.log(globalFeedback)
 
 
   const handleGoBack = () => {
@@ -208,35 +162,122 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
   };
 
 
-  const handleCheck = () => {
-    console.log(globalState)
-  }
+  
 
   const handleSubmit = async () => {
-   // setSubmitted(true);
-    setLoading(true)
-    console.log(globalState)
-    //event.preventDefault();
-    const getFullScore = httpsCallable(functions, 'getFullSkillScore');
-    
+    if (!globalState?.listening.done || !globalState?.reading.done ||
+      !globalState?.writing.done || !globalState?.speaking.done
+    ) {
+      return ErrorMessage("Please finish all skill tests.")
+    }
+    setLoading(true);
     try {
-      const respons = await getFullScore({...globalState, userId: userState.uid});
-      const result = respons.data["data"]["result"];
-      addFeedback(result);
-      setOverallScore(result.overall);
-      setScores({
-        listening: result.listening.result.overall,
-        reading: result.reading.result.overall,
-        writing: result.writing.result.overall,
-        speaking: result.writing.result.overall
-      })
-     
-    } catch (error) {
-      ErrorMessage(error)
-    } finally {
-      setLoading(false); // Set loading to false when submission completes
+      setGlobalState(prev => ({...prev, isSubmited: true}));
+    } catch {
+      ErrorMessage("Something error when evaluate the result");
+      setLoading(false);
     }
   };
+
+
+    const ScoreModal = ({ skill, score }) => {
+      const [isOpen, setIsOpen] = useState(false);
+    
+      const bandDescriptors = [
+        "Non User", "Intermittent User", "Extremely Limited User", "Limited User",
+        "Modest User", "Competent User", "Good User", "Very Good User", "Expert User"
+      ];
+    
+      function handleClick() {
+        setIsOpen(true);
+      }
+    
+      const bandScore = Math.floor(score);
+      // const percentage = ((score - bandScore) * 100).toFixed(0);
+      const scoreColor = getScoreColor(score);
+    
+      return (
+        <div>
+          <button
+            className="mt-2 w-full border border-slate-300 p-2 text-slate-700 rounded-lg hover:bg-slate-100 z-50"
+            onClick={handleClick}
+          >
+            View Detailed Score
+          </button>
+    
+          {isOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[9999]">
+              <div className="bg-white rounded-lg p-6 w-full max-w-sm relative">
+                <button
+                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  onClick={() => setIsOpen(false)}
+                >
+                  &times; {/* Close button */}
+                </button>
+                <h2 className="text-xl font-semibold mb-4">{skill} Score Breakdown</h2>
+                <div className="flex justify-center mb-4">
+                  <CircularProgress percentage={(score / 9) * 100} scoreColor={scoreColor}>
+                    {score}
+                  </CircularProgress>
+                </div>
+                <div className="mb-4">
+                  <div className="font-semibold">Band Score: {bandScore}</div>
+                  <div>{bandDescriptors[bandScore - 1]}</div>
+                </div>
+                
+                {/* <div className="mb-4">
+                  <div className="font-semibold">Progress to Next Band</div>
+                  <div className="w-full bg-slate-200 rounded-full h-2.5">
+                    <div className={`${scoreColor} h-2.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
+                  </div>
+                  <div className="text-sm text-right mt-1">{percentage}%</div>
+                </div> */}
+                <div className="text-sm text-slate-500">
+                  This score is indicative of your performance in the {skill.toLowerCase()} section of the IELTS test.
+                </div>
+                <div className='my-2 flex'>
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 transition-colors duration-300"
+                  onClick={() => setActiveTab(skill.toLowerCase())}
+                  >
+                    Detail
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    useEffect(() => {
+      if (globalState && !params.get("result")) {
+          // console.log("RUN")
+          const userDocRef = doc(db, 'test-taken', globalState.id);
+          const unsubscribe = onSnapshot(
+              userDocRef,
+              (docSnapshot) => {
+                // console.log(docSnapshot.data())
+                  if (docSnapshot.exists()) {
+                      const data = docSnapshot.data();
+                      if (data.isFinish) {
+                        window.location.href = `/dashboard/complete-test/academic?result=${data.id}`
+                      }
+                      if (data.isError) {
+                        ErrorMessage("Something error when evaluate the result");
+                      }
+                  } else {
+                      console.log("No such user's document!");
+                  }
+              },
+              (err) => {
+                  console.error("Error fetching user data: ", err);
+              }
+          );
+          return () => unsubscribe();
+      }
+  }, [globalState]);
+
+
 
   return (
     <div className="min-h-screen  text-slate-800 p-8 flex justify-center items-center ">
@@ -263,7 +304,7 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
         <div className="p-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-8">
             {skills.map((skill) => (
-              <button
+              <div
                 key={skill.name}
                 disabled={globalState[skill.name.toLowerCase()]?.done}
                 className={`border-2 p-4  transition-all duration-300 cursor-pointer
@@ -283,14 +324,14 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
                     <div>
                       <div className="flex justify-center mb-2">
                         <CircularProgress
-                          percentage={(parseFloat(scores[skill.name.toLowerCase()]) / 9) * 100}
-                          scoreColor={getScoreColor(parseFloat(scores[skill.name]))}
+                          percentage={(parseFloat(globalFeedback[skill.name.toLowerCase()]?.result.overall) / 9) * 100}
+                          scoreColor={getScoreColor(parseFloat(globalFeedback[skill.name.toLowerCase()]?.result.overall))}
                         >
-                          {scores[skill.name.toLowerCase()]}
+                          {globalFeedback[skill.name.toLowerCase()]?.result.overall}
                         </CircularProgress>
                       </div>
-                      {scores[skill.name.toLowerCase()] !== 'N/A' && (
-                        <ScoreModal skill={skill.name} score={parseFloat(scores[skill.name.toLowerCase()])} />
+                      {globalFeedback[skill.name.toLowerCase()] && (
+                        <ScoreModal skill={skill.name} score={parseFloat(globalFeedback[skill.name.toLowerCase()]?.result.overall)} />
                       )}
                     </div>
                   ) : globalState[skill.name.toLowerCase()]?.done === true ? (
@@ -307,7 +348,7 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
                   </div>
                   )}
                 </div>
-              </button>
+              </div>
             ))}
           </div>
           {submitted && (
@@ -335,12 +376,15 @@ const IELTSSkillsTestOptions = ({activeTab, setActiveTab, globalState, addFeedba
             >
               Cencel
             </button>
-            <button
-              onClick={handleCheck}
+            {!params.get("result") && (
+              <button
+              onClick={handleSubmit}
+              disabled={loading}
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 transition-colors duration-300"
             >
               {loading ? "Loading... .": "Submit Test"}
             </button>
+            )}
           </div>
         </div>
       </div>
