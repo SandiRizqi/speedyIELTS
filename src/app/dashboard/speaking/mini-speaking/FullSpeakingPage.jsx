@@ -130,7 +130,7 @@ const FullSpeakingPage = () => {
     <>
       <TestLayout onSubmit={() => setFinished(true)}  time={7} loading={loading} finish={finished} >
         {/* <Breadcrumb pageName='Mini Speaking' /> */}
-      <div className='bg-white rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400 min-h-screen'>
+      <div className='mb-20 rounded-sm w-full flex flex-col p-4 py-30 dark:bg-slate-800 dark:text-slate-400 min-h-screen'>
         <header className="w-full">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
             <div className="sm:flex sm:items-center sm:justify-between mb-4">
@@ -193,7 +193,8 @@ const FullSpeakingPage = () => {
                 <div className="p-4 border-t mt-auto">
                   <div className="flex space-x-2 justify-center">
 
-                    <button
+                    {!finished && (
+                      <button
                       onClick={() => setStatusTest(!statusTest)}
                       disabled={statusTest}
                       className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
@@ -201,6 +202,7 @@ const FullSpeakingPage = () => {
                     >
                       Start Conversation
                     </button>
+                    )}
 
                   </div>
                 </div>
