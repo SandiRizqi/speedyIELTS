@@ -1,12 +1,17 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FirestoreDB } from '@/service/firebase';
+import { doc, query, getDocs, where, collection, getDoc } from 'firebase/firestore';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import Loader from '@/components/common/Loader';
 
 const miniPractices = [
     {
         skill: 'Reading',
         icon: '📚',
         exercises: [
-            { title: 'Skimming for Main Ideas', focus: 'Comprehension' },
+            { title: 'Skimming for Main Ideas', focus: 'Comprehension', cat: 'skimming' },
             { title: 'Scanning for Specific Information', focus: 'Speed Reading' },
             { title: 'Matching Headings', focus: 'Text Organization' },
             { title: 'True/False/Not Given', focus: 'Critical Thinking' },
@@ -79,6 +84,53 @@ const miniPractices = [
 const MiniPractice = () => {
     const [selectedSkill, setSelectedSkill] = useState(miniPractices[0].skill);
     const [hoveredExercise, setHoveredExercise] = useState(null);
+    const [materials, setMaterials] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const db =  FirestoreDB();
+    const params = useSearchParams();
+    const router =  useRouter();
+
+    const handleClick = (cat) => {
+        if(!cat) {
+            return;
+        }
+        router.replace(`/dashboard/exercises?cat=${cat}`)
+    }
+
+    
+
+
+    useEffect(() => {
+        async function getDocuments(collectionName, field, operator, value) {
+            setLoading(true)
+            const q = query(
+              collection(db, collectionName),
+              where(field, operator, value)
+            );
+          
+            const querySnapshot = await getDocs(q);
+            const result = []
+            querySnapshot.forEach((doc) => {
+              result.push({id: doc.id,...doc.data()});
+            });
+            // console.log(result)
+            setLoading(false)
+            setMaterials(result)
+          }
+
+
+        if (params.get('cat')) {
+            getDocuments("mini-exercises", "cat", "==", params.get('cat'));
+        } else {
+            setMaterials(null);
+        }
+    },[params])
+
+    console.log(materials)
+
+    if (loading) {
+        return <Loader />
+    }
 
     return (
         <div className="container mx-auto p-6 min-h-screen">
@@ -116,8 +168,8 @@ const MiniPractice = () => {
             </div>
 
             {/* Exercises Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000">
-                {miniPractices.find(category => category.skill === selectedSkill).exercises.map((exercise, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 perspective-1000">     
+                {!materials && miniPractices.find(category => category.skill === selectedSkill).exercises.map((exercise, index) => (
                     <div
                         key={index}
                         className={`group bg-white dark:bg-slate-500 p-6 rounded-xl shadow-md transition-all duration-300 
@@ -125,6 +177,7 @@ const MiniPractice = () => {
                         ${hoveredExercise === index ? 'rotate-y-180' : ''}`}
                         onMouseEnter={() => setHoveredExercise(index)}
                         onMouseLeave={() => setHoveredExercise(null)}
+                        onClick={() => handleClick(exercise.cat)}
                     >
                         <div className={`transition-all duration-300 ${hoveredExercise === index ? 'opacity-0' : 'opacity-100'}`}>
                             <h3 className="font-bold text-lg mb-3 text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -140,6 +193,32 @@ const MiniPractice = () => {
                         </div>
                     </div>
                 ))}
+
+                {materials &&
+                    materials.map((obj, index) => (
+                        <div
+                        key={index}
+                        className={`group bg-white dark:bg-slate-500 p-6 rounded-xl shadow-md transition-all duration-300 
+                        hover:shadow-xl hover:scale-105 cursor-pointer transform 
+                        ${hoveredExercise === index ? 'rotate-y-180' : ''}`}
+                        onMouseEnter={() => setHoveredExercise(index)}
+                        onMouseLeave={() => setHoveredExercise(null)}
+                        onClick={() => handleClick(obj.cat)}
+                    >
+                        <div className={`transition-all duration-300 ${hoveredExercise === index ? 'opacity-0' : 'opacity-100'}`}>
+                            <h3 className="font-bold text-lg mb-3 text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                {obj.title}
+                            </h3>
+                            <span className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-full">
+                                {obj.cat}
+                            </span>
+                        </div>
+                        <div className={`absolute inset-0 flex items-center justify-center bg-orange-400 text-white rounded-xl p-4 transition-all duration-300 
+                             ${hoveredExercise === index ? 'opacity-100 rotate-y-0' : 'opacity-0 rotate-y-180'}`}>
+                            <p className="text-center">Click to start practice on {obj.title}</p>
+                        </div>
+                    </div>
+                    ))}
             </div>
         </div>
     );
