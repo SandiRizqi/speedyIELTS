@@ -38,6 +38,17 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
   const {
     browserSupportsSpeechRecognition
   } = useSpeechRecognition();
+  const [isSupported, setIsSupported] = useState(false);
+
+  useEffect(() => {
+    // Check for SpeechRecognition support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      setIsSupported(true);
+    } else {
+      setIsSupported(false);
+    }
+  }, []);
 
 
 
@@ -158,7 +169,7 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
     return <StartInstruction setStart={setStart} />
   }
 
-  if (!browserSupportsSpeechRecognition) {
+  if (!browserSupportsSpeechRecognition || !isSupported) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 

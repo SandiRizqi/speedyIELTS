@@ -8,7 +8,7 @@ import { httpsCallable } from 'firebase/functions';
 import Loader from '@/components/common/Loader';
 import VoiceAssistant from './VoiceAssistant';
 import StartInstruction from './StartInstruction';
-import { useSpeechRecognition } from 'react-speech-recognition';
+import { useSpeechRecognition  } from 'react-speech-recognition';
 import LoadingScore from '../LoadingScore';
 import ScoreDisplay from '../ScoreDisplay';
 import { useSearchParams } from 'next/navigation';
@@ -38,7 +38,17 @@ const FullSpeakingPage = () => {
   const {
     browserSupportsSpeechRecognition
   } = useSpeechRecognition();
+  const [isSupported, setIsSupported] = useState(false);
 
+  useEffect(() => {
+    // Check for SpeechRecognition support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      setIsSupported(true);
+    } else {
+      setIsSupported(false);
+    }
+  }, []);
 
 
   const getQuestion = async () => {
@@ -122,7 +132,7 @@ const FullSpeakingPage = () => {
     return <StartInstruction setStart={setStart} />
   }
 
-  if (!browserSupportsSpeechRecognition) {
+  if (!browserSupportsSpeechRecognition || !isSupported) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
