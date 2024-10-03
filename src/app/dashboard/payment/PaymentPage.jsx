@@ -13,7 +13,7 @@ import { Check, Sparkles, ArrowRight } from 'lucide-react';
 
 const PricingTier = ({ title, price, range, features, isPopular, type }) => {
     const [isHovered, setIsHovered] = useState(false);
-    const { Subs, loading } = useSubscrip();
+    const { Subs, loading, selected } = useSubscrip();
 
     
 
@@ -53,15 +53,17 @@ const PricingTier = ({ title, price, range, features, isPopular, type }) => {
             </ul>
             {price && (
                 <button className={`w-full py-2 px-4  font-extrabold text-xl transition-all duration-300 relative overflow-hidden group
-        ${isPopular
-                        ? 'bg-white text-blue-600 hover:bg-orange-50 hover:text-white'
+                    ${isPopular && !loading 
+                        ? 'bg-white text-blue-600 hover:bg-orange-50 hover:text-black'
                         : 'bg-orange-600 text-white hover:bg-orange-700'
-                    }`} onClick={() => handleChoose(type)}>
+                    } ${loading ? 'bg-slate-300 text-slate-700' : ''}`} onClick={() => handleChoose(type)}
+                    disabled={loading}
+                    >
                     <span className="relative z-10 flex items-center justify-center">
                         {!loading ? "Choose Plan" : "Loading... ."}
                         <ArrowRight className="ml-2 transform group-hover:translate-x-1 transition-transform" />
                     </span>
-                    <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-400 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                    {/* <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-400 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div> */}
                 </button>
             )}
         </div>

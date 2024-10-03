@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 const useSubscrip = () => {
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState(null)
+    const [selected, setSelected] = useState(null);
     const user = useUser();
     const {userState} = user;
     const func = FirebaseFunction();
@@ -17,6 +18,7 @@ const useSubscrip = () => {
 
   
     const Subs = async (TYPE) => {
+      setSelected(TYPE)
       if (!userState.uid) {
         return window.alert("User doesn't exist");
       }
@@ -53,7 +55,7 @@ const useSubscrip = () => {
       }
     };
   
-    return { Subs, loading, token };
+    return { Subs, loading, token, selected };
   };
   
 
