@@ -6,6 +6,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { ErrorMessage } from '../_components/Alert';
 import ExercisesLayout from '@/components/Layouts/ExercisesLayout';
 
+
 const DisplayMaterial = ({ onClose, id }) => {
     const [showResult, setShowResult] = useState(false);
     const db = FirestoreDB();
@@ -24,7 +25,13 @@ const DisplayMaterial = ({ onClose, id }) => {
     // };
 
     const handleShowResult = () => {
-         setShowResult(true);
+        const q1Value = document.querySelector('input[name="question1"]:checked')?.value;
+        const q2Value = document.querySelector('input[name="question2"]:checked')?.value;
+        const q3Value = document.querySelector('input[name="question3"]')?.value;
+        if (!q1Value || !q2Value || !q3Value) {
+            return window.alert("Please complete all the answer.")
+        }
+        setShowResult(true);
     };
 
     function handleClose() {
@@ -42,7 +49,7 @@ const DisplayMaterial = ({ onClose, id }) => {
 
                 if (docSnap.exists()) {
                     const resp = docSnap.data();
-                    console.log(resp);
+                    // console.log(resp);
                     setData(resp);
                 } else {
                     ErrorMessage("No such document!");

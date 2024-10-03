@@ -9,6 +9,13 @@ import Loader from '@/components/common/Loader';
 import DisplayMaterial from './DisplayMaterial';
 
 
+function capitalizeTxt(txt) {
+    if(!txt) {
+        return null;
+    }
+    return txt.charAt(0).toUpperCase() + txt.slice(1); 
+  }
+
 const miniPractices = [
     {
         skill: 'Reading',
@@ -148,7 +155,7 @@ const MiniPractice = () => {
 
     return (
         <div className="container mx-auto p-6 min-h-screen">
-            <Breadcrumb pageName="Mini exercises"/>
+            <Breadcrumb pageName={capitalizeTxt(params.get('cat')) || "Mini Exercise"}/>
             {selectedMaterial && <DisplayMaterial id={selectedMaterial} onClose={() => setSelectedMaterial(null)}/>}
             <div className="absolute inset-0 overflow-hidden dark:bg-slate-900 dark:text-slate-700 z-0">
                 <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-blue-400 rounded-full filter blur-5xl opacity-20 animate-blob"></div>
@@ -158,7 +165,7 @@ const MiniPractice = () => {
             {!materials ? (
                 <div className="max-w-7xl mx-auto relative">
                     <h1 className="text-4xl font-bold mb-12 text-center text-slate-800 tracking-tight dark:text-slate-100 z-10">
-                        IELTS Mini Exercises
+                        IELTS Mini Exercise
                     </h1>
                 </div>
             ): (
@@ -195,8 +202,8 @@ const MiniPractice = () => {
                 {!materials && miniPractices.find(category => category.skill === selectedSkill).exercises.map((exercise, index) => (
                     <div
                         key={index}
-                        className={`group bg-white dark:bg-slate-500 p-6 rounded-xl shadow-md transition-all duration-300 
-                        hover:shadow-xl hover:scale-105 cursor-pointer transform 
+                        className={`group bg-white dark:bg-slate-500 p-6 rounded-md shadow-md transition-all duration-300 
+                        hover:shadow-xl hover:scale-105 cursor-pointer transform min-h-[10rem]
                         ${hoveredExercise === index ? 'rotate-y-180' : ''}`}
                         onMouseEnter={() => setHoveredExercise(index)}
                         onMouseLeave={() => setHoveredExercise(null)}
@@ -206,13 +213,13 @@ const MiniPractice = () => {
                             <h3 className="font-bold text-lg mb-3 text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
                                 {exercise.title}
                             </h3>
-                            <span className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-full">
+                            <span className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-lg">
                                 {exercise.focus}
                             </span>
                         </div>
-                        <div className={`absolute inset-0 flex items-center justify-center bg-orange-400 text-white rounded-xl p-4 transition-all duration-300 
+                        <div className={`absolute inset-0 flex items-center justify-center bg-orange-400 text-white rounded-md p-4 transition-all duration-300 
                              ${hoveredExercise === index ? 'opacity-100 rotate-y-0' : 'opacity-0 rotate-y-180'}`}>
-                            <p className="text-center">Click to start practice on {exercise.title}</p>
+                            <p className="text-center">Click to start practice on <strong>{exercise.title}</strong></p>
                         </div>
                     </div>
                 ))}
@@ -221,7 +228,7 @@ const MiniPractice = () => {
                     materials.map((obj, index) => (
                         <div
                         key={index}
-                        className={`group bg-white dark:bg-slate-500 p-6 rounded-xl shadow-md transition-all duration-300 
+                        className={`group bg-white dark:bg-slate-500 p-6 rounded-md shadow-md transition-all duration-300 
                         hover:shadow-xl hover:scale-105 cursor-pointer transform 
                         ${hoveredExercise === index ? 'rotate-y-180' : ''}`}
                         onMouseEnter={() => setHoveredExercise(index)}
@@ -232,11 +239,11 @@ const MiniPractice = () => {
                             <h3 className="font-bold text-lg mb-3 text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
                                 {obj.title}
                             </h3>
-                            <span className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-full">
+                            <span className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-lg">
                                 {obj.cat}
                             </span>
                         </div>
-                        <div className={`absolute inset-0 flex items-center justify-center bg-orange-400 text-white rounded-xl p-4 transition-all duration-300 
+                        <div className={`absolute inset-0 flex items-center justify-center bg-orange-400 text-white rounded-md p-4 transition-all duration-300 
                              ${hoveredExercise === index ? 'opacity-100 rotate-y-0' : 'opacity-0 rotate-y-180'}`}>
                             <p className="text-center">Click to start practice on <strong>{obj.title}</strong></p>
                         </div>

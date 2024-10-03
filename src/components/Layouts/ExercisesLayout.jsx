@@ -176,7 +176,7 @@ const ExercisesLayout = ({ children, onCancel }) => {
               </ul>
               <div className="flex flex-1">
                 {/* Add max-w-sm and sm:w-auto for responsive behavior */}
-                <button className="px-4 py-2 bg-yellow-600 text-white hover:bg-yellow-700 transition-colors w-full sm:w-auto max-w-sm" onClick={handleCancelClick} disabled={loading}>
+                <button className="px-4 py-2 bg-yellow-600 text-white hover:bg-yellow-700 transition-colors w-full sm:w-auto max-w-sm" onClick={handleCancelClick} >
                   Back
                 </button>
 

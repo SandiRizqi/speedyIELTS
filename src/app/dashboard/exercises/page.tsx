@@ -4,7 +4,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 
 export const metadata: Metadata = {
-  title: "Speedy IELTS | Exercices",
+  title: "SpeedyIELTS | Mini Exercice",
   description:
     "",
 };
@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <DefaultLayout>
-        
       <MiniPractice />
     </DefaultLayout>
   );

@@ -54,6 +54,10 @@ export function ErrorMessage (error) {
         cancelButtonColor: "#017d88",
         confirmButtonColor: "#017d88",
         showConfirmButton: true,
+        customClass: { 
+          popup : "z-9999"
+        }
+      
       });
 }
 
