@@ -283,10 +283,7 @@ const ExercisesLayout = ({ children, onCancel }) => {
 
   return (
     <><div className="fixed inset-0 flex flex-col h-screen bg-slate-100 z-9999" id="testlayouter">
-
       {isMobile ? <MobileHeader /> : <DesktopHeader />}
-
-
       <div className="flex flex-col overflow-y-auto overflow-x-auto p-6 dark:bg-slate-900 max-w-screen right-scrollbar">
         {children}
       </div>

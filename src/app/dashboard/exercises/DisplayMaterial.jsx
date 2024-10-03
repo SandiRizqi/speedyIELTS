@@ -11,11 +11,11 @@ const DisplayMaterial = ({ onClose, id }) => {
     const db = FirestoreDB();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [answers, setAnswers] = useState({
-        1: '',
-        2: '',
-        3: '',
-    });
+    // const [answers, setAnswers] = useState({
+    //     1: '',
+    //     2: '',
+    //     3: '',
+    // });
 
 
 
@@ -23,9 +23,9 @@ const DisplayMaterial = ({ onClose, id }) => {
     //     setAnswers(prev => ({ ...prev, [question]: value }));
     // };
 
-    // const handleShowResult = () => {
-    //     setShowResult(true);
-    // };
+    const handleShowResult = () => {
+         setShowResult(true);
+    };
 
     function handleClose() {
         setData(null);
@@ -70,7 +70,7 @@ const DisplayMaterial = ({ onClose, id }) => {
         <><ExercisesLayout onCancel={handleClose}>
 
             {data ? (
-                <div className="flex flex-grow bg-opacity-50 backdrop-blur-sm flex justify-center items-center -z-10 dark:z-50 bg-white">
+                <div className="flex flex-col bg-opacity-50 backdrop-blur-sm justify-center items-center  dark:z-50 bg-white">
                     <div className="bg-white w-full h-full relative">
                         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
                             {/* <button
@@ -135,19 +135,19 @@ const DisplayMaterial = ({ onClose, id }) => {
                 </div>
               </div> */}
 
-                                {/* <button
+                                <button
                                     onClick={handleShowResult}
-                                    className="mt-10 w-full bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                                    className="mt-10 w-full bg-blue-600 text-white px-6 py-3  text-lg font-semibold hover:bg-orange-400  transition duration-150 ease-in-out"
                                 >
                                     Show Result
-                                </button> */}
+                                </button>
 
                                 {showResult && (
                                     <div className="mt-8 bg-green-50 border border-green-200 rounded-lg p-6 animate-fade-in-down">
                                         <h2 className="text-2xl font-bold text-green-800 mb-4">Correct Answers:</h2>
-                                        <p className="text-green-700 mb-2"><strong>1.</strong> b. The effect of climate change on global agriculture</p>
-                                        <p className="text-green-700 mb-2"><strong>2.</strong> c. Sub-Saharan Africa</p>
-                                        <p className="text-green-700"><strong>3.</strong> Warmer temperatures are causing pests to survive in new regions, leading to crop failures.</p>
+                                        {Object.entries(data.answer).map(([key, value]) => ( 
+                                            <p className="text-green-700 mb-2" key={key}><strong>{key}.</strong>{value}</p>
+                                        ))}
                                     </div>
                                 )}
                             </div>
