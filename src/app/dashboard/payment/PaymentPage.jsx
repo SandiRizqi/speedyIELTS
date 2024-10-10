@@ -95,7 +95,7 @@ const PaymentPage = () => {
         },
         {
             title: "Weekly Premium",
-            price: "99,000",
+            price: "49,000",
             range: "Week",
             type: "SPEEDYIELTS_WEEKLY",
             features: ["7 Days access to All Unlimited Tests",
@@ -110,7 +110,7 @@ const PaymentPage = () => {
         },
         {
             title: "Monthly Premium",
-            price: "369,000",
+            price: "149,000",
             range: "Mo",
             type: "SPEEDYIELTS_PREMIUM",
             features: ["Save 7%","31 Days access to All Unlimited Tests",
@@ -125,7 +125,7 @@ const PaymentPage = () => {
         },
         {
             title: "3Month Bundle",
-            price: "899,000",
+            price: "299,000",
             range: "3Mo",
             type: "SPEEDYIELTS_3PREMIUM",
             features: ["save 24%","90 Days access to All Unlimited Tests",
