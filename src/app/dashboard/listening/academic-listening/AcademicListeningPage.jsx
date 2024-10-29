@@ -148,6 +148,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                         {part.questions?.map((obj, idx) => (
                             <div key={idx} className="space-x-4">
                                 <span className="font-medium">{obj.number}.{obj.question}</span>
+                                {obj?.image && (<img src={obj.image} alt="image" className="max-h-[400px]" />)}
                                 <select
                                     className="flex-grow my-1 px-2 border border-gray-300 rounded"
                                     name={`question-${obj.number}`}
@@ -180,6 +181,7 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
                         {part.questions?.map((question, idx) => (
                             <div className="space-y-2" key={idx}>
                                 <p className="font-medium">{question.number}.{question.question}</p>
+                                {question?.image && (<img src={question.image} alt="image" className="max-h-[400px]" />)}
                                 {question.options.map((option, index) => (
 
                                     <label key={index} className="flex items-center space-x-2 cursor-pointer">
