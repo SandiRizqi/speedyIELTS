@@ -3,6 +3,7 @@
 import { ApexOptions } from "apexcharts";
 import React from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from 'next/navigation';
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -29,6 +30,7 @@ interface OneSkillChartState {
     seriesdata: {
         createdAt: number;
         overall: number;
+        testId: string;
     }[];
 }
 
@@ -145,6 +147,10 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
     },
   ];
 
+  const router = useRouter();
+
+  // console.log("Series Data:", seriesdata);
+
   const options: ApexOptions = {
     colors: ["#1264df", "#eab308"],
     chart: {
@@ -158,6 +164,19 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
       zoom: {
         enabled: false,
       },
+      events: seriesdata.length > 10 
+        ? {
+            markerClick: function(event, chartContext, { seriesIndex, dataPointIndex }) {
+              const selectedId = seriesdata[dataPointIndex].testId;
+              router.push(`/test/${selectedId}`);
+            }
+          }
+        : {
+            dataPointSelection: function(event, chartContext, config) {
+              const selectedId = seriesdata[config.dataPointIndex].testId;
+              router.push(`/test/${selectedId}`);
+            }
+          },
     },
   
     responsive: [
