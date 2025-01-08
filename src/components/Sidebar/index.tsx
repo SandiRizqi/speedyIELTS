@@ -187,9 +187,9 @@ const menuGroups = [
             <circle cx="20" cy="4" r="2" fill="currentColor" />
           </svg>
         ),
-        label: "Exercises",
-        soonBadge: true,
-        route: "#",
+        label: "Mini-Exercises",
+        soonBadge: false,
+        route: "/dashboard/exercises",
       }
     ],
   },
