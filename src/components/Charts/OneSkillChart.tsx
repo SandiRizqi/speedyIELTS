@@ -32,6 +32,7 @@ interface OneSkillChartState {
         overall: number;
         testId: string;
     }[];
+    url: string;
 }
 
 // Define the props type
@@ -138,7 +139,8 @@ const ScoreDisplay: React.FC<ScoreCategoryProps> = ({ title, score, size }) => {
 
 const OneSkillChart: React.FC<OneSkillChartState> = ({
     title,
-    seriesdata
+    seriesdata,
+    url,
 }) => {
   const data = [
     {
@@ -167,14 +169,16 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
       events: seriesdata.length > 10 
         ? {
             markerClick: function(event, chartContext, { seriesIndex, dataPointIndex }) {
+              console.log(seriesdata[dataPointIndex])
               const selectedId = seriesdata[dataPointIndex].testId;
-              router.push(`/test/${selectedId}`);
+              router.push(`/${url}?result=${selectedId}`);
             }
           }
         : {
             dataPointSelection: function(event, chartContext, config) {
+              console.log(seriesdata[config.dataPointIndex])
               const selectedId = seriesdata[config.dataPointIndex].testId;
-              router.push(`/test/${selectedId}`);
+              router.push(`/${url}?result=${selectedId}`);
             }
           },
     },

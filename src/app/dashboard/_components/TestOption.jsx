@@ -55,7 +55,7 @@ const TestOption = ({ title, options, isPremium, isSoon, Url, subscribtion, user
                 >
                   {isButtonDisabled ? 'UNAVAILABLE' : 'START TEST'}
                 </button>
-                {subscribtion !== "PREMIUM" && !isPremium && userQuota && (
+                {subscribtion !== "PREMIUM" && !isPremium && !isQuotaExceeded && (
                   <div className="w-full">
                     <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
                       <span>Quota: {userQuota.used} / {userQuota.total} tests used</span>

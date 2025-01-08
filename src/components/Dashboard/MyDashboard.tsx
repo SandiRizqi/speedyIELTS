@@ -136,10 +136,10 @@ const MyDashboard: React.FC = () => {
 
       {chartData ? (
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-          <OneSkillChart seriesdata={chartData['listening']} title="Listening Scores" />
-          <OneSkillChart seriesdata={chartData['reading']} title="Reading Scores" />
-          <OneSkillChart seriesdata={chartData['writing']} title="Writing Scores" />
-          <OneSkillChart seriesdata={chartData['speaking']} title="Speaking Scores" />
+          <OneSkillChart seriesdata={chartData['listening']} title="Listening Scores" url="dashboard/listening/academic-listening"/>
+          <OneSkillChart seriesdata={chartData['reading']} title="Reading Scores" url="dashboard/reading/academic-reading"/>
+          <OneSkillChart seriesdata={chartData['writing']} title="Writing Scores" url="dashboard/writing"/>
+          <OneSkillChart seriesdata={chartData['speaking']} title="Speaking Scores" url="dashboard/speaking"/>
           <AllSkillChart seriesdata={chartData['full']} />
         </div>
       ) : (<DashboardSkeleton />)}
