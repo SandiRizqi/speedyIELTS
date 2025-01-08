@@ -13,7 +13,7 @@ import Loader from "@/components/common/Loader";
 import StartInstruction from "./StartInstruction";
 import { SuccessMessage, ErrorMessage } from "@/app/dashboard/_components/Alert";
 import TestLayout from "@/components/Layouts/TestLayout";
-
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 
 
@@ -22,6 +22,7 @@ import TestLayout from "@/components/Layouts/TestLayout";
 const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback, Result }) => {
     const user = useUser();
     const {userState} = user;
+    const db = getFirestore();
     const [loading, setLoading] = useState(false);
     const [answer, setAnswer] = useState(savedAnswer || {});
     const [activeTab, setActiveTab] = useState(1);
@@ -34,6 +35,73 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
     const functions = FirebaseFunction();
     const formRef = useRef(null);
     const params = useSearchParams();
+
+    const getQuestionID = async (questID) => {
+        try {
+            const getData = httpsCallable(functions, 'getQuestion');
+    
+            const result = await getData({ 
+                type: "listening-questions", 
+                id: questID,
+                userId: userState.uid, 
+            });
+    
+            const quest = result.data;
+            const paths = quest["questions"].map(obj => obj.audio);
+            
+            // Set the audio paths and the question
+            setAudioPath(paths);
+            setQuestion(quest);
+    
+            // If it's a full test, collect the answers
+            if (isFullTest) {
+                setCollectAnswer(prev => ({
+                    ...prev, 
+                    listening: {
+                        ...prev['listening'], 
+                        questions: quest['questions'], 
+                        questionId: quest['questionId'], 
+                        audio: paths
+                    }
+                }));
+            }
+        } catch (error) {
+            // Handle any errors
+            ErrorMessage(error); // Show error using the error handler
+        }
+    };
+
+
+
+
+    const getResult = async (selectedId) => {
+        try {
+      
+            const testTakenRef =  doc(db, 'test-taken', selectedId);
+            const testTakenDoc = await getDoc(testTakenRef);
+
+            if (testTakenDoc.exists()) {
+                setStart(true);
+                const firestoreData = testTakenDoc.data();
+                console.log(firestoreData);
+                getQuestionID(firestoreData['questionId'])
+                setTestResult(firestoreData);
+                setFeedback(firestoreData['corrections']);
+                setAnswer(firestoreData['answers'])
+                return ;
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error fetching Firestore data:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (params.get("result") || null) {
+            getResult(params.get("result"));
+        }
+    },[params])
 
 
 
@@ -320,44 +388,9 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
 
 
     useEffect(() => {
-        const getQuestionID = async () => {
-            try {
-                const getData = httpsCallable(functions, 'getQuestion');
         
-                const result = await getData({ 
-                    type: "listening-questions", 
-                    id: params.get("id") || questionId,
-                    userId: userState.uid, 
-                });
-        
-                const quest = result.data;
-                const paths = quest["questions"].map(obj => obj.audio);
-                
-                // Set the audio paths and the question
-                setAudioPath(paths);
-                setQuestion(quest);
-        
-                // If it's a full test, collect the answers
-                if (isFullTest) {
-                    setCollectAnswer(prev => ({
-                        ...prev, 
-                        listening: {
-                            ...prev['listening'], 
-                            questions: quest['questions'], 
-                            questionId: quest['questionId'], 
-                            audio: paths
-                        }
-                    }));
-                }
-            } catch (error) {
-                // Handle any errors
-                ErrorMessage(error); // Show error using the error handler
-            }
-        };
-        
-
-        if (!questions) {
-            getQuestionID();
+        if (!questions && !params.get("result")) {
+            getQuestionID(params.get("id") || questionId);
         };
 
     }, [])

@@ -4,7 +4,7 @@ import { ApexOptions } from "apexcharts";
 import React from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from 'next/navigation';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -151,20 +151,11 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
   ];
 
   const router = useRouter();
-  const db = getFirestore();
 
-  const handleDataSelection = async (dataPointIndex: number) => {
+
+  const handleDataSelection = (dataPointIndex: number) => {
     try {
       const selectedId = seriesdata[dataPointIndex].testId;
-      
-      const testTakenRef = doc(db, 'test-taken', selectedId);
-      const testTakenDoc = await getDoc(testTakenRef);
-      
-      if (testTakenDoc.exists()) {
-        const firestoreData = testTakenDoc.data();
-        console.log('Data dari Firestore:', firestoreData);
-      }
-
       router.push(`/${url}?result=${selectedId}`);
     } catch (error) {
       console.error('Error fetching Firestore data:', error);
