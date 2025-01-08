@@ -4,6 +4,7 @@ import { ApexOptions } from "apexcharts";
 import React from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from 'next/navigation';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -150,6 +151,25 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
   ];
 
   const router = useRouter();
+  const db = getFirestore();
+
+  const handleDataSelection = async (dataPointIndex: number) => {
+    try {
+      const selectedId = seriesdata[dataPointIndex].testId;
+      
+      const testTakenRef = doc(db, 'test-taken', selectedId);
+      const testTakenDoc = await getDoc(testTakenRef);
+      
+      if (testTakenDoc.exists()) {
+        const firestoreData = testTakenDoc.data();
+        console.log('Data dari Firestore:', firestoreData);
+      }
+
+      router.push(`/${url}?result=${selectedId}`);
+    } catch (error) {
+      console.error('Error fetching Firestore data:', error);
+    }
+  };
 
   // console.log("Series Data:", seriesdata);
 
@@ -169,16 +189,12 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
       events: seriesdata.length > 10 
         ? {
             markerClick: function(event, chartContext, { seriesIndex, dataPointIndex }) {
-              console.log(seriesdata[dataPointIndex])
-              const selectedId = seriesdata[dataPointIndex].testId;
-              router.push(`/${url}?result=${selectedId}`);
+              handleDataSelection(dataPointIndex);
             }
           }
         : {
             dataPointSelection: function(event, chartContext, config) {
-              console.log(seriesdata[config.dataPointIndex])
-              const selectedId = seriesdata[config.dataPointIndex].testId;
-              router.push(`/${url}?result=${selectedId}`);
+              handleDataSelection(config.dataPointIndex);
             }
           },
     },
