@@ -48,6 +48,7 @@ const WritingOnePage = () => {
 
       if (testTakenDoc.exists()) {
         const firestoreData = testTakenDoc.data();
+        // console.log(firestoreData);
         
         // Only process if it's a Writing Task 1
         if (firestoreData.testType === 'WritingTask1') {
@@ -57,7 +58,7 @@ const WritingOnePage = () => {
           setFeedback(firestoreData.result);
           setAnswer({
             ...answer,
-            answer: firestoreData.answers,
+            answer: firestoreData.answer,
             questionId: firestoreData.questionId
           });
         }
@@ -99,10 +100,10 @@ const WritingOnePage = () => {
   };
 
 
-  const getQuestion = async () => {
+  const getQuestion = async (questID) => {
     const getData = httpsCallable(functions, 'getQuestion');
     try {
-      await getData({ type: "writing1-questions", id: params.get("id"), userId: userState.uid }).then((result) => {
+      await getData({ type: "writing1-questions", id: questID, userId: userState.uid }).then((result) => {
         const quest = result.data;
         setQuestion(quest);
       });
@@ -127,7 +128,9 @@ const WritingOnePage = () => {
   }, [feedback]);
 
   useEffect(() => {
-    getQuestion();
+    if(!question && !params.get("result")) {
+      getQuestion(params.get("id"));
+    }
   }, [])
 
   useEffect(() => {
@@ -155,7 +158,7 @@ const WritingOnePage = () => {
     <UserProvider>
       <AuthStateChangeProvider>
         {/* <Breadcrumb pageName='Writing Task 1' /> */}
-        <TestLayout onSubmit={() => setFinish(true)}  time={20} loading={loading} finish={finish} onCancel={null}>
+        <TestLayout onSubmit={() => setFinish(true)}  time={20} loading={loading} finish={finish} onCancel={null} isFinish={params.get("result") ? true : false}>
         <div className='flex flex-1 justify-center'>
           {/* <div className='fixed w-full flex justify-center bg-white bg-opacity-0 items-center py-1  top-20 inline-block gap-4 z-50'>
             {start && !finish && (<Timer minutes={20} seconds={0} setFinish={setFinish} />)}

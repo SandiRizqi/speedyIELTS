@@ -9,7 +9,7 @@ import { FirebaseRealtimeDatabase } from "@/service/firebase";
 import { ref, onValue } from "firebase/database";
 import { motion } from 'framer-motion';
 
-const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel, labels, Answers, Corrections }) => {
+const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time, loading, finish, onCancel, labels, Answers, Corrections, isFinish }) => {
   const [timeLeft, setTimeLeft] = useState(time * 60); // 60 minutes in seconds
   const [isOnline, setIsOnline] = useState(false); 
   const realDb = FirebaseRealtimeDatabase();
@@ -134,7 +134,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
   }, []);
 
   useEffect(() => {
-    if (!timeLeft) {
+    if (!timeLeft && !isFinish) {
       handleSubmit();
     }
   }, [timeLeft])
@@ -180,7 +180,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
             {/* Top section: Logo and Timer (always visible) */}
             <div className="flex justify-between items-center w-full">
               <img src="/images/logo/type/logo_round.png" alt="Logo" className="h-10" />
-              {!finish && (
+              {!finish && !isFinish && (
                 <div className="flex items-center space-x-2">
                   <Clock size={24} className="text-slate-500" />
                   <span className="text-slate-700 dark:text-white">{formatTime(timeLeft)}</span>
@@ -221,7 +221,8 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
                 </button>
 
 
-                <button className={`px-4 py-2 ${loading || finish ? 'bg-slate-500' : 'bg-green-600 hover:bg-green-700'} text-white  transition-colors w-full sm:w-auto max-w-sm`} onClick={() => handleSubmit()} disabled={loading || finish}>
+                {!isFinish && (
+                  <button className={`px-4 py-2 ${loading || finish  ? 'bg-slate-500' : 'bg-green-600 hover:bg-green-700'} text-white  transition-colors w-full sm:w-auto max-w-sm`} onClick={() => handleSubmit()} disabled={loading || finish}>
                   {loading && (
                     <svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB" />
@@ -230,6 +231,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
                   )}
                   {loading ? "loading... ." : "Submit"}
                 </button>
+                )}
 
               </div>
 
@@ -264,7 +266,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
       <>
         <header className="bg-white shadow-lg p-2 flex justify-between items-center dark:bg-slate-900 z-1">
           <img src="/images/logo/type/logo_round.png" alt="Logo" className="h-10" />
-          {!finish && (
+          {!finish && !isFinish && (
             <div className="flex items-center space-x-2">
               <Clock size={24} className="text-slate-500" />
               <span className="text-slate-700 dark:text-white">{formatTime(timeLeft)}</span>
@@ -292,7 +294,8 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
               {finish ? "Back" : "Cancel"}
             </button>
 
-            <button className={`px-4 py-2 ${loading || finish ? 'bg-slate-500' : 'bg-green-600 hover:bg-green-700'} text-white  transition-colors w-full sm:w-auto max-w-sm`} onClick={() => handleSubmit()} disabled={loading || finish}>
+            {!isFinish && (
+              <button className={`px-4 py-2 ${loading || finish ? 'bg-slate-500' : 'bg-green-600 hover:bg-green-700'} text-white  transition-colors w-full sm:w-auto max-w-sm`} onClick={() => handleSubmit()} disabled={loading || finish}>
               {loading && (
                 <svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB" />
@@ -301,6 +304,7 @@ const TestLayout = ({ children, activePart, setActivePart, onSubmit, tabs, time,
               )}
               {loading ? "loading... ." : "Submit"}
             </button>
+            )}
 
           </div>
 
