@@ -16,6 +16,7 @@ import Loader from '@/components/common/Loader';
 import { useSearchParams } from 'next/navigation';
 import TestLayout from '@/components/Layouts/TestLayout';
 import { useUser } from '@/service/user';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 
 
@@ -36,6 +37,42 @@ const WritingOnePage = () => {
   const [feedback, setFeedback] = useState(null);
   const textareaRef = useRef(null);
   const params = useSearchParams();
+  const [testResult, setTestResult] = useState(null);
+
+  const db = getFirestore();
+
+  const getResult = async (selectedId) => {
+    try {
+      const testTakenRef = doc(db, 'test-taken', selectedId);
+      const testTakenDoc = await getDoc(testTakenRef);
+
+      if (testTakenDoc.exists()) {
+        const firestoreData = testTakenDoc.data();
+        
+        // Only process if it's a Writing Task 1
+        if (firestoreData.testType === 'WritingTask1') {
+          setStart(true);
+          getQuestion(firestoreData.questionId);
+          setTestResult(firestoreData);
+          setFeedback(firestoreData.result);
+          setAnswer({
+            ...answer,
+            answer: firestoreData.answers,
+            questionId: firestoreData.questionId
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching Firestore data:', error);
+      ErrorMessage(error);
+    }
+  };
+
+  useEffect(() => {
+    if (params.get("result")) {
+      getResult(params.get("result"));
+    }
+  }, [params]);
 
 
 

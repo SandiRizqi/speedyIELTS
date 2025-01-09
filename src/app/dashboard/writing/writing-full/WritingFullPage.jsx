@@ -11,11 +11,13 @@ import { SuccessMessage, ErrorMessage } from '../../_components/Alert';
 import { useUser } from '@/service/user';
 import withSubscription from '@/hooks/withSubscribtion';
 import TestLayout from '@/components/Layouts/TestLayout';
-
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { useSearchParams } from 'next/navigation';
 
 
 
 const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId, savedAnswer, Feedback }) => {
+  const searchParams = useSearchParams();
   const user = useUser();
   const {userState} = user;
   const [start, setStart] = useState(questionId ? true : false);
@@ -42,8 +44,79 @@ const WritingFullPage = ({ isFullTest, setCollectAnswer, setNextTest, questionId
   const [question, setQuestion] = useState(null);
   const functions = FirebaseFunction();
   const [activeTab, setActiveTab] = useState(1);
+  const [testResult, setTestResult] = useState(null);
+  const db = getFirestore();
+  
+  // Update the getResult function to handle the answer state more safely
+const getResult = async (selectedId) => {
+  try {
+    const testTakenRef = doc(db, 'test-taken', selectedId);
+    const testTakenDoc = await getDoc(testTakenRef);
 
+    if (testTakenDoc.exists()) {
+      const firestoreData = testTakenDoc.data();
+      
+      // Only process if it's a Writing Full Test
+      if (firestoreData.testType === 'WritingFullAcademic') {
+        setStart(true);
+        setTestResult(firestoreData);
+        
+        // Check if result exists before accessing nested properties
+        if (firestoreData.result?.task1?.result && firestoreData.result?.task2?.result) {
+          setFeedback({
+            feedback1: firestoreData.result.task1.result,
+            feedback2: firestoreData.result.task2.result
+          });
+        }
 
+        // Safely update answer state
+        setAnswer(prevAnswer => ({
+          task1: {
+            ...(prevAnswer?.task1 || {}),
+            createdAt: Date.now(),
+            questionId: firestoreData.questionIds?.[0] || '',
+            testType: 'WritingTask1',
+            answer: firestoreData.answers?.task1 || '',
+            userId: userState.uid,
+          },
+          task2: {
+            ...(prevAnswer?.task2 || {}),
+            createdAt: Date.now(),
+            questionId: firestoreData.questionIds?.[1] || '',
+            testType: 'WritingTask2',
+            answer: firestoreData.answers?.task2 || '',
+            userId: userState.uid,
+          }
+        }));
+        
+        // Only fetch questions if we have questionIds
+        if (firestoreData.questionIds?.length >= 2) {
+          const questions = await Promise.all([
+            getQuestion("writing1-questions", firestoreData.questionIds[0]),
+            getQuestion("writing2-questions", firestoreData.questionIds[1])
+          ]);
+          
+          if (questions[0] && questions[1]) {
+            setQuestion({
+              question1: questions[0],
+              question2: questions[1]
+            });
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching Firestore data:', error);
+    ErrorMessage(error);
+  }
+};
+
+  useEffect(() => {
+    const resultParam = searchParams.get('result');
+    if (resultParam) {
+      getResult(resultParam);
+    }
+  }, [searchParams]);
 
 
 

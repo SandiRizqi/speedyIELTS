@@ -4,6 +4,7 @@ import { ApexOptions } from "apexcharts";
 import React from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from 'next/navigation';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -32,6 +33,7 @@ interface OneSkillChartState {
         createdAt: number;
         overall: number;
         testId: string;
+        testType: string;
     }[];
     url: string;
 }
@@ -152,13 +154,45 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
 
   const router = useRouter();
 
-
-  const handleDataSelection = (dataPointIndex: number) => {
+  const db = getFirestore();
+  const handleDataSelection = async (dataPointIndex: number) => {
     try {
-      const selectedId = seriesdata[dataPointIndex].testId;
-      router.push(`/${url}?result=${selectedId}`);
+      const selectedData = seriesdata[dataPointIndex];
+      const selectedId = selectedData.testId;
+      
+      // Fetch data from Firestore
+      const testTakenRef = doc(db, 'test-taken', selectedId);
+      const testTakenDoc = await getDoc(testTakenRef);
+  
+      if (testTakenDoc.exists()) {
+        const firestoreData = testTakenDoc.data();
+        const testType = firestoreData['testType'];
+  
+        // Determine URL based on testType
+        let finalUrl = url;
+        if (url.includes('dashboard/writing')) {
+          switch (testType) {
+            case 'WritingTask1':
+              finalUrl = 'dashboard/writing/writing-one';
+              break;
+            case 'WritingTask2':
+              finalUrl = 'dashboard/writing/writing-two';
+              break;
+            case 'WritingFullAcademic':
+              finalUrl = 'dashboard/writing/writing-full';
+              break;
+            default:
+              console.warn('Unknown test type:', testType);
+              finalUrl = url; // Fallback to default URL
+          }
+        }
+        
+        router.push(`/${finalUrl}?result=${selectedId}`);
+      } else {
+        console.error('No such document exists:', selectedId);
+      }
     } catch (error) {
-      console.error('Error fetching Firestore data:', error);
+      console.error('Error handling data selection:', error);
     }
   };
 
