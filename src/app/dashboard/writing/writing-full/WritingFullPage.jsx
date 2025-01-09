@@ -76,7 +76,7 @@ const getResult = async (selectedId) => {
             createdAt: Date.now(),
             questionId: firestoreData.questionIds?.[0] || '',
             testType: 'WritingTask1',
-            answer: firestoreData.answers?.task1 || '',
+            answer: firestoreData.result.task1.answer,
             userId: userState.uid,
           },
           task2: {
@@ -84,7 +84,7 @@ const getResult = async (selectedId) => {
             createdAt: Date.now(),
             questionId: firestoreData.questionIds?.[1] || '',
             testType: 'WritingTask2',
-            answer: firestoreData.answers?.task2 || '',
+            answer: firestoreData.result.task2.answer,
             userId: userState.uid,
           }
         }));

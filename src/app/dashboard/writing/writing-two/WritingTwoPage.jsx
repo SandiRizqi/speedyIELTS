@@ -55,7 +55,7 @@ const WritingTwoPage = () => {
           setFeedback(firestoreData.result);
           setAnswer({
             ...answer,
-            answer: firestoreData.answers,
+            answer: firestoreData.answer,
             questionId: firestoreData.questionId
           });
         }
