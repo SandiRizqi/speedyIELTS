@@ -15,6 +15,7 @@ import { SuccessMessage, ErrorMessage } from "@/app/dashboard/_components/Alert"
 import ScoreComponent from "./ScoreComponent";
 import { motion } from 'framer-motion';
 import { ChevronsLeftRight } from 'lucide-react';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 
 const InteractiveResizeHandle = ({ onMouseDown }) => {
@@ -131,6 +132,35 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
     const params = useSearchParams();
     const [leftWidth, setLeftWidth] = useState(50); // Initial width of left column (percentage)
     const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const db = getFirestore();
+
+    const getResult = async (selectedId) => {
+        try {
+            const testTakenRef = doc(db, 'test-taken', selectedId);
+            const testTakenDoc = await getDoc(testTakenRef);
+    
+            if (testTakenDoc.exists()) {
+                setStart(true);
+                const firestoreData = testTakenDoc.data();
+                console.log(firestoreData);
+                getQuestionID(firestoreData['questionId'])
+                setTestResult(firestoreData);
+                setFeedback(firestoreData['corrections']);
+                setAnswer(firestoreData['answers'])
+                return;
+            }
+    
+            return null;
+        } catch (error) {
+            console.error('Error fetching Firestore data:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (params.get("result") || null) {
+            getResult(params.get("result"));
+        }
+    }, [params])
 
     useEffect(() => {
         const checkScreenSize = () => {
@@ -425,42 +455,40 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
         setNextTest('navigation')
     };
 
+    const getQuestionID = async (questID) => {
+        try {
+            const getData = httpsCallable(functions, 'getQuestion');
+    
+            const result = await getData({ 
+                type: "reading-questions", 
+                id: questID,
+                userId: userState.uid, 
+            });
+    
+            // Set the question data
+            setQuestion(result.data);
+    
+            // If it's a full test, update the answer collection
+            if (isFullTest) {
+                setCollectAnswer(prev => ({
+                    ...prev,
+                    reading: {
+                        ...prev['reading'],
+                        questions: result.data['questions'],
+                        questionId: result.data['questionId']
+                    }
+                }));
+            }
+        } catch (error) {
+            // Handle any errors
+            ErrorMessage(error);
+        }
+    };
+
 
     useEffect(() => {
-        const getQuestionID = async () => {
-            try {
-                const getData = httpsCallable(functions, 'getQuestion');
-
-                // Make the async call to get question data
-                const result = await getData({
-                    type: "reading-questions",
-                    id: params.get("id") || questionId,
-                    userId: userState.uid,
-                });
-
-                // Set the question data
-                setQuestion(result.data);
-
-                // If it's a full test, update the answer collection
-                if (isFullTest) {
-                    setCollectAnswer(prev => ({
-                        ...prev,
-                        reading: {
-                            ...prev['reading'],
-                            questions: result.data['questions'],
-                            questionId: result.data['questionId']
-                        }
-                    }));
-                }
-            } catch (error) {
-                // Handle any errors
-                ErrorMessage(error.message || "Error fetching question data.");
-            }
-        };
-
-
-        if (!questions) {
-            getQuestionID();
+        if (!questions && !params.get("result")) {
+            getQuestionID(params.get("id") || questionId);
         }
     }, []);
 
