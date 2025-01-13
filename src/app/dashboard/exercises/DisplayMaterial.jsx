@@ -25,11 +25,12 @@ const DisplayMaterial = ({ onClose, id }) => {
     // };
 
     const handleShowResult = () => {
-        const q1Value = document.querySelector('input[name="question1"]:checked')?.value;
-        const q2Value = document.querySelector('input[name="question2"]:checked')?.value;
-        const q3Value = document.querySelector('input[name="question3"]')?.value;
+        const q1Value = document.querySelector('[name="question1"]')?.value || document.querySelector('[name="question1"]:checked')?.value;
+        const q2Value = document.querySelector('[name="question2"]')?.value || document.querySelector('[name="question2"]:checked')?.value;
+        const q3Value = document.querySelector('[name="question3"]')?.value || document.querySelector('[name="question3"]:checked')?.value;
+    
         if (!q1Value || !q2Value || !q3Value) {
-            return window.alert("Please complete all the answer.")
+            return window.alert("Please complete all the answer.");
         }
         setShowResult(true);
     };
