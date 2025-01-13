@@ -153,8 +153,10 @@ const DisplayMaterial = ({ onClose, id }) => {
                                 {showResult && (
                                     <div className="mt-8 bg-green-50 border border-green-200 rounded-lg p-6 animate-fade-in-down">
                                         <h2 className="text-2xl font-bold text-green-800 mb-4">Correct Answers:</h2>
-                                        {Object.entries(data.answer).map(([key, value]) => ( 
-                                            <p className="text-green-700 mb-2" key={key}><strong>{key}.</strong>{value}</p>
+                                        {Object.entries(data.answer).map(([key, value], index) => ( 
+                                            <p className="text-green-700 mb-2" key={key}>
+                                                <strong>{index + 1}.</strong> {value}
+                                            </p>
                                         ))}
                                     </div>
                                 )}
