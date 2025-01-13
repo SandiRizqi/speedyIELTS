@@ -16,77 +16,77 @@ function capitalizeTxt(txt) {
     return txt.charAt(0).toUpperCase() + txt.slice(1); 
   }
 
-const miniPractices = [
+  const miniPractices = [
     {
         skill: 'Reading',
         icon: '📚',
         exercises: [
             { title: 'Skimming for Main Ideas', focus: 'Comprehension', cat: 'skimming' },
-            { title: 'Scanning for Specific Information', focus: 'Speed Reading' },
-            { title: 'Matching Headings', focus: 'Text Organization' },
-            { title: 'True/False/Not Given', focus: 'Critical Thinking' },
-            { title: 'Yes/No/Not Given', focus: 'Attention to Detail' },
-            { title: 'Multiple Choice', focus: 'Inference' },
-            { title: 'Matching Information', focus: 'Paragraph Analysis' },
-            { title: 'Sentence Completion', focus: 'Vocabulary' },
-            { title: 'Summary Completion', focus: 'Concise Writing' },
-            { title: 'Diagram Labelling', focus: 'Visual Comprehension' },
-            { title: 'Short Answer Questions', focus: 'Precise Information Retrieval' },
-            { title: 'Table Completion', focus: 'Data Interpretation' }
+            { title: 'Scanning for Specific Information', focus: 'Speed Reading', cat: 'scanning' },
+            { title: 'Matching Headings', focus: 'Text Organization', cat:'matching-heading'},
+            { title: 'True/False/Not Given', focus: 'Critical Thinking', cat: 'true-false' },
+            { title: 'Yes/No/Not Given', focus: 'Attention to Detail', cat: 'yes-no' },
+            { title: 'Multiple Choice', focus: 'Inference', cat: 'multiple-choice' },
+            { title: 'Matching Information', focus: 'Paragraph Analysis', cat: 'matching-information' },
+            { title: 'Sentence Completion', focus: 'Vocabulary', cat: 'sentence-completion' },
+            { title: 'Summary Completion', focus: 'Concise Writing', cat: 'summary-completion' },
+            { title: 'Diagram Labelling', focus: 'Visual Comprehension', cat: 'diagram-labelling' },
+            { title: 'Short Answer Questions', focus: 'Precise Information Retrieval', cat: 'short-answer' },
+            { title: 'Table Completion', focus: 'Data Interpretation', cat: 'table-completion' }
         ]
     },
     {
         skill: 'Writing',
         icon: '✍️',
         exercises: [
-            { title: 'Task 1: Data Description (Charts/Graphs)', focus: 'Data Analysis' },
-            { title: 'Task 1: Process Description', focus: 'Sequential Writing' },
-            { title: 'Task 1: Map Description', focus: 'Spatial Analysis' },
-            { title: 'Task 2: Opinion Essay', focus: 'Argumentation' },
-            { title: 'Task 2: Advantage/Disadvantage Essay', focus: 'Critical Analysis' },
-            { title: 'Task 2: Problem/Solution Essay', focus: 'Analytical Thinking' },
-            { title: 'Task 2: Discussion Essay', focus: 'Balanced Writing' },
-            { title: 'Paraphrasing Practice', focus: 'Lexical Resource' },
-            { title: 'Coherence and Cohesion Drills', focus: 'Text Organization' },
-            { title: 'Grammar Focus: Complex Sentences', focus: 'Grammatical Range' },
-            { title: 'Vocabulary Enhancement', focus: 'Lexical Precision' },
-            { title: 'Time Management Drills', focus: 'Efficiency' }
+            { title: 'Task 1: Data Description (Charts/Graphs)', focus: 'Data Analysis', cat: 'data-description' },
+            { title: 'Task 1: Process Description', focus: 'Sequential Writing', cat: 'process-description' },
+            { title: 'Task 1: Map Description', focus: 'Spatial Analysis', cat: 'map-description' },
+            { title: 'Task 2: Opinion Essay', focus: 'Argumentation', cat: 'opinion-essay' },
+            { title: 'Task 2: Advantage/Disadvantage Essay', focus: 'Critical Analysis', cat: 'advantage-disadvantage' },
+            { title: 'Task 2: Problem/Solution Essay', focus: 'Analytical Thinking', cat: 'problem-solution' },
+            { title: 'Task 2: Discussion Essay', focus: 'Balanced Writing', cat: 'discussion-essay' },
+            { title: 'Paraphrasing Practice', focus: 'Lexical Resource', cat: 'paraphrasing' },
+            { title: 'Coherence and Cohesion Drills', focus: 'Text Organization', cat: 'coherence-cohesion' },
+            { title: 'Grammar Focus: Complex Sentences', focus: 'Grammatical Range', cat: 'grammar-complex' },
+            { title: 'Vocabulary Enhancement', focus: 'Lexical Precision', cat: 'vocabulary' },
+            { title: 'Time Management Drills', focus: 'Efficiency', cat: 'time-management' }
         ]
     },
     {
         skill: 'Listening',
         icon: '🎧',
         exercises: [
-            { title: 'Form Completion', focus: 'Factual Information' },
-            { title: 'Multiple Choice', focus: 'Main Idea & Detail' },
-            { title: 'Matching', focus: 'Classification' },
-            { title: 'Plan/Map/Diagram Labelling', focus: 'Visual Information' },
-            { title: 'Note Completion', focus: 'Summary Skills' },
-            { title: 'Sentence Completion', focus: 'Specific Information' },
-            { title: 'Short Answer Questions', focus: 'Comprehension' },
-            { title: 'Table Completion', focus: 'Information Organization' },
-            { title: 'Flow-Chart Completion', focus: 'Process Understanding' },
-            { title: 'Summary Completion', focus: 'Overall Understanding' },
-            { title: 'Predicting Answers', focus: 'Anticipation Skills' },
-            { title: 'Recognizing Distractors', focus: 'Critical Listening' }
+            { title: 'Form Completion', focus: 'Factual Information', cat: 'form-completion' },
+            { title: 'Multiple Choice', focus: 'Main Idea & Detail', cat: 'multiple-choice' },
+            { title: 'Matching', focus: 'Classification', cat: 'matching' },
+            { title: 'Plan/Map/Diagram Labelling', focus: 'Visual Information', cat: 'diagram-labelling' },
+            { title: 'Note Completion', focus: 'Summary Skills', cat: 'note-completion' },
+            { title: 'Sentence Completion', focus: 'Specific Information', cat: 'sentence-completion' },
+            { title: 'Short Answer Questions', focus: 'Comprehension', cat: 'short-answer' },
+            { title: 'Table Completion', focus: 'Information Organization', cat: 'table-completion' },
+            { title: 'Flow-Chart Completion', focus: 'Process Understanding', cat: 'flow-chart' },
+            { title: 'Summary Completion', focus: 'Overall Understanding', cat: 'summary-completion' },
+            { title: 'Predicting Answers', focus: 'Anticipation Skills', cat: 'predicting' },
+            { title: 'Recognizing Distractors', focus: 'Critical Listening', cat: 'distractors' }
         ]
     },
     {
         skill: 'Speaking',
         icon: '🗣️',
         exercises: [
-            { title: 'Part 1: Personal Questions', focus: 'Fluency' },
-            { title: 'Part 2: Cue Card Practice', focus: 'Coherent Narratives' },
-            { title: 'Part 3: Discussion', focus: 'Critical Thinking' },
-            { title: 'Pronunciation Drills', focus: 'Clear Speech' },
-            { title: 'Intonation Practice', focus: 'Natural Speech' },
-            { title: 'Vocabulary Building for Common Topics', focus: 'Lexical Resource' },
-            { title: 'Storytelling Techniques', focus: 'Engaging Responses' },
-            { title: 'Paraphrasing and Clarification', focus: 'Communication Strategies' },
-            { title: 'Expressing and Justifying Opinions', focus: 'Argumentation' },
-            { title: 'Comparing and Contrasting', focus: 'Analytical Speaking' },
-            { title: 'Speculating and Hypothesizing', focus: 'Abstract Thinking' },
-            { title: 'Impromptu Speaking', focus: 'Spontaneity' }
+            { title: 'Part 1: Personal Questions', focus: 'Fluency', cat: 'personal-questions' },
+            { title: 'Part 2: Cue Card Practice', focus: 'Coherent Narratives', cat: 'cue-card' },
+            { title: 'Part 3: Discussion', focus: 'Critical Thinking', cat: 'discussion' },
+            { title: 'Pronunciation Drills', focus: 'Clear Speech', cat: 'pronunciation' },
+            { title: 'Intonation Practice', focus: 'Natural Speech', cat: 'intonation' },
+            { title: 'Vocabulary Building for Common Topics', focus: 'Lexical Resource', cat: 'vocabulary-topics' },
+            { title: 'Storytelling Techniques', focus: 'Engaging Responses', cat: 'storytelling' },
+            { title: 'Paraphrasing and Clarification', focus: 'Communication Strategies', cat: 'paraphrasing' },
+            { title: 'Expressing and Justifying Opinions', focus: 'Argumentation', cat: 'opinions' },
+            { title: 'Comparing and Contrasting', focus: 'Analytical Speaking', cat: 'comparing' },
+            { title: 'Speculating and Hypothesizing', focus: 'Abstract Thinking', cat: 'speculating' },
+            { title: 'Impromptu Speaking', focus: 'Spontaneity', cat: 'impromptu' }
         ]
     }
 ];
@@ -105,18 +105,55 @@ const MiniPractice = () => {
         setSelectedMaterial(id);
     }
 
-    const handleClick = (cat) => {
-        if(!cat) {
-            return;
-        }
-        router.replace(`/dashboard/exercises?cat=${cat}`)
+    const isCategoryValid = (cat) => {
+        return miniPractices.some(skillGroup => 
+            skillGroup.exercises.some(exercise => exercise.cat === cat)
+        );
+    };
+    
+    const getAllCategories = () => {
+        return miniPractices.reduce((cats, skillGroup) => {
+            const skillCats = skillGroup.exercises.map(ex => ex.cat);
+            return [...cats, ...skillCats];
+        }, []);
     };
 
+    const handleClick = (cat) => {
+        if (!cat) {
+            return;
+        }
+        
+        if (isCategoryValid(cat)) {
+            router.replace(`/dashboard/exercises?cat=${cat}`);
+        } else {
+            console.warn(`Invalid category: ${cat}`);
+        }
+    };
+    
+    const handleBack = () => {
+        const searchParams = params.get('cat');
+        const validCategories = getAllCategories();
+        
+        if (searchParams && validCategories.includes(searchParams)) {
+            router.replace('/dashboard/exercises');
+        } else {
+            router.back();
+        }
+    };
 
-
-  const handleBack = () => {
-    router.replace(`/dashboard/exercises`)
-  };
+    const getExerciseByCategory = (cat) => {
+        for (const skillGroup of miniPractices) {
+            const exercise = skillGroup.exercises.find(ex => ex.cat === cat);
+            if (exercise) {
+                return {
+                    ...exercise,
+                    skillGroup: skillGroup.skill,
+                    icon: skillGroup.icon
+                };
+            }
+        }
+        return null;
+    };
 
     
 
