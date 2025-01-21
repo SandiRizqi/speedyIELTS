@@ -140,7 +140,7 @@ const MyDashboard: React.FC = () => {
           <OneSkillChart seriesdata={chartData['reading']} title="Reading Scores" url="dashboard/reading/academic-reading"/>
           <OneSkillChart seriesdata={chartData['writing']} title="Writing Scores" url="dashboard/writing"/>
           <OneSkillChart seriesdata={chartData['speaking']} title="Speaking Scores" url="dashboard/speaking"/>
-          <AllSkillChart seriesdata={chartData['full']} />
+          <AllSkillChart seriesdata={chartData['full']}title="Full Skill Scores" url="dashboard" />
         </div>
       ) : (<DashboardSkeleton />)}
     </>

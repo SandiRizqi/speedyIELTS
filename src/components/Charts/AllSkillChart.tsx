@@ -169,7 +169,7 @@ const ScoreDisplay: React.FC<ScoreCategoryProps> = ({ title, score, size }) => {
   );
 };
 
-const AllSkillChart: React.FC<AllSkillChartState> = ({seriesdata, url}) => {
+const AllSkillChart: React.FC<AllSkillChartState> = ({title, seriesdata, url}) => {
   const data = [
     {
       name: "score",
@@ -178,7 +178,8 @@ const AllSkillChart: React.FC<AllSkillChartState> = ({seriesdata, url}) => {
   ];
 
   const router = useRouter();
-    console.info(seriesdata);
+    // console.info(seriesdata);
+
   
     const db = getFirestore();
     const handleDataSelection = async (dataPointIndex: number) => {
