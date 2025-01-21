@@ -20,6 +20,7 @@ import { ErrorMessage } from '../../_components/Alert';
 import { SuccessMessageText } from '../../_components/Alert';
 import { useSpeaking } from './hook/useSpeaking';
 // import VoiceAssistantComponent from './VoiceAssistantComponent';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 
 
@@ -32,6 +33,14 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
   const {handleNext, currentSection, statusTest, setStatusTest, finished, setFinished } = useSpeaking();
   const [messages, setMessages] = useState(savedAnswer || []);
   const [loading, setLoading] = useState(false);
+
+  const [answer, setAnswer] = useState({
+        createdAt: Date.now(),
+        questionId: '',
+        testType: 'SpeakingFullAcademic',
+        answer: '',
+      });
+
   const [feedback, setFeedback] = useState(Feedback || null);
   const messagesEndRef = useRef(null);
   const params = useSearchParams()
@@ -50,7 +59,51 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
     }
   }, []);
 
-
+  const [testResult, setTestResult] = useState(null);
+    
+    const db = getFirestore();
+  
+    const getResult = async (selectedId) => {
+      try {
+        const testTakenRef = doc(db, 'test-taken', selectedId);
+        const testTakenDoc = await getDoc(testTakenRef);
+    
+        if (testTakenDoc.exists()) {
+          const firestoreData = testTakenDoc.data();
+          console.log(firestoreData);
+          
+          if (firestoreData.testType === 'SpeakingFullAcademic') {
+            setStart(true);
+            getQuestion(firestoreData.questionId);
+            setTestResult(firestoreData);
+            setFeedback(firestoreData.result);
+            
+            // Extract text from answer array
+            const answerTexts = firestoreData.answer.map(item => ({
+              sender: item.sender,
+              text: item.text
+            }));
+    
+            setAnswer({
+              ...answer,
+              answer: answerTexts,
+              questionId: firestoreData.questionId
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching Firestore data:', error);
+        ErrorMessage(error);
+      }
+    };
+  
+    console.log(answer);
+    
+      useEffect(() => {
+        if (params.get("result")) {
+          getResult(params.get("result"));
+        }
+      }, [params]);
 
   const getQuestion = async () => {
     try {
@@ -207,45 +260,60 @@ const FullSpeakingPage = ({ isFullTest, setCollectAnswer, setNextTest, questionI
 
 
         <div className='w-full mt-2 h-full pb-30'>
-          <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
-            <div className="flex flex-col md:flex-row h-full">
-                {/* Assistant Column */}
-                
+            <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-xl border overflow-hidden">
+              <div className="flex flex-col md:flex-row h-full">
                 <div className="md:w-1/3 bg-slate-600 p-6 text-white flex flex-col justify-between">
-                      <VoiceAssistant
-                        intro={['intro1', 'intro2', 'intro3', 'closing'].includes(currentSection) ? question?.questions[currentSection] : null}
-                        questions={['part1', 'part3'].includes(currentSection) ? question?.questions[currentSection] : null}
-                        setMessages={setMessages}
-                        start={statusTest}
-                        isVisible={currentSection !== 'part2'}
-                      />
-                      {/* <VoiceAssistantComponent  intro={question?.questions[order[indexStep]]} questions={question?.questions[order[indexStep]]} setMessages={setMessages} handleNextPart={handleNext} currectSection={order[indexStep]} start={statusTest} /> */}
+                  <VoiceAssistant
+                    intro={['intro1', 'intro2', 'intro3', 'closing'].includes(currentSection) ? question?.questions[currentSection] : null}
+                    questions={['part1', 'part3'].includes(currentSection) ? question?.questions[currentSection] : null}
+                    setMessages={setMessages}
+                    start={statusTest}
+                    isVisible={currentSection !== 'part2'}
+                  />
                 </div>
-                
 
-              {/* Chat Column */}
-              <div className={`${currentSection === 'part2' ? "w-full": "md:w-2/3"} flex flex-col justify-between max-h-[34rem] dark:bg-slate-700`}>
-                <div className="overflow-y-auto p-4 space-y-4 flex-grow">
-                  {currentSection !== 'part2' ? messages.map((message, index) => (
-                    <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>
-                        {message.text}
-                        {message.audioUrl && (
-                          <div className="mt-2">
-                            <audio controls={!statusTest} className='w-full'>
-                              <source src={message.audioUrl} type="audio/mpeg" />
-                              Your browser does not support the audio element.
-                            </audio>
+                <div className={`${currentSection === 'part2' ? "w-full": "md:w-2/3"} flex flex-col justify-between max-h-[34rem] dark:bg-slate-700`}>
+                  <div className="overflow-y-auto p-4 space-y-4 flex-grow">
+                    {testResult ? (
+                      // Display saved answer data when test result exists
+                      answer.answer && answer.answer.map((message, index) => (
+                        <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${
+                            message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'
+                          }`}>
+                            {message.text}
                           </div>
-                        )}
-
-                      </div>
-                    </div>
-                  )) : null}
-                  <PartTwo question={question?.questions[currentSection]} setMessages={setMessages} isVisible={currentSection === 'part2'}/>
-                  
-                  <div ref={messagesEndRef} />
-                </div>
+                        </div>
+                      ))
+                    ) : (
+                      // Display live messages during the test
+                      currentSection !== 'part2' && messages.map((message, index) => (
+                        <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${
+                            message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'
+                          }`}>
+                            {message.text}
+                            {message.audioUrl && (
+                              <div className="mt-2">
+                                <audio controls={!statusTest} className='w-full'>
+                                  <source src={message.audioUrl} type="audio/mpeg" />
+                                  Your browser does not support the audio element.
+                                </audio>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                    {currentSection === 'part2' && (
+                      <PartTwo 
+                        question={question?.questions[currentSection]} 
+                        setMessages={setMessages} 
+                        isVisible={currentSection === 'part2'}
+                      />
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
                 <div className="p-4 border-t mt-auto">
                   <div className="flex space-x-2 justify-center">
 

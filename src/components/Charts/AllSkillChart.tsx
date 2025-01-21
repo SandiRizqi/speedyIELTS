@@ -3,6 +3,8 @@
 import { ApexOptions } from "apexcharts";
 import React from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from 'next/navigation';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -24,13 +26,46 @@ function timestampToShortDate(timestamp:any) {
 }
 
 
-
+interface TestFeedback {
+  listening?: {
+    questionId: string;
+    answer: any;
+    corrections: any;
+  };
+  reading?: {
+    questionId: string;
+    answer: any;
+    corrections: any;
+  };
+  writing?: {
+    result: {
+      task1: {
+        questionId: string;
+        result: any;
+      };
+      task2: {
+        questionId: string;
+        result: any;
+      };
+    };
+  };
+  speaking?: {
+    questionId: string;
+    answer: any;
+    result: any;
+  };
+}
 
 interface AllSkillChartState {
+  title: string;
   seriesdata: {
-      createdAt: number;
-      overall: number;
+    createdAt: number;
+    overall: number;
+    testId: string;
+    testType: string;
+    feedback?: TestFeedback; // Tambahkan field feedback
   }[];
+  url: string;
 }
 
 
@@ -134,13 +169,39 @@ const ScoreDisplay: React.FC<ScoreCategoryProps> = ({ title, score, size }) => {
   );
 };
 
-const AllSkillChart: React.FC<AllSkillChartState> = ({seriesdata}) => {
+const AllSkillChart: React.FC<AllSkillChartState> = ({seriesdata, url}) => {
   const data = [
     {
       name: "score",
       data: seriesdata.map((obj) => obj.overall) || [],
     },
   ];
+
+  const router = useRouter();
+    console.info(seriesdata);
+  
+    const db = getFirestore();
+    const handleDataSelection = async (dataPointIndex: number) => {
+      try {
+        const selectedData = seriesdata[dataPointIndex];
+        const selectedId = selectedData.testId;
+        
+        const testTakenRef = doc(db, 'test-taken', selectedId);
+        const testTakenDoc = await getDoc(testTakenRef);
+    
+        if (testTakenDoc.exists()) {
+          // Jika ada feedback, tambahkan ke URL sebagai parameter
+          const feedbackData = selectedData.feedback ? 
+            `&feedback=${encodeURIComponent(JSON.stringify(selectedData.feedback))}` : '';
+            
+          router.push(`/dashboard/complete-test/academic/?result=${selectedId}${feedbackData}`);
+        } else {
+          console.error('No such document exists:', selectedId);
+        }
+      } catch (error) {
+        console.error('Error handling data selection:', error);
+      }
+    };
 
   const options: ApexOptions = {
     legend: {
@@ -165,6 +226,21 @@ const AllSkillChart: React.FC<AllSkillChartState> = ({seriesdata}) => {
       toolbar: {
         show: false,
       },
+
+      zoom: {
+        enabled: false,
+      },
+      events: seriesdata.length > 10 
+        ? {
+            markerClick: function(event, chartContext, { seriesIndex, dataPointIndex }) {
+              handleDataSelection(dataPointIndex);
+            }
+          }
+        : {
+            dataPointSelection: function(event, chartContext, config) {
+              handleDataSelection(config.dataPointIndex);
+            }
+          },
     },
     responsive: [
       {
@@ -263,7 +339,7 @@ const AllSkillChart: React.FC<AllSkillChartState> = ({seriesdata}) => {
           <ReactApexChart
             options={options}
             series={data}
-            type="bar"
+            type={seriesdata.length > 10 ? "area": "bar"}
             height={350}
             width={"100%"}
           />

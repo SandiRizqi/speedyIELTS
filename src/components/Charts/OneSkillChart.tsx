@@ -153,6 +153,7 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
   ];
 
   const router = useRouter();
+  console.info(seriesdata);
 
   const db = getFirestore();
   const handleDataSelection = async (dataPointIndex: number) => {
@@ -160,7 +161,6 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
       const selectedData = seriesdata[dataPointIndex];
       const selectedId = selectedData.testId;
       
-      // Fetch data from Firestore
       const testTakenRef = doc(db, 'test-taken', selectedId);
       const testTakenDoc = await getDoc(testTakenRef);
   
@@ -168,7 +168,6 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
         const firestoreData = testTakenDoc.data();
         const testType = firestoreData['testType'];
   
-        // Determine URL based on testType
         let finalUrl = url;
         if (url.includes('dashboard/writing')) {
           switch (testType) {
@@ -182,8 +181,18 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
               finalUrl = 'dashboard/writing/writing-full';
               break;
             default:
-              console.warn('Unknown test type:', testType);
-              finalUrl = url; // Fallback to default URL
+              finalUrl = url;
+          }
+        } else if (url.includes('dashboard/speaking')) {
+          switch (testType) {
+            case 'SpeakingMiniAcademic':
+              finalUrl = 'dashboard/speaking/mini-speaking';
+              break;
+            case 'SpeakingFullAcademic':
+              finalUrl = 'dashboard/speaking/full-speaking';
+              break;
+            default:
+              finalUrl = url;
           }
         }
         

@@ -16,6 +16,7 @@ import { useUser } from '@/service/user';
 import { ErrorMessage } from '../../_components/Alert';
 import { SuccessMessageText } from '../../_components/Alert';
 import TestLayout from '@/components/Layouts/TestLayout';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 
 
@@ -32,6 +33,15 @@ const FullSpeakingPage = () => {
   const [indexStep, setIndexStep] = useState(0)
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [answer, setAnswer] = useState({
+      createdAt: Date.now(),
+      questionId: '',
+      testType: 'SpeakingMiniAcademic',
+      answer: '',
+    });
+
+
   const [feedback, setFeedback] = useState(null);
   const messagesEndRef = useRef(null);
   const params = useSearchParams()
@@ -54,6 +64,52 @@ const FullSpeakingPage = () => {
     checkSpeechRecognitionSupport();
   }, [browserSupportsSpeechRecognition]);
 
+
+  const [testResult, setTestResult] = useState(null);
+  
+  const db = getFirestore();
+
+  const getResult = async (selectedId) => {
+    try {
+      const testTakenRef = doc(db, 'test-taken', selectedId);
+      const testTakenDoc = await getDoc(testTakenRef);
+  
+      if (testTakenDoc.exists()) {
+        const firestoreData = testTakenDoc.data();
+        console.log(firestoreData);
+        
+        if (firestoreData.testType === 'SpeakingMiniAcademic') {
+          setStart(true);
+          getQuestion(firestoreData.questionId);
+          setTestResult(firestoreData);
+          setFeedback(firestoreData.result);
+          
+          // Extract text from answer array
+          const answerTexts = firestoreData.answer.map(item => ({
+            sender: item.sender,
+            text: item.text
+          }));
+  
+          setAnswer({
+            ...answer,
+            answer: answerTexts,
+            questionId: firestoreData.questionId
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching Firestore data:', error);
+      ErrorMessage(error);
+    }
+  };
+
+  console.log(answer);
+  
+    useEffect(() => {
+      if (params.get("result")) {
+        getResult(params.get("result"));
+      }
+    }, [params]);
 
   const getQuestion = async () => {
     const getData = httpsCallable(functions, 'getQuestion');
@@ -192,38 +248,51 @@ const FullSpeakingPage = () => {
               {/* Chat Column */}
               <div className="md:w-2/3 flex flex-col justify-between max-h-screen dark:bg-slate-700">
                 <div className="overflow-y-auto p-4 space-y-4 max-h-[35rem]">
-                  {order[indexStep] !== 'part2' ? messages.map((message, index) => (
-                    <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'}`}>
-                        {message.text}
-                        {message.audioUrl && (
-                          <div className="mt-2">
-                            <audio controls={!statusTest} className='w-full'>
-                              <source src={message.audioUrl} type="audio/mpeg" />
-                              Your browser does not support the audio element.
-                            </audio>
-                          </div>
-                        )}
-
+                  {testResult ? (
+                    // Display saved answer data when test result exists
+                    answer.answer && answer.answer.map((message, index) => (
+                      <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${
+                          message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'
+                        }`}>
+                          {message.text}
+                        </div>
                       </div>
-                    </div>
-                  )) : (<></>)}
+                    ))
+                  ) : (
+                    // Display live messages during the test
+                    order[indexStep] !== 'part2' && messages.map((message, index) => (
+                      <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-xs md:max-w-md rounded-lg p-3 ${
+                          message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-slate-200 text-gray-800'
+                        }`}>
+                          {message.text}
+                          {message.audioUrl && (
+                            <div className="mt-2">
+                              <audio controls={!statusTest} className='w-full'>
+                                <source src={message.audioUrl} type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                              </audio>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="p-4 border-t mt-auto">
                   <div className="flex space-x-2 justify-center">
-
                     {!finished && (
                       <button
                       onClick={() => setStatusTest(!statusTest)}
-                      disabled={statusTest}
-                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${statusTest ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
+                      disabled={finished || feedback || statusTest}
+                      className={`flex items-center justify-center py-2 px-6 text-white font-semibold transition-all duration-300 transform hover:scale-105  ${finished || feedback || statusTest? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-orange-400'
                         }`}
                     >
                       Start Conversation
                     </button>
                     )}
-
                   </div>
                 </div>
               </div>
