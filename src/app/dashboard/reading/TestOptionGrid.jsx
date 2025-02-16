@@ -41,7 +41,7 @@ const IELTSTestOptionsGrid = () => {
     Promise.all([getChartData(), getQuota()])
   }, [])
 
-  if (!chartData) {
+  if (!chartData ||  !userQuota) {
     return <Loader />
   }
 

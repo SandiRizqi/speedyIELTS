@@ -153,7 +153,7 @@ const OneSkillChart: React.FC<OneSkillChartState> = ({
   ];
 
   const router = useRouter();
-  console.info(seriesdata);
+  // console.info(seriesdata);
 
   const db = getFirestore();
   const handleDataSelection = async (dataPointIndex: number) => {
