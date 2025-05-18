@@ -25,9 +25,7 @@ const firebaseConfig = {
 
 ;
 
-if (!getApps().length) {
-  initializeApp(firebaseConfig);
-}
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
 
 
@@ -85,7 +83,7 @@ export const FirebaseRealtimeDatabase = () => {
   return database;
 }
 export const FirebaseFunction = () => {
-  return getFunctions(getApps(), "asia-southeast1");
+  return getFunctions(app, "asia-southeast1");
 }
 
 export const FirebaseStorge = () => {
