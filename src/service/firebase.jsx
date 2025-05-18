@@ -5,7 +5,9 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase} from "firebase/database";
+
+
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -83,7 +85,7 @@ export const FirebaseRealtimeDatabase = () => {
   return database;
 }
 export const FirebaseFunction = () => {
-  return getFunctions();
+  return getFunctions(getApps(), "asia-southeast1");
 }
 
 export const FirebaseStorge = () => {
