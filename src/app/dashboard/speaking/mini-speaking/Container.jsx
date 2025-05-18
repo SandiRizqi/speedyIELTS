@@ -3,7 +3,7 @@ import FullSpeakingPage from "./FullSpeakingPage";
 import { UserProvider } from '@/service/user';
 import AuthStateChangeProvider from '@/service/auth';
 import withUser from "@/hooks/withUser";
-
+import checkQuota from "@/hooks/checkQuota";
 const Container = () => {
     return (
         <UserProvider >
@@ -14,4 +14,4 @@ const Container = () => {
     )
 }
 
-export default withUser(Container);
+export default checkQuota(withUser(Container), "speaking-questions");

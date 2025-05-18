@@ -16,6 +16,7 @@ import ScoreComponent from "./ScoreComponent";
 import { motion } from 'framer-motion';
 import { ChevronsLeftRight } from 'lucide-react';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import checkQuota from "@/hooks/checkQuota";
 
 
 const InteractiveResizeHandle = ({ onMouseDown }) => {
@@ -587,4 +588,4 @@ const AcademicReadingPage = ({ isFullTest, setCollectAnswer, setNextTest, questi
     )
 };
 
-export default withUser(AcademicReadingPage);
+export default checkQuota(withUser(AcademicReadingPage), "reading-questions");

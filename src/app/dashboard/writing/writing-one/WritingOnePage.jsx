@@ -17,7 +17,8 @@ import { useSearchParams } from 'next/navigation';
 import TestLayout from '@/components/Layouts/TestLayout';
 import { useUser } from '@/service/user';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
-
+import withUser from '@/hooks/withUser';
+import checkQuota from '@/hooks/checkQuota';
 
 
 const WritingOnePage = () => {
@@ -253,4 +254,4 @@ const WritingOnePage = () => {
 }
 
 
-export default WritingOnePage;
+export default checkQuota(withUser(WritingOnePage), "writing1-questions")

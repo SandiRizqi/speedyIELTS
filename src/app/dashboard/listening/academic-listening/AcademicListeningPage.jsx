@@ -14,6 +14,7 @@ import StartInstruction from "./StartInstruction";
 import { SuccessMessage, ErrorMessage } from "@/app/dashboard/_components/Alert";
 import TestLayout from "@/components/Layouts/TestLayout";
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import checkQuota from "@/hooks/checkQuota";
 
 
 
@@ -446,4 +447,4 @@ const AcademicListeningPage = ({ isFullTest, setCollectAnswer, setNextTest, ques
     )
 };
 
-export default withUser(AcademicListeningPage);
+export default checkQuota(withUser(AcademicListeningPage), "listening-questions");

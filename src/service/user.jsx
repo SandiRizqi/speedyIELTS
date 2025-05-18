@@ -1,6 +1,4 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { FirestoreDB } from "./firebase";
-import { doc, onSnapshot } from 'firebase/firestore';
 
 
 export const InitUserState = {
