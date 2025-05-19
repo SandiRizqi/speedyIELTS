@@ -20,9 +20,10 @@ function checkQuota(WrappedComponent, quotaKey) {
           const getData = httpsCallable(functions, 'getUserQuota');
           const result = await getData({ userId: userState.uid });
           const quotaData = result.data;
+          console.log(quotaData)
 
-          // Assuming result.data looks like: { "academic-reading": 3 }
-          if (quotaData[quotaKey] < 2 || userState.subscribtion === "PREMIUM" ) {
+       
+          if (quotaData[quotaKey] < 2 || userState.subscribtion === "PREMIUM" || !quotaData[quotaKey]) {
             setAllowed(true);
           } else {
             router.replace('/dashboard/quota-exceeded');
