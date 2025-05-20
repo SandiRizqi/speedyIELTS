@@ -4,7 +4,7 @@
 git add .
 
 # Merge changes from the develop branch into main
-git commit -m "fix quota check"
+git commit -m "add appcheck"
 
 # Push the merged changes to the origin main branch
 git push origin develop
