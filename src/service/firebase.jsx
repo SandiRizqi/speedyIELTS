@@ -6,6 +6,7 @@ import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getDatabase} from "firebase/database";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 
 
@@ -27,10 +28,15 @@ const firebaseConfig = {
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
+const appCheck =  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_SITE_KEY),
+    isTokenAutoRefreshEnabled: true
+  });
 
 
 
 export const FirebaseAuth = getAuth();
+
 
 export const Authenticaion = () => {
   return FirebaseAuth;
