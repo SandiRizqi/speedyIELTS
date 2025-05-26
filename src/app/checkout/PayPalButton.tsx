@@ -25,7 +25,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({ id, data, onSuccess }) => {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIEND_ID}&currency=USD`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIEND_ID}&currency=USD&disable-funding=paylater`;
     script.async = true;
     script.onload = () => {
       if ((window as any).paypal && paypalRef.current) {
