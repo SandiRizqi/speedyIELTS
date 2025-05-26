@@ -13,11 +13,11 @@ import Loader from "@/components/common/Loader";
 // } from "lucide-react";
 
 // Define plan data for lookup
-const planLookup = {
-  SPEEDYIELTS_WEEKLY: { amount: "5", name: "Weekly Premium", duration: "7 Days" },
-  SPEEDYIELTS_PREMIUM: { amount: "15", name: "Monthly Premium", duration: "31 Days" },
-  SPEEDYIELTS_3PREMIUM: { amount: "20", name: "3-Month Bundle", duration: "90 Days" },
-};
+// const planLookup = {
+//   SPEEDYIELTS_WEEKLY: { amount: "5", name: "Weekly Premium", duration: "7 Days" },
+//   SPEEDYIELTS_PREMIUM: { amount: "15", name: "Monthly Premium", duration: "31 Days" },
+//   SPEEDYIELTS_3PREMIUM: { amount: "20", name: "3-Month Bundle", duration: "90 Days" },
+// };
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
