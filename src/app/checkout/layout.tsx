@@ -4,6 +4,7 @@ import "flatpickr/dist/flatpickr.min.css";
 import "@/css/satoshi.css";
 import "@/css/style.css";
 import React, { useEffect, useState } from "react";
+import Script from "next/script";
 import Loader from "@/components/common/Loader";
 import { UserProvider } from "@/service/user";
 import AuthStateChangeProvider from "@/service/auth";
@@ -25,6 +26,19 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-LH95ET351W"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-LH95ET351W');
+          `}
+        </Script>
       <body suppressHydrationWarning={true}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           <UserProvider>

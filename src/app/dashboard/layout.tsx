@@ -9,6 +9,7 @@ import Loader from "@/components/common/Loader";
 import { UserProvider } from "@/service/user";
 import AuthStateChangeProvider from "@/service/auth";
 import Head from "next/head";
+import Script from "next/script";
 
 
 
@@ -35,8 +36,22 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         {/* Add any additional head elements you need */}
+ 
 
       </Head>
+      <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-LH95ET351W"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-LH95ET351W');
+          `}
+        </Script>
       <body suppressHydrationWarning={true}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           <UserProvider>

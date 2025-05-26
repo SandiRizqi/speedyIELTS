@@ -4,7 +4,7 @@
 git add .
 
 # Merge changes from the develop branch into main
-git commit -m "disable pay leter"
+git commit -m "add tag"
 
 # Push the merged changes to the origin main branch
 git push origin develop
