@@ -1,18 +1,20 @@
-import PaymentPage from "./PaymentPage";
-import { Metadata } from "next";
+import DynamicPaymentRouter from "./DynamicPaymentRouter";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Speedy IELTS | Payment",
-  description:
-    "",
+  description: "",
 };
 
+
+
 const Page = () => {
+  
+
   return (
     <DefaultLayout>
-      <PaymentPage />
+     <DynamicPaymentRouter />
     </DefaultLayout>
   );
 };
